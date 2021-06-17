@@ -23,18 +23,21 @@ class Page(tk.Frame):
     def show(self):
         self.lift()
 
+#home page
 class HomePage(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
         lbl = Label(self, text="Welcome to HackerTracker!", font=("Arial Bold", 50))
         lbl.grid(column=0, row=0, sticky=E)
 
+#Second page asking for date
 class Page2(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
         lbl = Label(self, text="Please enter today's date:  ", font=("Arial Bold", 20))
         lbl.grid(column=0, row=0, sticky="", columnspan=3)
 
+        #create spins to add date
         month = Label(self, text="Month")
         month.grid(column=0, row=1, sticky="")
         spin = Spinbox(self, from_=1, to=12, width=5, format="%02.0f")
@@ -50,10 +53,12 @@ class Page2(Page):
         spin3 = Spinbox(self, from_=0000, to=9999, width=5, format="%04.0f")
         spin3.grid(column=2, row=2, sticky="")
 
-
+#Third page asking to select options
 class Page3(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)                            #copy these 3 lines to make a new class
+
+        #make checkbutton for multiselect
         lbl = Label(self, text="Select 5 categories", font=("Arial Bold", 20))
         lbl.grid(column=0, row=0, sticky=N)
         option1 = Checkbutton(self, text="option 1")
@@ -73,14 +78,18 @@ class Page3(Page):
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
+        #objects for each of the screens
         home = HomePage(self)
         date = Page2(self)
         options = Page3(self)
 
+        #global variables
         global screens
         screens = [home, date, options]
         global num
         num = 0
+
+        #create menu
         menu = Menu(window)
         new_item = Menu(menu)
         new_item.add_command(label='Next', command=lambda: self.goNext(num))
@@ -89,31 +98,38 @@ class MainView(tk.Frame):
         menu.add_cascade(label='File', menu=new_item)
         window.config(menu=menu)
 
+        #make frames
         button_frame = tk.Frame(self, bg="white")
         container = tk.Frame(self)
         button_frame.pack(side="top", fill="x", expand=False)
         container.pack(side="top", fill="both", expand=True)
+        #create next button
         next_btn = Button(button_frame, text="Next", bg="blue", command=lambda: self.goNext(num))
         next_btn.pack(side="right")
+        #create back button
         back_btn = Button(button_frame, text="Back", bg="blue", command=lambda: self.goBack(num))
         back_btn.pack(side="left")
+        #place screens into a container
         home.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
         date.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
         options.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
         screens[0].show()
 
+    #moves to next screen
     def goNext(self, index):
         if index < len(screens)-1:
             global num
             num += 1
             screens[index+1].show()
 
+    #move to prev screen
     def goBack(self, index):
         if index > 0:
             global num
             num -= 1
             screens[index-1].show()
 
+    #exits GUI
     def close(self):
         window.destroy()
         exit()
