@@ -1,20 +1,17 @@
 from tkinter import *
 import tkinter as tk
+from tkcalendar import Calendar
 
 '''def homeScreen():
     window = Tk()
-
     window.title("HackerTracker")
     window.geometry('1000x400')
-
     lbl = Label(window, text="Welcome to HackerTracker!", font=("Arial Bold", 50))
     lbl.grid(column=0, row=0)
     lbl.place(relx=.5, rely=.5, anchor="c")
-
     btn = Button(window, text="Click here to start!", bg="blue")
     btn.grid(column=0, row=1)
     btn.place(relx=.5, rely=.65, anchor="c")
-
     window.mainloop()'''
 
 class Page(tk.Frame):
@@ -36,44 +33,65 @@ class Page2(Page):
         Page.__init__(self, *args, **kwargs)
         lbl = Label(self, text="Please enter today's date:  ", font=("Arial Bold", 20))
         lbl.grid(column=0, row=0, sticky="", columnspan=3)
+        cal = Calendar(selectmode='day',
+                       year=2021, month=6,
+                       day=17)
+        cal.pack(pady=20)
 
-        #create spins to add date
-        month = Label(self, text="Month")
-        month.grid(column=0, row=1, sticky="")
-        spin = Spinbox(self, from_=1, to=12, width=5, format="%02.0f")
-        spin.grid(column=0, row=2, sticky="")
-
-        day = Label(self, text="Day")
-        day.grid(column=1, row=1, sticky="")
-        spin2 = Spinbox(self, from_=1, to=30, width=5, format="%02.0f")
-        spin2.grid(column=1, row=2, sticky="")
-
-        year = Label(self, text="Year")
-        year.grid(column=2, row=1, sticky="")
-        spin3 = Spinbox(self, from_=0000, to=9999, width=5, format="%04.0f")
-        spin3.grid(column=2, row=2, sticky="")
+        # #create spins to add date
+        # month = Label(self, text="Month")
+        # month.grid(column=0, row=1, sticky="")
+        # spin = Spinbox(self, from_=1, to=12, width=5, format="%02.0f")
+        # spin.grid(column=0, row=2, sticky="")
+        #
+        # day = Label(self, text="Day")
+        # day.grid(column=1, row=1, sticky="")
+        # spin2 = Spinbox(self, from_=1, to=30, width=5, format="%02.0f")
+        # spin2.grid(column=1, row=2, sticky="")
+        #
+        # year = Label(self, text="Year")
+        # year.grid(column=2, row=1, sticky="")
+        # spin3 = Spinbox(self, from_=0000, to=9999, width=5, format="%04.0f")
+        # spin3.grid(column=2, row=2, sticky="")
 
 #Third page asking to select options
 class Page3(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)                            #copy these 3 lines to make a new class
-
         #make checkbutton for multiselect
-        lbl = Label(self, text="Select 5 categories", font=("Arial Bold", 20))
+        lbl = Label(self, text="Select desired categories", font=("Arial Bold", 20))
         lbl.grid(column=0, row=0, sticky=N)
-        option1 = Checkbutton(self, text="option 1")
-        option1.grid(column=0, row=1)
-        option2 = Checkbutton(self, text="option 2")
-        option2.grid(column=0, row=2)
-        option3 = Checkbutton(self, text="option 3")
-        option3.grid(column=0, row=3)
-        option4 = Checkbutton(self, text="option 4")
-        option4.grid(column=0, row=4)
-        option5 = Checkbutton(self, text="option 5")
-        option5.grid(column=0, row=5)
-        option6 = Checkbutton(self, text="option 6")
-        option6.grid(column=0, row=6)
+        #sleepState = BooleanVar()
+        sleep = Checkbutton(self, text="Sleep") #var=sleepState
+        sleep.grid(column=0, row=1)
+        exercise = Checkbutton(self, text="Exercise")
+        exercise.grid(column=0, row=2)
+        caffeine = Checkbutton(self, text="Caffeine")
+        caffeine.grid(column=0, row=3)
+        mood = Checkbutton(self, text="Mood")
+        mood.grid(column=1, row=1)
+        confidence = Checkbutton(self, text="Confidence")
+        confidence.grid(column=1, row=2)
+        screenTime = Checkbutton(self, text="Screen Time")
+        screenTime.grid(column=1, row=3)
+        socializing = Checkbutton(self, text="Socializing")
+        socializing.grid(column=2, row=1)
+        productivity = Checkbutton(self, text="Productivity")
+        productivity.grid(column=2, row=2)
+        hygiene = Checkbutton(self, text="Hygiene")
+        hygiene.grid(column=2, row=3)
         #https://likegeeks.com/python-gui-examples-tkinter-tutorial/
+
+#Fourth Page prompting journaling input
+class Page4(Page):
+     def __init__(self, *args, **kwargs):
+        Page.__init__(self, *args, **kwargs)
+        choice_lbl = Label(self, text="Select Best Option", font=("Arial Bold", 20))
+        choice_lbl.grid(column=0, row=0, sticky=N)
+        #if Page3.sleepState is True:
+            #rad1 = Radiobutton(window, text='First', value=1)
+            #rad1.grid(column=0, row=0)
+
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -82,10 +100,11 @@ class MainView(tk.Frame):
         home = HomePage(self)
         date = Page2(self)
         options = Page3(self)
+        choices = Page4(self)
 
         #global variables
         global screens
-        screens = [home, date, options]
+        screens = [home, date, options, choices]
         global num
         num = 0
 
@@ -113,6 +132,7 @@ class MainView(tk.Frame):
         home.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
         date.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
         options.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
+        choices.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
         screens[0].show()
 
     #moves to next screen
