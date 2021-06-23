@@ -31,38 +31,38 @@ class HomePage(Page):
 class Page2(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        lbl = Label(self, text="Please enter today's date:  ", font=("Arial Bold", 20))
+        lbl = Label(self, text="Please select today's date:  ", font=("Arial Bold", 20))
         lbl.grid(column=0, row=0, sticky="", columnspan=3)
-        cal = Calendar(selectmode='day',
-                       year=2021, month=6,
-                       day=17)
-        cal.pack(pady=20)
 
-        # #create spins to add date
-        # month = Label(self, text="Month")
-        # month.grid(column=0, row=1, sticky="")
-        # spin = Spinbox(self, from_=1, to=12, width=5, format="%02.0f")
-        # spin.grid(column=0, row=2, sticky="")
-        #
-        # day = Label(self, text="Day")
-        # day.grid(column=1, row=1, sticky="")
-        # spin2 = Spinbox(self, from_=1, to=30, width=5, format="%02.0f")
-        # spin2.grid(column=1, row=2, sticky="")
-        #
-        # year = Label(self, text="Year")
-        # year.grid(column=2, row=1, sticky="")
-        # spin3 = Spinbox(self, from_=0000, to=9999, width=5, format="%04.0f")
-        # spin3.grid(column=2, row=2, sticky="")
+        cal = Calendar(self, selectmode="day", year=2021, month=6, day=21)
+        cal.place(relx=.45, rely=.5, anchor="c")
+
+        #create spins to add date
+        #month = Label(self, text="Month")
+        #month.grid(column=0, row=1, sticky="")
+        #spin = Spinbox(self, from_=1, to=12, width=5, format="%02.0f")
+        #spin.grid(column=0, row=2, sticky="")
+
+        #day = Label(self, text="Day")
+        #day.grid(column=1, row=1, sticky="")
+        #spin2 = Spinbox(self, from_=1, to=30, width=5, format="%02.0f")
+        #spin2.grid(column=1, row=2, sticky="")
+
+        #year = Label(self, text="Year")
+        #year.grid(column=2, row=1, sticky="")
+        #spin3 = Spinbox(self, from_=0000, to=9999, width=5, format="%04.0f")
+        #spin3.grid(column=2, row=2, sticky="")        # spin3.grid(column=2, row=2, sticky="")
 
 #Third page asking to select options
+
 class Page3(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)                            #copy these 3 lines to make a new class
         #make checkbutton for multiselect
         lbl = Label(self, text="Select desired categories", font=("Arial Bold", 20))
         lbl.grid(column=0, row=0, sticky=N)
-        #sleepState = BooleanVar()
-        sleep = Checkbutton(self, text="Sleep") #var=sleepState
+        sleep_state = BooleanVar()
+        sleep = Checkbutton(self, text="Sleep", var=sleep_state)
         sleep.grid(column=0, row=1)
         exercise = Checkbutton(self, text="Exercise")
         exercise.grid(column=0, row=2)
@@ -88,9 +88,9 @@ class Page4(Page):
         Page.__init__(self, *args, **kwargs)
         choice_lbl = Label(self, text="Select Best Option", font=("Arial Bold", 20))
         choice_lbl.grid(column=0, row=0, sticky=N)
-        #if Page3.sleepState is True:
-            #rad1 = Radiobutton(window, text='First', value=1)
-            #rad1.grid(column=0, row=0)
+        # if Page3.sleep_state is True:
+        #     rad1 = Radiobutton(window, text='First', value=1)
+        #     rad1.grid(column=0, row=0)
 
 
 class MainView(tk.Frame):
