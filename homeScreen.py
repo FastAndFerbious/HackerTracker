@@ -25,7 +25,7 @@ class HomePage(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
         lbl = Label(self, text="Welcome to HackerTracker!", font=("Arial Bold", 50))
-        lbl.grid(column=0, row=0, sticky=E)
+        lbl.grid(column=0, row=0, sticky=E) #testing
 
 #Second page asking for date
 class Page2(Page):
