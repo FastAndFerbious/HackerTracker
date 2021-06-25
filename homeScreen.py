@@ -14,20 +14,24 @@ from tkcalendar import Calendar
     btn.place(relx=.5, rely=.65, anchor="c")
     window.mainloop()'''
 
+
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
+
     def show(self):
         self.lift()
 
-#home page
+
+# home page
 class HomePage(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
         lbl = Label(self, text="Welcome to HackerTracker!", font=("Arial Bold", 50))
-        lbl.grid(column=0, row=0, sticky=E) #testing
+        lbl.grid(column=0, row=0, sticky=E)  # testing
 
-#Second page asking for date
+
+# Second page asking for date
 class Page2(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
@@ -37,28 +41,29 @@ class Page2(Page):
         cal = Calendar(self, selectmode="day", year=2021, month=6, day=21)
         cal.place(relx=.45, rely=.5, anchor="c")
 
-        #create spins to add date
-        #month = Label(self, text="Month")
-        #month.grid(column=0, row=1, sticky="")
-        #spin = Spinbox(self, from_=1, to=12, width=5, format="%02.0f")
-        #spin.grid(column=0, row=2, sticky="")
+        # create spins to add date
+        # month = Label(self, text="Month")
+        # month.grid(column=0, row=1, sticky="")
+        # spin = Spinbox(self, from_=1, to=12, width=5, format="%02.0f")
+        # spin.grid(column=0, row=2, sticky="")
 
-        #day = Label(self, text="Day")
-        #day.grid(column=1, row=1, sticky="")
-        #spin2 = Spinbox(self, from_=1, to=30, width=5, format="%02.0f")
-        #spin2.grid(column=1, row=2, sticky="")
+        # day = Label(self, text="Day")
+        # day.grid(column=1, row=1, sticky="")
+        # spin2 = Spinbox(self, from_=1, to=30, width=5, format="%02.0f")
+        # spin2.grid(column=1, row=2, sticky="")
 
-        #year = Label(self, text="Year")
-        #year.grid(column=2, row=1, sticky="")
-        #spin3 = Spinbox(self, from_=0000, to=9999, width=5, format="%04.0f")
-        #spin3.grid(column=2, row=2, sticky="")        # spin3.grid(column=2, row=2, sticky="")
+        # year = Label(self, text="Year")
+        # year.grid(column=2, row=1, sticky="")
+        # spin3 = Spinbox(self, from_=0000, to=9999, width=5, format="%04.0f")
+        # spin3.grid(column=2, row=2, sticky="")        # spin3.grid(column=2, row=2, sticky="")
 
-#Third page asking to select options
+
+# Third page asking to select options
 
 class Page3(Page):
     def __init__(self, *args, **kwargs):
-        Page.__init__(self, *args, **kwargs)                            #copy these 3 lines to make a new class
-        #make checkbutton for multiselect
+        Page.__init__(self, *args, **kwargs)  # copy these 3 lines to make a new class
+        # make checkbutton for multiselect
         lbl = Label(self, text="Select desired categories", font=("Arial Bold", 20))
         lbl.grid(column=0, row=0, sticky=N)
         sleep_state = BooleanVar()
@@ -80,11 +85,12 @@ class Page3(Page):
         productivity.grid(column=2, row=2)
         hygiene = Checkbutton(self, text="Hygiene")
         hygiene.grid(column=2, row=3)
-        #https://likegeeks.com/python-gui-examples-tkinter-tutorial/
+        # https://likegeeks.com/python-gui-examples-tkinter-tutorial/
 
-#Fourth Page prompting journaling input
+
+# Fourth Page prompting journaling input
 class Page4(Page):
-     def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
         choice_lbl = Label(self, text="Select Best Option", font=("Arial Bold", 20))
         choice_lbl.grid(column=0, row=0, sticky=N)
@@ -96,19 +102,19 @@ class Page4(Page):
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
-        #objects for each of the screens
+        # objects for each of the screens
         home = HomePage(self)
         date = Page2(self)
         options = Page3(self)
         choices = Page4(self)
 
-        #global variables
+        # global variables
         global screens
         screens = [home, date, options, choices]
         global num
         num = 0
 
-        #create menu
+        # create menu
         menu = Menu(window)
         new_item = Menu(menu)
         new_item.add_command(label='Next', command=lambda: self.goNext(num))
@@ -117,39 +123,39 @@ class MainView(tk.Frame):
         menu.add_cascade(label='File', menu=new_item)
         window.config(menu=menu)
 
-        #make frames
+        # make frames
         button_frame = tk.Frame(self, bg="white")
         container = tk.Frame(self)
         button_frame.pack(side="top", fill="x", expand=False)
         container.pack(side="top", fill="both", expand=True)
-        #create next button
+        # create next button
         next_btn = Button(button_frame, text="Next", bg="blue", command=lambda: self.goNext(num))
         next_btn.pack(side="right")
-        #create back button
+        # create back button
         back_btn = Button(button_frame, text="Back", bg="blue", command=lambda: self.goBack(num))
         back_btn.pack(side="left")
-        #place screens into a container
+        # place screens into a container
         home.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
         date.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
         options.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
         choices.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
         screens[0].show()
 
-    #moves to next screen
+    # moves to next screen
     def goNext(self, index):
-        if index < len(screens)-1:
+        if index < len(screens) - 1:
             global num
             num += 1
-            screens[index+1].show()
+            screens[index + 1].show()
 
-    #move to prev screen
+    # move to prev screen
     def goBack(self, index):
         if index > 0:
             global num
             num -= 1
-            screens[index-1].show()
+            screens[index - 1].show()
 
-    #exits GUI
+    # exits GUI
     def close(self):
         window.destroy()
         exit()
