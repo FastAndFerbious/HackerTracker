@@ -1,9 +1,9 @@
-# Fourth Page prompting journaling input
 import tkinter as tk
 from tkinter import *
 from PageClass import Page
 import spacy
 
+#prompt user for NLP stuff
 class Page3(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
@@ -32,3 +32,7 @@ class Page3(Page):
         # if Page4.sleep_state is True:
         #     rad1 = Radiobutton(window, text='First', value=1)
         #     rad1.grid(column=0, row=0)
+
+        #My day was good! I played outside.
+        #NLP: Happy, enjoyable,
+        #
