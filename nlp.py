@@ -19,9 +19,11 @@ if __name__ == "__main__":
     # And automatically tags with wordnet domains
     token._.wordnet.wordnet_domains()
 
-    economy_domains = ['finance', 'banking']
+    economy_domains = ['emotion', 'banking']
     enriched_sentence = []
-    sentence = nlp('I want to withdraw 5,000 euros')
+    print("I am very happy now that I ate some food")
+    test = input()
+    sentence = nlp(test)
 
     # For each token in the sentence
     for token in sentence:
@@ -38,4 +40,3 @@ if __name__ == "__main__":
     # Let's see our enriched sentence
     print(' '.join(enriched_sentence))
     # >> I (need|want|require) to (draw|withdraw|draw_off|take_out) 5,000 euros
-    print("test")
