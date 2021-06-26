@@ -101,19 +101,29 @@ class Page4(Page):
         bluebutton = Button(self, text="6-8 hours", fg="blue")
         bluebutton.pack(side=LEFT)
 
-        bluebutton = Button(self, text="9-11 hours", fg="purple")
-        bluebutton.pack(side=LEFT)
+        purpbutton = Button(self, text="9-11 hours", fg="purple")
+        purpbutton.pack(side=LEFT)
 
-        bluebutton = Button(self, text="11+ hours", fg="black")
-        bluebutton.pack(side=LEFT)
+        blackbutton = Button(self, text="11+ hours", fg="black")
+        blackbutton.pack(side=LEFT)
 
 #Page 5 with plots
-#Fourth Page prompting journaling input
 class Page5(Page):
      def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
         graph_lab = Label(self, text="Plots", font=("Arial Bold", 20))
         graph_lab.pack(pady=10, padx=10)
+
+#NLP prompting user for input
+class Page6(Page):
+    def __init__(self, *args, **kwargs):
+        Page.__init__(self, *args, **kwargs)
+        graph_lab = Label(self, text="How are you feeling today:", font=("Arial Bold", 20))
+        graph_lab.pack(pady=10, padx=10)
+        E1 = Entry(self)
+        E1.pack(side=TOP)
+        blueButton = Button(self, text="Submit", fg="blue")
+        blueButton.pack(side=TOP)
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -124,10 +134,11 @@ class MainView(tk.Frame):
         options = Page3(self)
         choices = Page4(self)
         plots = Page5(self)
+        nlp = Page6(self)
 
         #global variables
         global screens
-        screens = [home, date, options, choices, plots]
+        screens = [home, date, options, choices, plots, nlp]
         global num
         num = 0
 
@@ -157,6 +168,7 @@ class MainView(tk.Frame):
         options.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
         choices.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
         plots.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
+        nlp.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
 
         screens[0].show()
 
