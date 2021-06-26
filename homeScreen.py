@@ -87,11 +87,33 @@ class Page4(Page):
      def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
         choice_lbl = Label(self, text="Select Best Option", font=("Arial Bold", 20))
-        choice_lbl.grid(column=0, row=0, sticky=N)
-        # if Page3.sleep_state is True:
-        #     rad1 = Radiobutton(window, text='First', value=1)
-        #     rad1.grid(column=0, row=0)
+        choice_lbl.pack()
 
+        sleep_label = Label(self, text="How many hours did you sleep last night?", font=("Arial Bold", 20))
+        sleep_label.pack(side=LEFT)
+
+        redbutton = Button(self, text="0-3 hours", fg="red")
+        redbutton.pack(side=LEFT)
+
+        greenbutton = Button(self, text="3-5 hours", fg="green")
+        greenbutton.pack(side=LEFT)
+
+        bluebutton = Button(self, text="6-8 hours", fg="blue")
+        bluebutton.pack(side=LEFT)
+
+        bluebutton = Button(self, text="9-11 hours", fg="purple")
+        bluebutton.pack(side=LEFT)
+
+        bluebutton = Button(self, text="11+ hours", fg="black")
+        bluebutton.pack(side=LEFT)
+
+#Page 5 with plots
+#Fourth Page prompting journaling input
+class Page5(Page):
+     def __init__(self, *args, **kwargs):
+        Page.__init__(self, *args, **kwargs)
+        graph_lab = Label(self, text="Plots", font=("Arial Bold", 20))
+        graph_lab.pack(pady=10, padx=10)
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -101,10 +123,11 @@ class MainView(tk.Frame):
         date = Page2(self)
         options = Page3(self)
         choices = Page4(self)
+        plots = Page5(self)
 
         #global variables
         global screens
-        screens = [home, date, options, choices]
+        screens = [home, date, options, choices, plots]
         global num
         num = 0
 
@@ -133,6 +156,8 @@ class MainView(tk.Frame):
         date.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
         options.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
         choices.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
+        plots.place(in_=container, x=50, y=50, relwidth=1, relheight=1)
+
         screens[0].show()
 
     #moves to next screen
