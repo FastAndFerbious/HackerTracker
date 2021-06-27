@@ -24,18 +24,18 @@ class Page(tk.Frame):
 class HomePage(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        lbl = Label(self, text="Welcome to HackerTracker!", font=("Arial Bold", 50))
-        lbl.grid(column=0, row=0, sticky=E)
+        lbl = Label(self, text="Welcome to HackerTracker!", font=("Comic Sans MS", 50, 'bold'), fg='pink')
+        lbl.place(x=110, y=100)
 
 #Second page asking for date
 class Page2(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        lbl = Label(self, text="Please select today's date:  ", font=("Arial Bold", 20))
-        lbl.grid(column=0, row=0, sticky="", columnspan=3)
+        lbl = Label(self, text="Please select today's date:  ",font=("Comic Sans MS", 40, 'bold'), fg='pink')
+        lbl.place(x=120, y=0)
 
-        cal = Calendar(self, selectmode="day", year=2021, month=6, day=21)
-        cal.place(relx=.45, rely=.5, anchor="c")
+        cal = Calendar(self, selectmode="day", year=2021, month=6, day=21, selectforeground='pink', foreground='yellow', highlightcolor='pink', normalforeground='orange', font=("Comic Sans MS", 20))
+        cal.place(relx=.45, rely=.5, anchor="c", width=500, height=230)
 
         #create spins to add date
         #month = Label(self, text="Month")
@@ -54,64 +54,63 @@ class Page2(Page):
         #spin3.grid(column=2, row=2, sticky="")        # spin3.grid(column=2, row=2, sticky="")
 
 #Third page asking to select options
-
 class Page3(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)                            #copy these 3 lines to make a new class
         #make checkbutton for multiselect
-        lbl = Label(self, text="Select desired categories", font=("Arial Bold", 20))
-        lbl.grid(column=0, row=0, sticky=N)
+        lbl = Label(self, text="Select desired categories", font=("Comic Sans MS", 40, 'bold'), fg='pink')
+        lbl.place(x=120, y=0)
         sleep_state = BooleanVar()
-        sleep = Checkbutton(self, text="Sleep", var=sleep_state)
-        sleep.grid(column=0, row=1)
-        exercise = Checkbutton(self, text="Exercise")
-        exercise.grid(column=0, row=2)
-        caffeine = Checkbutton(self, text="Caffeine")
-        caffeine.grid(column=0, row=3)
-        mood = Checkbutton(self, text="Mood")
-        mood.grid(column=1, row=1)
-        confidence = Checkbutton(self, text="Confidence")
-        confidence.grid(column=1, row=2)
-        screenTime = Checkbutton(self, text="Screen Time")
-        screenTime.grid(column=1, row=3)
-        socializing = Checkbutton(self, text="Socializing")
-        socializing.grid(column=2, row=1)
-        productivity = Checkbutton(self, text="Productivity")
-        productivity.grid(column=2, row=2)
-        hygiene = Checkbutton(self, text="Hygiene")
-        hygiene.grid(column=2, row=3)
+        sleep = Checkbutton(self, text="Sleep", var=sleep_state, font=("Comic Sans MS", 20), fg='orange')
+        sleep.place(x=20, y=100)
+        exercise = Checkbutton(self, text="Exercise", font=("Comic Sans MS", 20), fg='orange')
+        exercise.place(x=20, y=140)
+        caffeine = Checkbutton(self, text="Caffeine", font=("Comic Sans MS", 20), fg='orange')
+        caffeine.place(x=20, y=180)
+        mood = Checkbutton(self, text="Mood", font=("Comic Sans MS", 20), fg='orange')
+        mood.place(x=20, y=220)
+        confidence = Checkbutton(self, text="Confidence", font=("Comic Sans MS", 20), fg='orange')
+        confidence.place(x=160, y=100)
+        screenTime = Checkbutton(self, text="Screen Time", font=("Comic Sans MS", 20), fg='orange')
+        screenTime.place(x=160, y=140)
+        socializing = Checkbutton(self, text="Socializing", font=("Comic Sans MS", 20), fg='orange')
+        socializing.place(x=160, y=180)
+        productivity = Checkbutton(self, text="Productivity", font=("Comic Sans MS", 20), fg='orange')
+        productivity.place(x=160, y=220)
+        hygiene = Checkbutton(self, text="Hygiene", font=("Comic Sans MS", 20), fg='orange')
+        hygiene.place(x=320, y=100)
         #https://likegeeks.com/python-gui-examples-tkinter-tutorial/
 
 #Fourth Page prompting journaling input
 class Page4(Page):
      def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        choice_lbl = Label(self, text="Select Best Option", font=("Arial Bold", 20))
-        choice_lbl.pack()
+        choice_lbl = Label(self, text="Select Best Option", font=("Comic Sans MS", 50, 'bold'), fg='pink')
+        choice_lbl.place(x=140, y=0)
 
-        sleep_label = Label(self, text="How many hours did you sleep last night?", font=("Arial Bold", 20))
-        sleep_label.pack(side=LEFT)
+        sleep_label = Label(self, text="How many hours did you sleep last night?", font=("Comic Sans MS", 30, 'bold'), fg='yellow')
+        sleep_label.place(x=0, y=100)
 
-        redbutton = Button(self, text="0-3 hours", fg="red")
+        redbutton = Button(self, text="0-3 hours", fg="orange", padx=10, pady=20, font=("Comic Sans MS", 20), bg='yellow')
         redbutton.pack(side=LEFT)
 
-        greenbutton = Button(self, text="3-5 hours", fg="green")
+        greenbutton = Button(self, text="3-5 hours", fg="orange", padx=10, pady=20, font=("Comic Sans MS", 20), bg='yellow')
         greenbutton.pack(side=LEFT)
 
-        bluebutton = Button(self, text="6-8 hours", fg="blue")
+        bluebutton = Button(self, text="6-8 hours", fg="orange", padx=10, pady=20, font=("Comic Sans MS", 20), bg='yellow')
         bluebutton.pack(side=LEFT)
 
-        purpbutton = Button(self, text="9-11 hours", fg="purple")
+        purpbutton = Button(self, text="9-11 hours", fg="orange", padx=10, pady=20, font=("Comic Sans MS", 20), bg='yellow')
         purpbutton.pack(side=LEFT)
 
-        blackbutton = Button(self, text="11+ hours", fg="black")
+        blackbutton = Button(self, text="11+ hours", fg="orange", padx=10, pady=20, font=("Comic Sans MS", 20), bg='yellow')
         blackbutton.pack(side=LEFT)
 
 #Page 5 with plots
 class Page5(Page):
      def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        graph_lab = Label(self, text="Plots", font=("Arial Bold", 20))
+        graph_lab = Label(self, text="Plots",  font=("Comic Sans MS", 50, 'bold'), fg='pink')
         graph_lab.pack(pady=10, padx=10)
 
 #NLP prompting user for input
