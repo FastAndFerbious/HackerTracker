@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter as tk
+import matplotlib
 from tkcalendar import Calendar
 
 '''def homeScreen():
@@ -39,6 +40,7 @@ class Page2(Page):
                  headersbackground="black", normalbackground="black", foreground='white',
                  normalforeground='white', headersforeground='white', font=("Comic Sans MS", 20))
         cal.place(relx=.5, rely=.5, anchor="c")
+        self.calendar = cal
 
         #create spins to add date
         #month = Label(self, text="Month")
@@ -60,64 +62,162 @@ class Page2(Page):
 class Page3(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs, bg="black")                            #copy these 3 lines to make a new class
+        self.date = ""
         #make checkbutton for multiselect
         lbl = Label(self, text="Select desired categories", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         lbl.place(relx=.5, rely=.05, anchor="c")
-        sleep_state = BooleanVar()
-        sleep = Checkbutton(self, text="Sleep", var=sleep_state, font=("Comic Sans MS", 20), bg="black", fg='white', highlightbackground ="SpringGreen2")
+
+        self.sleep_state = IntVar()
+        sleep = Checkbutton(self, text="Sleep", variable=self.sleep_state, font=("Comic Sans MS", 20), bg="black",
+                            fg='white', highlightbackground="SpringGreen2")
         sleep.place(relx=.28, rely=.2, anchor="c")
-        exercise = Checkbutton(self, text="Exercise", font=("Comic Sans MS", 20), bg="black", fg='white', highlightbackground ="SpringGreen2")
+
+        self.exercise_state = IntVar()
+        exercise = Checkbutton(self, text="Exercise", variable=self.exercise_state, font=("Comic Sans MS", 20), bg="black",
+                               fg='white', highlightbackground="SpringGreen2")
         exercise.place(relx=.28, rely=.3, anchor="c")
-        caffeine = Checkbutton(self, text="Caffeine", font=("Comic Sans MS", 20), bg="black", fg='white', highlightbackground ="SpringGreen2")
+
+        self.caffeine_state = IntVar()
+        caffeine = Checkbutton(self, text="Caffeine", variable=self.caffeine_state, font=("Comic Sans MS", 20), bg="black",
+                               fg='white', highlightbackground="SpringGreen2")
         caffeine.place(relx=.28, rely=.4, anchor="c")
-        mood = Checkbutton(self, text="Mood", font=("Comic Sans MS", 20), bg="black", fg='white', highlightbackground ="SpringGreen2")
+
+        self.mood_state = IntVar()
+        mood = Checkbutton(self, text="Mood", variable=self.mood_state, font=("Comic Sans MS", 20), bg="black", fg='white',
+                           highlightbackground="SpringGreen2")
         mood.place(relx=.28, rely=.5, anchor="c")
-        confidence = Checkbutton(self, text="Confidence", font=("Comic Sans MS", 20), bg="black", fg='white', highlightbackground ="SpringGreen2")
+
+        self.confidence_state = IntVar()
+        confidence = Checkbutton(self, text="Confidence", variable=self.confidence_state, font=("Comic Sans MS", 20),
+                                 bg="black", fg='white', highlightbackground="SpringGreen2")
         confidence.place(relx=.48, rely=.2, anchor="c")
-        screenTime = Checkbutton(self, text="Screen Time", font=("Comic Sans MS", 20), bg="black", fg='white', highlightbackground ="SpringGreen2")
+
+        self.screenTime_state = IntVar()
+        screenTime = Checkbutton(self, text="Screen Time", variable=self.screenTime_state, font=("Comic Sans MS", 20),
+                                 bg="black", fg='white', highlightbackground="SpringGreen2")
         screenTime.place(relx=.48, rely=.3, anchor="c")
-        socializing = Checkbutton(self, text="Socializing", font=("Comic Sans MS", 20), bg="black", fg='white', highlightbackground ="SpringGreen2")
+
+        self.socializing_state = IntVar()
+        socializing = Checkbutton(self, text="Socializing", variable=self.socializing_state, font=("Comic Sans MS", 20),
+                                  bg="black", fg='white', highlightbackground="SpringGreen2")
         socializing.place(relx=.48, rely=.4, anchor="c")
-        productivity = Checkbutton(self, text="Productivity", font=("Comic Sans MS", 20), bg="black", fg='white', highlightbackground ="SpringGreen2")
+
+        self.productivity_state = IntVar()
+        productivity = Checkbutton(self, text="Productivity", variable=self.productivity_state, font=("Comic Sans MS", 20),
+                                   bg="black", fg='white', highlightbackground="SpringGreen2")
         productivity.place(relx=.48, rely=.5, anchor="c")
-        hygiene = Checkbutton(self, text="Hygiene", font=("Comic Sans MS", 20), bg="black", fg='white', highlightbackground ="SpringGreen2")
+
+        self.hygiene_state = IntVar()
+        hygiene = Checkbutton(self, text="Hygiene", variable=self.hygiene_state, font=("Comic Sans MS", 20), bg="black",
+                              fg='white', highlightbackground="SpringGreen2")
         hygiene.place(relx=.68, rely=.2, anchor="c")
-        #https://likegeeks.com/python-gui-examples-tkinter-tutorial/
+
+        self.categories = []
+
+    def newCategories(self):
+        self.categories = [self.sleep_state.get(), self.exercise_state.get(), self.caffeine_state.get(), self.mood_state.get(),
+                      self.confidence_state.get(), self.screenTime_state.get(), self.socializing_state.get(), self.productivity_state.get(),
+                      self.hygiene_state.get()]
+
+    #https://likegeeks.com/python-gui-examples-tkinter-tutorial/
 
 #Fourth Page prompting journaling input
 class Page4(Page):
      def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs, bg="black")
-        choice_lbl = Label(self, text="Select Best Option", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
-        choice_lbl.place(relx=.5, rely=.05, anchor="c")
+        self.date = ""
+        self.categories = []
+        # choice_lbl = Label(self, text="Select Best Option", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
+        # choice_lbl.place(relx=.5, rely=.05, anchor="c")
 
-        sleep_label = Label(self, text="How many hours did you sleep last night?", font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
-        sleep_label.place(relx=.5, rely=.25, anchor="c")
+        # sleep
+        sleep_label = Label(self, text="How many hours did you sleep last night?", font=("Comic Sans MS", 30, 'bold'),
+                            bg="black", fg='white')
+        # sleep_label.grid(row=0, column=0)
+        sleepMenu = OptionMenu(self, StringVar(self), "0-3 hours", "3-5 hours", "6-8 hours", "9-11 hours", "11+ hours")
+        # sleepMenu.grid(row=0, column=1)
 
-        redbutton = Button(self, text="0-3 hours", fg="white", padx=10, pady=20, font=("Comic Sans MS", 20), bg='red')
-        #redbutton.pack(side=LEFT)
-        redbutton.place(relx=.25, rely=.5, anchor="c")
+        # exercise
+        exercise_label = Label(self, text="How many hours did you exercise today?", font=("Comic Sans MS", 30, 'bold'),
+                               bg="black", fg='white')
+        # exercise_label.grid(row=1, column=0)
+        exerciseMenu = OptionMenu(self, StringVar(self), "0-3 hours", "3-5 hours", "6-8 hours", "9-11 hours",
+                                  "11+ hours")
+        # exerciseMenu.grid(row=1, column=1)
 
-        orangeredbutton = Button(self, text="3-5 hours", fg="white", padx=10, pady=20, font=("Comic Sans MS", 20), bg='orange red')
-        #greenbutton.pack(side=LEFT)
-        orangeredbutton.place(relx=.37, rely=.5, anchor="c")
+        # caffeine
+        caffeine_label = Label(self, text="How much caffeine did you have today?", font=("Comic Sans MS", 30, 'bold'),
+                               bg="black", fg='white')
+        # caffeine_label.grid(row=2, column=0)
+        caffeineMenu = OptionMenu(self, StringVar(self), "0-100 mg", "101-200 mg", "201-300 mg", "301-400 mg",
+                                  "400+ mg")
+        # caffeineMenu.grid(row=2, column=1)
 
-        orangebutton = Button(self, text="6-8 hours", fg="white", padx=10, pady=20, font=("Comic Sans MS", 20), bg='orange')
-        #bluebutton.pack(side=LEFT)
-        orangebutton.place(relx=.49, rely=.5, anchor="c")
+        # mood
+        mood_label = Label(self, text="How would you describe your mood today?", font=("Comic Sans MS", 30, 'bold'),
+                           bg="black", fg='white')
+        # mood_label.grid(row=3, column=0)
+        moodMenu = OptionMenu(self, StringVar(self), "Sad/Mad", "Tired", "Neutral", "Content", "Happy")
+        # moodMenu.grid(row=3, column=1)
 
-        yellowbutton = Button(self, text="9-11 hours", fg="white", padx=10, pady=20, font=("Comic Sans MS", 20), bg='yellow')
-        #purpbutton.pack(side=LEFT)
-        yellowbutton.place(relx=.618, rely=.5, anchor="c")
+        # Confidence
+        con_label = Label(self, text="How would you describe your confidence today, 5 being most confident?",
+                          font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
+        # con_label.grid(row=4, column=0)
+        conMenu = OptionMenu(self, StringVar(self), "1", "2", "3", "4", "5")
+        # conMenu.grid(row=4, column=1)
 
-        greenbutton = Button(self, text="11+ hours", fg="white", padx=10, pady=20, font=("Comic Sans MS", 20), bg='green')
-        #blackbutton.pack(side=LEFT)
-        greenbutton.place(relx=.749, rely=.5, anchor="c")
+        # screen time
+        screen_label = Label(self, text="How many hours of screen time did you have today?",
+                             font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
+        # screen_label.grid(row=5, column=0)
+        screenMenu = OptionMenu(self, StringVar(self), "0-3", "3-6", "6-9", "9-11", "11+")
+        # screenMenu.grid(row=5, column=1)
+
+        # socializing
+        social_label = Label(self, text="How many hours did you spend socializing today?",
+                             font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
+        # social_label.grid(row=6, column=0)
+        socialMenu = OptionMenu(self, StringVar(self), "0-3", "3-6", "6-9", "9-11", "11+")
+        # socialMenu.grid(row=6, column=1)
+
+        # productivity
+        prod_label = Label(self, text="How would you describe your productivity today, 5 being most productive?",
+                           font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
+        # prod_label.grid(row=7, column=0)
+        prodMenu = OptionMenu(self, StringVar(self), "1", "2", "3", "4", "5")
+        # prodMenu.grid(row=7, column=1)
+
+        # hygiene
+        hy_label = Label(self, text="How would you rate your hygeine today, 5 being best?",
+                         font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
+        # hy_label.grid(row=8, column=0)
+        hyMenu = OptionMenu(self, StringVar(self), "1", "2", "3", "4", "5")
+        # hyMenu.grid(row=8, column=1)
+
+        self.labelList = [sleep_label, exercise_label, caffeine_label, mood_label, con_label, screen_label, social_label, prod_label, hy_label]
+        self.menuList = [sleepMenu, exerciseMenu, caffeineMenu, moodMenu, conMenu, screenMenu, socialMenu, prodMenu, hyMenu]
+
+     def updatedCategories(self):
+        iterr = 0
+        counter = 0
+        for i in self.categories:
+            if i == 1:
+                self.labelList[iterr].grid(row=counter, column=0)
+                self.menuList[iterr].grid(row=counter, column=1)
+                counter += 1
+            iterr += 1
+
+     def destroyGrid(self):
+         for label in self.grid_slaves():
+             label.grid_forget()
 
 #Page 5 with plots
 class Page5(Page):
      def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs, bg="black")
+        self.date = ""
+        self.categories = []
         graph_lab = Label(self, text="Plots",  font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         graph_lab.place(relx=.5, rely=.05, anchor="c")
 
@@ -125,6 +225,8 @@ class Page5(Page):
 class Page6(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs, bg="black")
+        self.date = ""
+        self.categories = []
         graph_lab = Label(self, text="How are you feeling today:", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         graph_lab.place(relx=.5, rely=.05, anchor="c")
         E1 = Entry(self)
@@ -183,6 +285,19 @@ class MainView(tk.Frame):
     def goNext(self, index):
         if index < len(screens)-1:
             global num
+            if num == 1:
+                screens[num + 1].date = screens[num].calendar.get_date()
+            elif num == 2:
+                screens[num + 1].date = screens[num].date
+                screens[num].newCategories()
+                screens[num + 1].categories = screens[num].categories
+                print(screens[num + 1].categories)
+                screens[num + 1].updatedCategories()
+            elif num >= 2:
+                screens[num + 1].date = screens[num].date
+                screens[num + 1].categories = screens[num].categories
+
+
             num += 1
             screens[index+1].show()
 
@@ -190,6 +305,8 @@ class MainView(tk.Frame):
     def goBack(self, index):
         if index > 0:
             global num
+            if num == 3:
+                screens[num].destroyGrid()
             num -= 1
             screens[index-1].show()
 
