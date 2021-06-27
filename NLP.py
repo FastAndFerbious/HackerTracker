@@ -11,8 +11,7 @@ nlp = spacy.load('en_core_web_sm')
 nlp.add_pipe("spacytextblob")
 
 
-def nlp(text):
-    print("Input one or two sentences")
+def nlpFunc(text):
     text = input()
 
     # Input single text?
