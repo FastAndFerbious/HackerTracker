@@ -127,7 +127,7 @@ class Page6(Page):
         graph_lab.pack(pady=10, padx=10)
         E1 = Entry(self, textvariable=texts)
         E1.pack(side=TOP)
-        blueButton = Button(self, text="Submit", fg="blue", command=lambda : NLP.nlp(texts))
+        blueButton = Button(self, text="Submit", fg="blue", command=lambda : NLP.nlp(texts.get()))
         blueButton.pack(side=TOP)
 
 class MainView(tk.Frame):
