@@ -27,7 +27,7 @@ def nlp(text):
     word3 = list(zip(*word))
 
     for index in range(0, len(word3)):
-        print(index, "-", *word3[index])
+        # print(index, "-", *word3[index])
 
         # Word Cloud
         synonyms = []
