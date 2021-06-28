@@ -4,10 +4,12 @@ import nltk
 import spacy
 from nltk.corpus import wordnet
 from spacytextblob.spacytextblob import SpacyTextBlob
+import en_core_web_sm
+
 
 nltk.download('wordnet')
 
-nlp = spacy.load('en_core_web_sm')
+nlp = en_core_web_sm.load()
 nlp.add_pipe("spacytextblob")
 
 
