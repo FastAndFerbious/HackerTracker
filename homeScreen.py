@@ -247,7 +247,7 @@ class Page6(Page):
         for label in self.grid_slaves():
              label.grid_forget()
         print("test")
-        self.nlpList = NLP.nlpFunc(word)
+        self.nlpList = nlp.nlpFunc(word)
         counter = 0
         for i in self.nlpList:
             graph_this = Label(self, text=self.nlpList[counter], justify='center', font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
