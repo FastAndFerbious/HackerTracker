@@ -4,7 +4,6 @@ import nltk
 import spacy
 from nltk.corpus import wordnet
 from spacytextblob.spacytextblob import SpacyTextBlob
-import en_core_web_sm
 
 
 nltk.download('wordnet')
