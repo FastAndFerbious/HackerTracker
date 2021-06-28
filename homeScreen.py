@@ -73,48 +73,48 @@ class Page3(Page):
         lbl.place(relx=.5, rely=.05, anchor="c")
 
         self.sleep_state = IntVar()
-        sleep = Checkbutton(self, text="Sleep", variable=self.sleep_state, font=("Comic Sans MS", 20), bg="black",
-                            fg='white', highlightbackground="SpringGreen2")
+        sleep = Checkbutton(self, text="Sleep", variable=self.sleep_state, font=("Comic Sans MS", 20), bg="SpringGreen2",
+                            fg='black', highlightbackground="SpringGreen2")
         sleep.place(relx=.28, rely=.2, anchor="c")
 
         self.exercise_state = IntVar()
-        exercise = Checkbutton(self, text="Exercise", variable=self.exercise_state, font=("Comic Sans MS", 20), bg="black",
-                               fg='white', highlightbackground="SpringGreen2")
+        exercise = Checkbutton(self, text="Exercise", variable=self.exercise_state, font=("Comic Sans MS", 20), bg="SpringGreen2",
+                               fg='black', highlightbackground="SpringGreen2")
         exercise.place(relx=.28, rely=.3, anchor="c")
 
         self.caffeine_state = IntVar()
-        caffeine = Checkbutton(self, text="Caffeine", variable=self.caffeine_state, font=("Comic Sans MS", 20), bg="black",
-                               fg='white', highlightbackground="SpringGreen2")
+        caffeine = Checkbutton(self, text="Caffeine", variable=self.caffeine_state, font=("Comic Sans MS", 20), bg="SpringGreen2",
+                               fg='black', highlightbackground="SpringGreen2")
         caffeine.place(relx=.28, rely=.4, anchor="c")
 
         self.mood_state = IntVar()
-        mood = Checkbutton(self, text="Mood", variable=self.mood_state, font=("Comic Sans MS", 20), bg="black", fg='white',
+        mood = Checkbutton(self, text="Mood", variable=self.mood_state, font=("Comic Sans MS", 20), bg="SpringGreen2", fg='black',
                            highlightbackground="SpringGreen2")
         mood.place(relx=.28, rely=.5, anchor="c")
 
         self.confidence_state = IntVar()
         confidence = Checkbutton(self, text="Confidence", variable=self.confidence_state, font=("Comic Sans MS", 20),
-                                 bg="black", fg='white', highlightbackground="SpringGreen2")
+                                 bg="SpringGreen2", fg='black', highlightbackground="SpringGreen2")
         confidence.place(relx=.48, rely=.2, anchor="c")
 
         self.screenTime_state = IntVar()
         screenTime = Checkbutton(self, text="Screen Time", variable=self.screenTime_state, font=("Comic Sans MS", 20),
-                                 bg="black", fg='white', highlightbackground="SpringGreen2")
+                                 bg="SpringGreen2", fg='black', highlightbackground="SpringGreen2")
         screenTime.place(relx=.48, rely=.3, anchor="c")
 
         self.socializing_state = IntVar()
         socializing = Checkbutton(self, text="Socializing", variable=self.socializing_state, font=("Comic Sans MS", 20),
-                                  bg="black", fg='white', highlightbackground="SpringGreen2")
+                                  bg="SpringGreen2", fg='black', highlightbackground="SpringGreen2")
         socializing.place(relx=.48, rely=.4, anchor="c")
 
         self.productivity_state = IntVar()
         productivity = Checkbutton(self, text="Productivity", variable=self.productivity_state, font=("Comic Sans MS", 20),
-                                   bg="black", fg='white', highlightbackground="SpringGreen2")
+                                   bg="SpringGreen2", fg='black', highlightbackground="SpringGreen2")
         productivity.place(relx=.48, rely=.5, anchor="c")
 
         self.hygiene_state = IntVar()
-        hygiene = Checkbutton(self, text="Hygiene", variable=self.hygiene_state, font=("Comic Sans MS", 20), bg="black",
-                              fg='white', highlightbackground="SpringGreen2")
+        hygiene = Checkbutton(self, text="Hygiene", variable=self.hygiene_state, font=("Comic Sans MS", 20), bg="SpringGreen2",
+                              fg='black', highlightbackground="SpringGreen2")
         hygiene.place(relx=.68, rely=.2, anchor="c")
 
         self.categories = []
@@ -137,7 +137,7 @@ class Page4(Page):
         # choice_lbl.place(relx=.5, rely=.05, anchor="c")
 
         # sleep
-        sleep_label = Label(self, text="How many hours did you sleep last night?", font=("Comic Sans MS", 30, 'bold'),
+        sleep_label = Label(self, text="How many hours did you sleep last night?", font=("Comic Sans MS", 20, 'bold'),
                             bg="black", fg='white')
         # sleep_label.grid(row=0, column=0)
         self.sleepMenuVar = StringVar()
@@ -145,7 +145,7 @@ class Page4(Page):
         # sleepMenu.grid(row=0, column=1)
 
         # exercise
-        exercise_label = Label(self, text="How many hours did you exercise today?", font=("Comic Sans MS", 30, 'bold'),
+        exercise_label = Label(self, text="How many hours did you exercise today?", font=("Comic Sans MS", 20, 'bold'),
                                bg="black", fg='white')
         # exercise_label.grid(row=1, column=0)
         self.exerciseMenuVar = StringVar()
@@ -154,7 +154,7 @@ class Page4(Page):
         # exerciseMenu.grid(row=1, column=1)
 
         # caffeine
-        caffeine_label = Label(self, text="How much caffeine did you have today?", font=("Comic Sans MS", 30, 'bold'),
+        caffeine_label = Label(self, text="How much caffeine did you have today?", font=("Comic Sans MS", 20, 'bold'),
                                bg="black", fg='white')
         # caffeine_label.grid(row=2, column=0)
         self.caffineMenuVar = StringVar()
@@ -163,7 +163,7 @@ class Page4(Page):
         # caffeineMenu.grid(row=2, column=1)
 
         # mood
-        mood_label = Label(self, text="How would you describe your mood today?", font=("Comic Sans MS", 30, 'bold'),
+        mood_label = Label(self, text="How would you describe your mood today?", font=("Comic Sans MS", 20, 'bold'),
                            bg="black", fg='white')
         # mood_label.grid(row=3, column=0)
         self.moodMenuVar = StringVar()
@@ -172,7 +172,7 @@ class Page4(Page):
 
         # Confidence
         con_label = Label(self, text="How would you describe your confidence today, 5 being most confident?",
-                          font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
+                          font=("Comic Sans MS", 20, 'bold'), bg="black", fg='white')
         # con_label.grid(row=4, column=0)
         self.conMenuVar = StringVar()
         conMenu = OptionMenu(self, self.conMenuVar, "1", "2", "3", "4", "5")
@@ -180,7 +180,7 @@ class Page4(Page):
 
         # screen time
         screen_label = Label(self, text="How many hours of screen time did you have today?",
-                             font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
+                             font=("Comic Sans MS", 20, 'bold'), bg="black", fg='white')
         # screen_label.grid(row=5, column=0)
         self.screenMenuVar = StringVar()
         screenMenu = OptionMenu(self, self.screenMenuVar, "0-3", "3-6", "6-9", "9-11", "11+")
@@ -188,7 +188,7 @@ class Page4(Page):
 
         # socializing
         social_label = Label(self, text="How many hours did you spend socializing today?",
-                             font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
+                             font=("Comic Sans MS", 20, 'bold'), bg="black", fg='white')
         # social_label.grid(row=6, column=0)
         self.socialMenuVar = StringVar()
         socialMenu = OptionMenu(self, self.socialMenuVar, "0-3", "3-6", "6-9", "9-11", "11+")
@@ -196,7 +196,7 @@ class Page4(Page):
 
         # productivity
         prod_label = Label(self, text="How would you describe your productivity today, 5 being most productive?",
-                           font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
+                           font=("Comic Sans MS", 20, 'bold'), bg="black", fg='white')
         # prod_label.grid(row=7, column=0)
         self.prodMenuVar = StringVar()
         prodMenu = OptionMenu(self, self.prodMenuVar, "1", "2", "3", "4", "5")
@@ -204,7 +204,7 @@ class Page4(Page):
 
         # hygiene
         hy_label = Label(self, text="How would you rate your hygeine today, 5 being best?",
-                         font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
+                         font=("Comic Sans MS", 20, 'bold'), bg="black", fg='white')
         # hy_label.grid(row=8, column=0)
         self.hyMenuVar = StringVar()
         hyMenu = OptionMenu(self, self.hyMenuVar, "1", "2", "3", "4", "5")
