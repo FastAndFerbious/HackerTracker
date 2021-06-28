@@ -223,6 +223,8 @@ class Page5(Page):
         self.categories = []
         graph_lab = Label(self, text="Plots",  font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         graph_lab.place(relx=.5, rely=.05, anchor="c")
+    
+
 
 #NLP prompting user for input
 class Page6(Page):
@@ -236,20 +238,22 @@ class Page6(Page):
         graph_lab.pack(pady=10, padx=10)
         E1 = Entry(self, textvariable=texts)
         E1.pack(side=TOP)
-        blueButton = Button(self, text="Submit", fg="blue", command=lambda : NLP.nlpFunc(str(E1.get())))
-        counter = 0
-        
-        self.nlpList = NLP.nlpFunc(str(E1.get()))
-        for i in self.nlpList:
-            iterr = 0
-            counter = 0
-            for i in self.categories:
-                if i == 1:
-                    self.nlpList[iterr].grid(row=counter, column=0)
-                counter += 1
-            iterr += 1
+        blueButton = Button(self, text="Submit", fg="blue", command=lambda : self.getNLPWords(str(E1.get())))
+    
         
         blueButton.pack(side=TOP)
+
+    def getNLPWords(self, word):
+        for label in self.grid_slaves():
+             label.grid_forget()
+        print("test")
+        self.nlpList = NLP.nlpFunc(word)
+        counter = 0
+        for i in self.nlpList:
+            graph_this = Label(self, text=self.nlpList[counter], justify='center', font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
+            graph_this.grid(row=counter, column=3) 
+            counter += 1
+         
 
         
 class MainView(tk.Frame):
