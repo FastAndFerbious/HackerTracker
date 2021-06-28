@@ -242,13 +242,11 @@ class Page6(Page):
         blueButton.grid(row=0, column=2)
 
     def getNLPWords(self, word):
-        testing = 0
         for label in self.grid_slaves():
-            if testing < 3:
-                continue
+            if len(self.grid_slaves()) < 4:
+                break
             else:
                 label.grid_forget()
-            testing += 1
         self.nlpList = nlp.nlpFunc(word)
         counter = 0
         for i in self.nlpList:
