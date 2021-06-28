@@ -1,6 +1,9 @@
 from tkinter import *
 import tkinter as tk
-import matplotlib
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from pandas import DataFrame
+import matplotlib.pyplot as plt
+
 from tkcalendar import Calendar
 import nlp
 
@@ -137,14 +140,16 @@ class Page4(Page):
         sleep_label = Label(self, text="How many hours did you sleep last night?", font=("Comic Sans MS", 30, 'bold'),
                             bg="black", fg='white')
         # sleep_label.grid(row=0, column=0)
-        sleepMenu = OptionMenu(self, StringVar(self), "0-3 hours", "3-5 hours", "6-8 hours", "9-11 hours", "11+ hours")
+        self.sleepMenuVar = StringVar()
+        sleepMenu = OptionMenu(self, self.sleepMenuVar, "0-3 hours", "3-5 hours", "6-8 hours", "9-11 hours", "11+ hours")
         # sleepMenu.grid(row=0, column=1)
 
         # exercise
         exercise_label = Label(self, text="How many hours did you exercise today?", font=("Comic Sans MS", 30, 'bold'),
                                bg="black", fg='white')
         # exercise_label.grid(row=1, column=0)
-        exerciseMenu = OptionMenu(self, StringVar(self), "0-3 hours", "3-5 hours", "6-8 hours", "9-11 hours",
+        self.exerciseMenuVar = StringVar()
+        exerciseMenu = OptionMenu(self, self.exerciseMenuVar, "0-3 hours", "3-5 hours", "6-8 hours", "9-11 hours",
                                   "11+ hours")
         # exerciseMenu.grid(row=1, column=1)
 
@@ -152,7 +157,8 @@ class Page4(Page):
         caffeine_label = Label(self, text="How much caffeine did you have today?", font=("Comic Sans MS", 30, 'bold'),
                                bg="black", fg='white')
         # caffeine_label.grid(row=2, column=0)
-        caffeineMenu = OptionMenu(self, StringVar(self), "0-100 mg", "101-200 mg", "201-300 mg", "301-400 mg",
+        self.caffineMenuVar = StringVar()
+        caffeineMenu = OptionMenu(self, self.caffineMenuVar, "0-100 mg", "101-200 mg", "201-300 mg", "301-400 mg",
                                   "400+ mg")
         # caffeineMenu.grid(row=2, column=1)
 
@@ -160,46 +166,56 @@ class Page4(Page):
         mood_label = Label(self, text="How would you describe your mood today?", font=("Comic Sans MS", 30, 'bold'),
                            bg="black", fg='white')
         # mood_label.grid(row=3, column=0)
-        moodMenu = OptionMenu(self, StringVar(self), "Sad/Mad", "Tired", "Neutral", "Content", "Happy")
+        self.moodMenuVar = StringVar()
+        moodMenu = OptionMenu(self, self.moodMenuVar, "Sad/Mad", "Tired", "Neutral", "Content", "Happy")
         # moodMenu.grid(row=3, column=1)
 
         # Confidence
         con_label = Label(self, text="How would you describe your confidence today, 5 being most confident?",
                           font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
         # con_label.grid(row=4, column=0)
-        conMenu = OptionMenu(self, StringVar(self), "1", "2", "3", "4", "5")
+        self.conMenuVar = StringVar()
+        conMenu = OptionMenu(self, self.conMenuVar, "1", "2", "3", "4", "5")
         # conMenu.grid(row=4, column=1)
 
         # screen time
         screen_label = Label(self, text="How many hours of screen time did you have today?",
                              font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
         # screen_label.grid(row=5, column=0)
-        screenMenu = OptionMenu(self, StringVar(self), "0-3", "3-6", "6-9", "9-11", "11+")
+        self.screenMenuVar = StringVar()
+        screenMenu = OptionMenu(self, self.screenMenuVar, "0-3", "3-6", "6-9", "9-11", "11+")
         # screenMenu.grid(row=5, column=1)
 
         # socializing
         social_label = Label(self, text="How many hours did you spend socializing today?",
                              font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
         # social_label.grid(row=6, column=0)
-        socialMenu = OptionMenu(self, StringVar(self), "0-3", "3-6", "6-9", "9-11", "11+")
+        self.socialMenuVar = StringVar()
+        socialMenu = OptionMenu(self, self.socialMenuVar, "0-3", "3-6", "6-9", "9-11", "11+")
         # socialMenu.grid(row=6, column=1)
 
         # productivity
         prod_label = Label(self, text="How would you describe your productivity today, 5 being most productive?",
                            font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
         # prod_label.grid(row=7, column=0)
-        prodMenu = OptionMenu(self, StringVar(self), "1", "2", "3", "4", "5")
+        self.prodMenuVar = StringVar()
+        prodMenu = OptionMenu(self, self.prodMenuVar, "1", "2", "3", "4", "5")
         # prodMenu.grid(row=7, column=1)
 
         # hygiene
         hy_label = Label(self, text="How would you rate your hygeine today, 5 being best?",
                          font=("Comic Sans MS", 30, 'bold'), bg="black", fg='white')
         # hy_label.grid(row=8, column=0)
-        hyMenu = OptionMenu(self, StringVar(self), "1", "2", "3", "4", "5")
+        self.hyMenuVar = StringVar()
+        hyMenu = OptionMenu(self, self.hyMenuVar, "1", "2", "3", "4", "5")
         # hyMenu.grid(row=8, column=1)
 
         self.labelList = [sleep_label, exercise_label, caffeine_label, mood_label, con_label, screen_label, social_label, prod_label, hy_label]
         self.menuList = [sleepMenu, exerciseMenu, caffeineMenu, moodMenu, conMenu, screenMenu, socialMenu, prodMenu, hyMenu]
+        self.surveyResults = [0,0,0,0,0,0,0,0,0]
+        self.outputs = []
+
+
 
      def updatedCategories(self):
         iterr = 0
@@ -215,15 +231,59 @@ class Page4(Page):
          for label in self.grid_slaves():
              label.grid_forget()
 
+     def transition(self):
+         self.outputs = [self.sleepMenuVar.get(), self.exerciseMenuVar.get(), self.caffineMenuVar.get(), self.moodMenuVar.get(), self.conMenuVar.get(),
+                        self.screenMenuVar.get(), self.socialMenuVar.get(), self.prodMenuVar.get(), self.hyMenuVar.get()]
+
+
 #Page 5 with plots
 class Page5(Page):
      def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs, bg="black")
         self.date = ""
         self.categories = []
+        self.outputs = []
+        self.inputs = [0,0,0,0,0,0,0,0,0]
         graph_lab = Label(self, text="Plots",  font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         graph_lab.place(relx=.5, rely=.05, anchor="c")
-    
+
+
+
+
+        # sample graph (maybe lol)
+     def graph(self):
+        data = {'Date': [self.date],
+                 'Hours of Sleep': [self.inputs[0]]
+                 }
+        df = DataFrame(data, columns=['Date', 'Hours of Sleep'])
+
+        figure = plt.Figure(figsize=(5, 4), dpi=80)
+        ax = figure.add_subplot(111)
+        line = FigureCanvasTkAgg(figure, self)
+        # line2.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
+        line.get_tk_widget().place(relx=0.15, rely=0.15)
+        df = df[['Date', 'Hours of Sleep']].groupby('Date').sum()
+        df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
+        ax.set_yticks([1, 2, 3, 4, 5])
+        ax.set_yticklabels(['0-3', '3-5', '6-8', '9-11', '11+'])
+        ax.set_xticks([1])
+        ax.set_xticklabels([self.date])
+        print(self.date)
+        ax.set_title('Sleep')
+        ax.set_ylabel('Hours')
+
+
+     def assignIndicies(self):
+        if self.outputs[0] == "0-3 hours":
+            self.inputs[0] = 1
+        elif self.outputs[0] == "3-5 hours":
+            self.inputs[0] = 2
+        elif self.outputs[0] == "6-8 hours":
+            self.inputs[0] = 3
+        elif self.outputs[0] == "9-11 hours":
+            self.inputs[0] = 4
+        elif self.outputs[0] == "11+ hours":
+            self.inputs[0] = 5
 
 
 #NLP prompting user for input
@@ -240,6 +300,7 @@ class Page6(Page):
         E1.grid(row=0, column=1)
         blueButton = Button(self, text="Submit", fg="blue", command=lambda : self.getNLPWords(str(E1.get())))
         blueButton.grid(row=0, column=2)
+        self.output = []
 
     def getNLPWords(self, word):
         testing = 0
@@ -316,7 +377,14 @@ class MainView(tk.Frame):
                 screens[num].newCategories()
                 screens[num + 1].categories = screens[num].categories
                 screens[num + 1].updatedCategories()
-            elif num >= 2:
+            elif num == 3:
+                screens[num + 1].date = screens[num].date
+                screens[num + 1].categories = screens[num].categories
+                screens[num].transition()
+                screens[num + 1].outputs = screens[num].outputs
+                screens[num + 1].assignIndicies()
+                screens[num + 1].graph()
+            elif num >= 4:
                 screens[num + 1].date = screens[num].date
                 screens[num + 1].categories = screens[num].categories
 
