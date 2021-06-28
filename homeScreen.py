@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter as tk
+from typing import KeysView
 from tkcalendar import Calendar
 
 import NLP
@@ -115,6 +116,12 @@ class Page5(Page):
         Page.__init__(self, *args, **kwargs)
         graph_lab = Label(self, text="Plots", font=("Arial Bold", 20))
         graph_lab.pack(pady=10, padx=10)
+    
+def clickMe(event):
+    [print("test")]    
+    window.configure(text = "Result: " + "test")
+
+
 
 #NLP prompting user for input
 class Page6(Page):
@@ -127,8 +134,9 @@ class Page6(Page):
         graph_lab.pack(pady=10, padx=10)
         E1 = Entry(self, textvariable=texts)
         E1.pack(side=TOP)
-        blueButton = Button(self, text="Submit", fg="blue", command=lambda : NLP.nlpFunc(str(texts)))
+        blueButton = Button(self, text="Submit", fg="blue", command=lambda : NLP.nlpFunc(str(E1.get())))
         blueButton.pack(side=TOP)
+
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):

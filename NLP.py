@@ -12,7 +12,6 @@ nlp.add_pipe("spacytextblob")
 
 
 def nlpFunc(text):
-    text = input()
 
     # Input single text?
     doc = nlp(text)
@@ -43,3 +42,4 @@ def nlpFunc(text):
     # for doc in docs:
         # print('Assessments:', doc._.assessments)
 
+    return synonyms
