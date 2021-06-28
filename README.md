@@ -4,6 +4,8 @@ Description: A desktop application intended to track habits of the user and prom
 motivate the user. 
 
 git clone https://github.com/FastAndFerbious/HackerTracker.git
+
 pip3 install hacker-tracker-reeyagup
-python -m spacy download en_core_web_sm
+
+python3 -m spacy download en_core_web_sm
 
