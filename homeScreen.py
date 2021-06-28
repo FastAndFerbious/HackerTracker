@@ -2,7 +2,7 @@ from tkinter import *
 import tkinter as tk
 import matplotlib
 from tkcalendar import Calendar
-import NLP
+import nlp
 
 '''def homeScreen():
     window = Tk()
