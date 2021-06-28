@@ -2,7 +2,7 @@ from tkinter import *
 import tkinter as tk
 import matplotlib
 from tkcalendar import Calendar
-import NLP
+import nlp
 
 '''def homeScreen():
     window = Tk()
@@ -235,23 +235,25 @@ class Page6(Page):
         texts = ""
         Page.__init__(self, *args, **kwargs, bg="black")
         graph_lab = Label(self, text="How are you feeling today:", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
-        graph_lab.pack(pady=10, padx=10)
+        graph_lab.grid(row=0, column=0)
         E1 = Entry(self, textvariable=texts)
-        E1.pack(side=TOP)
+        E1.grid(row=0, column=1)
         blueButton = Button(self, text="Submit", fg="blue", command=lambda : self.getNLPWords(str(E1.get())))
-    
-        
-        blueButton.pack(side=TOP)
+        blueButton.grid(row=0, column=2)
 
     def getNLPWords(self, word):
+        testing = 0
         for label in self.grid_slaves():
-             label.grid_forget()
-        print("test")
-        self.nlpList = NLP.nlpFunc(word)
+            if testing < 3:
+                continue
+            else:
+                label.grid_forget()
+            testing += 1
+        self.nlpList = nlp.nlpFunc(word)
         counter = 0
         for i in self.nlpList:
             graph_this = Label(self, text=self.nlpList[counter], justify='center', font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
-            graph_this.grid(row=counter, column=3) 
+            graph_this.grid(row=counter, column=3)
             counter += 1
          
 
@@ -313,7 +315,6 @@ class MainView(tk.Frame):
                 screens[num + 1].date = screens[num].date
                 screens[num].newCategories()
                 screens[num + 1].categories = screens[num].categories
-                print(screens[num + 1].categories)
                 screens[num + 1].updatedCategories()
             elif num >= 2:
                 screens[num + 1].date = screens[num].date

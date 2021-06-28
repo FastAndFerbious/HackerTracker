@@ -18,31 +18,34 @@ def nlpFunc(text):
 
     # print(doc._.assessments)
 
-    if(len(text)!=0):
+    if len(text) != 0:
         # list comphresion to get the emotional words
         words = list(zip(*doc._.assessments))
         # for index in range(0, len(words)):
-        word = list(zip(*words[0]))
-        word3 = list(zip(*word))
+        if(len(words) != 0):
+            word = list(zip(*words[0]))
+            print(word)
+            word3 = list(zip(*word))
 
-        for index in range(0, len(word3)):
-            # print(index, "-", *word3[index])
+            for index in range(0, len(word3)):
+                # print(index, "-", *word3[index])
 
-            # Word Cloud
-            for syn in wordnet.synsets(*word3[index]):
-                for lm in syn.lemmas():
-                    synonyms.append(lm.name())  # adding into synonyms
+                # Word Cloud
+                for syn in wordnet.synsets(*word3[index]):
+                    for lm in syn.lemmas():
+                        synonyms.append(lm.name())  # adding into synonyms
 
-            print(set(synonyms))
+                print(set(synonyms))
 
-        # Input multiple lines of text?
-        docs = list(nlp.pipe([text]))
-
+            # Input multiple lines of text?
+            docs = list(nlp.pipe([text]))
+        else:
+            synonyms = ["no synonyms found"]
 
         # for doc in docs:
             # print('Assessments:', doc._.assessments)
-
-
+    else:
+        synonyms = ["Please enter text"]
         
     return synonyms
 
