@@ -9,7 +9,7 @@ import en_core_web_sm
 
 nltk.download('wordnet')
 
-nlp = spacy.load('en_core_web_sm')
+nlp = en_core_web_sm.load()
 nlp.add_pipe("spacytextblob")
 
 
