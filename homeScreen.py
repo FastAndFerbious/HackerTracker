@@ -2,10 +2,7 @@ from tkinter import *
 import tkinter as tk
 import matplotlib
 from tkcalendar import Calendar
-import nltk
-import spacy
-from nltk.corpus import wordnet
-from spacytextblob.spacytextblob import SpacyTextBlob
+import NLP
 
 '''def homeScreen():
     window = Tk()
@@ -19,37 +16,6 @@ from spacytextblob.spacytextblob import SpacyTextBlob
     btn.place(relx=.5, rely=.65, anchor="c")
     window.mainloop()'''
 
-def nlp(text):
-    nlp = spacy.load('en_core_web_sm')
-    nlp.add_pipe("spacytextblob")
-    # Input single text?
-    doc = nlp(text)
-
-    # print(doc._.assessments)
-
-    # list comphresion to get the emotional words
-    words = list(zip(*doc._.assessments))
-    # for index in range(0, len(words)):
-    word = list(zip(*words[0]))
-    word3 = list(zip(*word))
-    for index in range(0, len(word3)):
-        #print(index, "-", *word3[index])
-
-        # Word Cloud
-        synonyms = []
-        for syn in wordnet.synsets(*word3[index]):
-            for lm in syn.lemmas():
-                synonyms.append(lm.name())  # adding into synonyms
-
-    
-    return synonyms
-
-    # Input multiple lines of text?
-    #docs = list(nlp.pipe([text]))
-
-
-    # for doc in docs:
-        # print('Assessments:', doc._.assessments)  
 
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -259,27 +225,19 @@ class Page5(Page):
 
 #NLP prompting user for input
 class Page6(Page):
-    def __init__(self, *args, **kwargs):
-        Page.__init__(self, *args, **kwargs, bg="black")
-        self.date = ""
-        self.categories = []
-        graph_lab = Label(self, text="How are you feeling today:", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
-        graph_lab.place(relx=.5, rely=.05, anchor="c")
-        UserFeelingAnswer = Entry(self)
-        UserFeelingAnswer.place(relx=.5, rely=.25, anchor="c")
-        text = str(UserFeelingAnswer.get())
-        
-        if(len(text) != 0):
-            blueButton = Button(self, text="Submit", bg="black", fg="white", 
-                                                       command=nlp("I had a good day"))
-        #text = input()
-        wordCloud = []
-        wordCloud = nlp(text)
-        print(set(wordCloud))
-        
-        
-        
 
+
+    def __init__(self, *args, **kwargs):
+        texts = ""
+        Page.__init__(self, *args, **kwargs, bg="black")
+        graph_lab = Label(self, text="How are you feeling today:", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
+        graph_lab.pack(pady=10, padx=10)
+        E1 = Entry(self, textvariable=texts)
+        E1.pack(side=TOP)
+        blueButton = Button(self, text="Submit", fg="blue", command=lambda : NLP.nlpFunc(str(E1.get())))
+        blueButton.pack(side=TOP)
+
+        
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
