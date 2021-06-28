@@ -2,6 +2,7 @@ from tkinter import *
 import tkinter as tk
 import matplotlib
 from tkcalendar import Calendar
+import NLP
 
 '''def homeScreen():
     window = Tk()
@@ -14,6 +15,7 @@ from tkcalendar import Calendar
     btn.grid(column=0, row=1)
     btn.place(relx=.5, rely=.65, anchor="c")
     window.mainloop()'''
+
 
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -127,6 +129,7 @@ class Page4(Page):
         Page.__init__(self, *args, **kwargs, bg="black")
         self.date = ""
         self.categories = []
+        
         # choice_lbl = Label(self, text="Select Best Option", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         # choice_lbl.place(relx=.5, rely=.05, anchor="c")
 
@@ -223,17 +226,32 @@ class Page5(Page):
 
 #NLP prompting user for input
 class Page6(Page):
-    def __init__(self, *args, **kwargs):
-        Page.__init__(self, *args, **kwargs, bg="black")
-        self.date = ""
-        self.categories = []
-        graph_lab = Label(self, text="How are you feeling today:", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
-        graph_lab.place(relx=.5, rely=.05, anchor="c")
-        E1 = Entry(self)
-        E1.place(relx=.5, rely=.25, anchor="c")
-        blueButton = Button(self, text="Submit", bg="black", fg="white")
-        blueButton.place(relx=.5, rely=.35, anchor="c")
 
+
+    def __init__(self, *args, **kwargs):
+        self.nlpList = []
+        texts = ""
+        Page.__init__(self, *args, **kwargs, bg="black")
+        graph_lab = Label(self, text="How are you feeling today:", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
+        graph_lab.pack(pady=10, padx=10)
+        E1 = Entry(self, textvariable=texts)
+        E1.pack(side=TOP)
+        blueButton = Button(self, text="Submit", fg="blue", command=lambda : NLP.nlpFunc(str(E1.get())))
+        counter = 0
+        
+        self.nlpList = NLP.nlpFunc(str(E1.get()))
+        for i in self.nlpList:
+            iterr = 0
+            counter = 0
+            for i in self.categories:
+                if i == 1:
+                    self.nlpList[iterr].grid(row=counter, column=0)
+                counter += 1
+            iterr += 1
+        
+        blueButton.pack(side=TOP)
+
+        
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
@@ -296,7 +314,6 @@ class MainView(tk.Frame):
             elif num >= 2:
                 screens[num + 1].date = screens[num].date
                 screens[num + 1].categories = screens[num].categories
-
 
             num += 1
             screens[index+1].show()
