@@ -33,7 +33,7 @@ def nlpFunc(text):
                 # Word Cloud
                 for syn in wordnet.synsets(*word3[index]):
                     for lm in syn.lemmas():
-                        synonyms.append(lm.name())  # adding into synonyms
+                        synonyms.append(lm.name())
 
                 print(set(synonyms))
 
