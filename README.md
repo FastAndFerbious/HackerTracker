@@ -22,7 +22,7 @@ pip3 install hacker-tracker-reeyagup
 
 python3 -m spacy download en_core_web_sm
 
-python3 src/hacker_tracker_application/homeScreen.py
+python3 src/hacker_tracker_application/homescreen.py
 
 
 --------------------------------------------------------------------------------------
