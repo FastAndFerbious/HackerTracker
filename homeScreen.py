@@ -244,6 +244,7 @@ class Page5(Page):
         self.categories = []
         self.outputs = []
         self.inputs = [0,0,0,0,0,0,0,0,0]
+        self.everything = [[], [], [], [], [], [], [], [], []]
         graph_lab = Label(self, text="Plots",  font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         graph_lab.place(relx=.5, rely=.05, anchor="c")
 
@@ -285,6 +286,82 @@ class Page5(Page):
         elif self.outputs[0] == "11+ hours":
             self.inputs[0] = 5
 
+        if self.outputs[1] == "0-3 hours":
+            self.inputs[1] = 1
+        elif self.outputs[1] == "3-5 hours":
+            self.inputs[1] = 2
+        elif self.outputs[1] == "6-8 hours":
+            self.inputs[1] = 3
+        elif self.outputs[1] == "9-11 hours":
+            self.inputs[1] = 4
+        elif self.outputs[1] == "11+ hours":
+            self.inputs[1] = 5
+
+        if self.outputs[2] == "0-100 mg":
+            self.inputs[2] = 1
+        elif self.outputs[2] == "101-200 mg":
+            self.inputs[2] = 2
+        elif self.outputs[2] == "201-300 mg":
+            self.inputs[2] = 3
+        elif self.outputs[2] == "301-400 mg":
+            self.inputs[2] = 4
+        elif self.outputs[2] == "400+ mg":
+            self.inputs[2] = 5
+
+        if self.outputs[3] == "Sad/Mad":
+            self.inputs[3] = 1
+        elif self.outputs[3] == "Tired":
+            self.inputs[3] = 2
+        elif self.outputs[3] == "Neutral":
+            self.inputs[3] = 3
+        elif self.outputs[3] == "Content":
+            self.inputs[3] = 4
+        elif self.outputs[3] == "Happy":
+            self.inputs[3] = 5
+
+        if self.outputs[4] == "1":
+            self.inputs[4] = 1
+        elif self.outputs[4] == "2":
+            self.inputs[4] = 2
+        elif self.outputs[4] == "3":
+            self.inputs[4] = 3
+        elif self.outputs[4] == "4":
+            self.inputs[4] = 4
+        elif self.outputs[4] == "5":
+            self.inputs[4] = 5
+
+        if self.outputs[5] == "0-3":
+            self.inputs[5] = 1
+        elif self.outputs[5] == "3-6":
+            self.inputs[5] = 2
+        elif self.outputs[5] == "6-9":
+            self.inputs[5] = 3
+        elif self.outputs[5] == "9-11":
+            self.inputs[5] = 4
+        elif self.outputs[5] == "11+":
+            self.inputs[5] = 5
+
+        if self.outputs[6] == "0-3":
+            self.inputs[6] = 1
+        elif self.outputs[6] == "3-6":
+            self.inputs[6] = 2
+        elif self.outputs[6] == "6-9":
+            self.inputs[6] = 3
+        elif self.outputs[6] == "9-11":
+            self.inputs[6] = 4
+        elif self.outputs[6] == "11+":
+            self.inputs[6] = 5
+
+
+     def savetoFile(self):
+         with open("saveData.txt", "w") as file:
+             file.write(str(self.date))
+             file.write(" ")
+             for i in self.inputs:
+                 file.write(str(i))
+                 file.write(" ")
+             file.write("\n")
+             file.close()
 
 #NLP prompting user for input
 class Page6(Page):
@@ -382,6 +459,7 @@ class MainView(tk.Frame):
                 screens[num + 1].outputs = screens[num].outputs
                 screens[num + 1].assignIndicies()
                 screens[num + 1].graph()
+                screens[num + 1].savetoFile()
             elif num >= 4:
                 screens[num + 1].date = screens[num].date
                 screens[num + 1].categories = screens[num].categories
