@@ -46,7 +46,7 @@ def nlpFunc(text):
                 # [1] prints the synonym(s) of the emotional word(s)
                 print(set(synonyms))
 
-            # Input multiple lines of text
+            # [2] Input multiple lines of text
             docs = list(nlp.pipe([text]))
         else:
             synonyms = ["no synonyms found"]
