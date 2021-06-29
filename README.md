@@ -18,17 +18,17 @@ git clone https://github.com/FastAndFerbious/HackerTracker.git
 everything below this line should be ran upon using the application for the first time
 ---------------------------------------------------------------------------------------
 
-pip3 install hacker-tracker-reeyagup
+pip install hacker-tracker-reeyagup
 
 python3 -m spacy download en_core_web_sm
 
-python3 src/hacker_tracker_application/homescreen.py
+hacker-tracker-application
 
 
 --------------------------------------------------------------------------------------
 after ran once, the only line needed to run the program is:
+hacker-tracker-application
 
-python3 homeScreen.py
 
 
 Packages used: 
