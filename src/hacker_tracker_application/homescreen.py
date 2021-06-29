@@ -244,6 +244,7 @@ class Page5(Page):
         self.categories = []
         self.outputs = []
         self.inputs = [0,0,0,0,0,0,0,0,0]
+        self.dates = []
         self.everything = [[], [], [], [], [], [], [], [], []]
         graph_lab = Label(self, text="Plots",  font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         graph_lab.place(relx=.5, rely=.05, anchor="c")
@@ -253,8 +254,8 @@ class Page5(Page):
 
         # sample graph (maybe lol)
      def graph(self):
-        data = {'Date': [self.date],
-                 'Hours of Sleep': [self.inputs[0]]
+        data = {'Date': self.dates,
+                 'Hours of Sleep': self.everything[0]
                  }
         df = DataFrame(data, columns=['Date', 'Hours of Sleep'])
 
@@ -267,8 +268,8 @@ class Page5(Page):
         df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
         ax.set_yticks([1, 2, 3, 4, 5])
         ax.set_yticklabels(['0-3', '3-5', '6-8', '9-11', '11+'])
-        ax.set_xticks([0])
-        ax.set_xticklabels([self.date])
+        ax.set_xticks(range(len(self.dates)))
+        ax.set_xticklabels(self.dates)
         ax.set_title('Sleep')
         ax.set_ylabel('Hours')
 
@@ -351,9 +352,30 @@ class Page5(Page):
         elif self.outputs[6] == "11+":
             self.inputs[6] = 5
 
+        if self.outputs[7] == "1":
+            self.inputs[7] = 1
+        elif self.outputs[7] == "2":
+            self.inputs[7] = 2
+        elif self.outputs[7] == "3":
+            self.inputs[7] = 3
+        elif self.outputs[7] == "4":
+            self.inputs[7] = 4
+        elif self.outputs[7] == "5":
+            self.inputs[7] = 5
+
+        if self.outputs[8] == "1":
+            self.inputs[8] = 1
+        elif self.outputs[8] == "2":
+            self.inputs[8] = 2
+        elif self.outputs[8] == "3":
+            self.inputs[8] = 3
+        elif self.outputs[8] == "4":
+            self.inputs[8] = 4
+        elif self.outputs[8] == "5":
+            self.inputs[8] = 5
 
      def savetoFile(self):
-         with open("saveData.txt", "w") as file:
+         with open("saveData.txt", "a") as file:
              file.write(str(self.date))
              file.write(" ")
              for i in self.inputs:
@@ -361,6 +383,34 @@ class Page5(Page):
                  file.write(" ")
              file.write("\n")
              file.close()
+
+     def grabFromFile(self):
+         with open("saveData.txt") as file:
+             i = 0
+             while(True):
+                 line = file.readline()
+                 if not line:
+                     break
+                 else:
+                     temp = ""
+                     j = 0
+                     for char in line:
+                         if char == " ":
+                             self.dates.append(temp)
+                             line = line[j+1:]
+                             break
+                         else:
+                             temp += char
+                             j += 1
+                     temporary = line.split(" ")
+                     temporary.pop()
+                     for x in range(9):
+                        self.everything[x].append(int(temporary[x]))
+                     #self.everything[i] = line.split(" ")
+                     #self.everything[i].pop()
+                     i += 1
+
+
 
 #NLP prompting user for input
 class Page6(Page):
@@ -457,8 +507,9 @@ class MainView(tk.Frame):
                 screens[num].transition()
                 screens[num + 1].outputs = screens[num].outputs
                 screens[num + 1].assignIndicies()
-                screens[num + 1].graph()
                 screens[num + 1].savetoFile()
+                screens[num + 1].grabFromFile()
+                screens[num + 1].graph()
             elif num >= 4:
                 screens[num + 1].date = screens[num].date
                 screens[num + 1].categories = screens[num].categories
