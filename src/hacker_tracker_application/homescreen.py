@@ -257,18 +257,17 @@ class Page5(Page):
                  }
         df = DataFrame(data, columns=['Date', 'Hours of Sleep'])
 
-        figure = plt.Figure(figsize=(5, 4), dpi=80)
+        figure = plt.Figure(figsize=(5, 5), dpi=100)
         ax = figure.add_subplot(111)
         line = FigureCanvasTkAgg(figure, self)
         # line2.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
-        line.get_tk_widget().place(relx=0.15, rely=0.15)
+        line.get_tk_widget().place(relx=0.3, rely=0.15)
         df = df[['Date', 'Hours of Sleep']].groupby('Date').sum()
         df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
         ax.set_yticks([1, 2, 3, 4, 5])
         ax.set_yticklabels(['0-3', '3-5', '6-8', '9-11', '11+'])
-        ax.set_xticks([1])
+        ax.set_xticks([0])
         ax.set_xticklabels([self.date])
-        print(self.date)
         ax.set_title('Sleep')
         ax.set_ylabel('Hours')
 
@@ -303,11 +302,13 @@ class Page6(Page):
         self.output = []
 
     def getNLPWords(self, word):
+        testing = 0
         for label in self.grid_slaves():
-            if len(self.grid_slaves()) < 4:
-                break
+            if testing < 3:
+                continue
             else:
                 label.grid_forget()
+            testing += 1
         self.nlpList = nlp.nlpFunc(word)
         counter = 0
         for i in self.nlpList:
