@@ -1,3 +1,4 @@
+
 # HackerTracker
 
 Description: A desktop application that functions as a journaling alternative for you to better understand how certain lifestyle choices and other triggers affect your wellbeing with four easy steps: select categories, choose best option for each category, note trends, and make lifestyle changes.
@@ -28,3 +29,14 @@ python3 homeScreen.py
 after ran once, the only line needed to run the program is:
 
 python3 homeScreen.py
+
+
+Packages used: 
+    tkinter,
+    tkcalendar,
+    nltk,
+    spacy,
+    wordnet,
+    spacytextblob,
+    pandas,
+    matplotlip
