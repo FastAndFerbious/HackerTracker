@@ -1,5 +1,5 @@
-# https://towardsdatascience.com/synonyms-and-antonyms-in-python-a865a5e14ce8
-# https://spacytextblob.netlify.app/docs/example
+# [1] https://towardsdatascience.com/synonyms-and-antonyms-in-python-a865a5e14ce8
+# [2] https://spacytextblob.netlify.app/docs/example
 import nltk
 import spacy
 from nltk.corpus import wordnet
@@ -14,10 +14,10 @@ nlp.add_pipe("spacytextblob")
 
 
 def nlpFunc(text):
-  
+   # [1]
     synonyms = []
     
-    # NLP analysis of single-line text
+    # [2] NLP analysis of single-line text
     doc = nlp(text)
 
     # print(doc._.assessments)
@@ -37,13 +37,13 @@ def nlpFunc(text):
                 # print(index, "-", *word3[index])
 
                 # Word Cloud
-                # looks for synonym(s) of the emotional word(s)
+                # [1] looks for synonym(s) of the emotional word(s)
                 for syn in wordnet.synsets(*word3[index]):
-                    # returns the synonyms of the emotional word(s)
+                    # [1] returns the synonyms of the emotional word(s)
                     for lm in syn.lemmas():
-                        # adds the snonym(s) to the synonyms list
+                        # [1] adds the snonym(s) to the synonyms list
                         synonyms.append(lm.name())
-                # prints the synonym(s) of the emotional word(s)
+                # [1] prints the synonym(s) of the emotional word(s)
                 print(set(synonyms))
 
             # Input multiple lines of text
