@@ -41,8 +41,9 @@ def nlpFunc(text):
                 for syn in wordnet.synsets(*word3[index]):
                     # [1] returns the synonyms of the emotional word(s)
                     for lm in syn.lemmas():
+                        if lm.name() not in synonyms:
                         # [1] adds the snonym(s) to the synonyms list
-                        synonyms.append(lm.name())
+                            synonyms.append(lm.name())
                 # [1] prints the synonym(s) of the emotional word(s)
                 print(set(synonyms))
 
