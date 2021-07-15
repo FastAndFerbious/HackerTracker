@@ -45,7 +45,6 @@ def nlpFunc(text):
         # for index in range(0, len(words)):
         if(len(words) != 0):
             word = list(zip(*words[0]))
-            print(word)
             word3 = list(zip(*word))
 
             for index in range(0, len(word3)):
@@ -57,6 +56,7 @@ def nlpFunc(text):
                     # [1] returns the synonyms of the emotional word(s)
                     for lm in syn.lemmas():
                         # [1] adds the snonym(s) to the synonyms list
+                        
                         synonyms.append(lm.name())
                 # [1] prints the synonym(s) of the emotional word(s)
                 print(set(synonyms))
@@ -64,7 +64,7 @@ def nlpFunc(text):
             # [2] Input multiple lines of text
             docs = list(nlp.pipe([text]))
         else:
-            synonyms = ["no synonyms found"]
+            synonyms = ["NLP Library Didn't Generate Words"]
 
         # for doc in docs:
             # print('Assessments:', doc._.assessments)
