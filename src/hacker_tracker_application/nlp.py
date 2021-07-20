@@ -40,10 +40,9 @@ def nlp_func(text):
                emotional_words[str(emotional_word)] = float(polarity)
 
     #[(word, polarity)]
-    print(emotional_words)
+    #print(emotional_words)
 
     for x in emotional_words:
-        print(x)
         if x in emotional_words:
             if(emotional_words[x] > 0):
                     pos_synonyms.append(str(x))
@@ -70,11 +69,20 @@ def nlp_func(text):
                 #returns the synonyms of the emotional word(s)
             
         
-    print("positive: ")           
-    print(set(pos_synonyms))
+        # print("positive: ")           
+        # print(set(pos_synonyms))
     
-    print("negative")
-    print(set(neg_synonyms))
+        # print("negative")
+        # print(set(neg_synonyms))
 
-    print("neutral: ")           
-    print(set(neu_synonyms))
+        # print("neutral: ")           
+        # print(set(neu_synonyms))
+
+        NLP_Words = []
+        NLP_Words.append(pos_synonyms)
+        NLP_Words.append(neg_synonyms)
+        NLP_Words.append(neu_synonyms)
+        print(NLP_Words)
+        return NLP_Words
+
+

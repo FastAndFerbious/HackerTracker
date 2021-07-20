@@ -25,53 +25,75 @@ def main():
 
 
 
-def nlpFunc(text):
-
+def nlp_func(text):
+    
     nlp = en_core_web_sm.load()
     nlp.add_pipe("spacytextblob")
-   # [1]
-    synonyms = []
-    
-    # [2] NLP analysis of single-line text
-    doc = nlp(text)
 
-    # print(doc._.assessments)
+    pos_synonyms = []
+    neu_synonyms = []
+    neg_synonyms = []
+
+    NLP_Words = []
+
+    # NLP analysis of single-line text
+    doc = list(nlp.pipe([text]))
+    emotional_words = dict()
 
     if len(text) != 0:
         
-        # list comphresion to get the emotional words
-        words = list(zip(*doc._.assessments))
+        for word in doc: # i am happy and sad
+            #captures the emotional words
+            for assessment in word._.assessments:
+                tmp = assessment[0]
+                polarity = assessment[1]
+                for emotional_word in tmp:
+                    emotional_words[str(emotional_word)] = float(polarity)
+
+        #[(word, polarity)]
+
+        for x in emotional_words:
+            if(emotional_words[x] > 0):
+                    pos_synonyms.append(str(x))
+                    for syn in wordnet.synsets(str(x)):
+                        for lm in syn.lemmas():
+                            #if lm.name()in pos_synonyms :
+                            # adds the snonym(s) to the synonyms list
+                            if lm.name() not in pos_synonyms:
+                                pos_synonyms.append(lm.name())
+            elif(emotional_words[x] < 0):
+                    neg_synonyms.append(str(x))
+                    for syn in wordnet.synsets(str(x)):
+                        for lm in syn.lemmas():
+                            #if lm.name()in pos_synonyms :
+                            # adds the snonym(s) to the synonyms list
+                            if lm.name() not in neg_synonyms:
+                                neg_synonyms.append(lm.name())
+                #returns the synonyms of the emotional word(s)
+            elif(emotional_words[x] == 0):
+                    neu_synonyms.append(str(x))
+                    for syn in wordnet.synsets(str(x)):
+                        for lm in syn.lemmas():
+                            #if lm.name()in pos_synonyms :
+                            # adds the snonym(s) to the synonyms list
+                            if lm.name() not in neu_synonyms:
+                                neu_synonyms.append(lm.name())
+
+        NLP_Words.append(pos_synonyms)
+        NLP_Words.append(neg_synonyms)
+        NLP_Words.append(neu_synonyms)
+
+        if not len(pos_synonyms) and not len(neg_synonyms):
+            msg = ["The natural language processor could not generate any words."]
+            return msg
         
-        # for index in range(0, len(words)):
-        if(len(words) != 0):
-            word = list(zip(*words[0]))
-            print(word)
-            word3 = list(zip(*word))
-
-            for index in range(0, len(word3)):
-                # print(index, "-", *word3[index])
-
-                # Word Cloud
-                # [1] looks for synonym(s) of the emotional word(s)
-                for syn in wordnet.synsets(*word3[index]):
-                    # [1] returns the synonyms of the emotional word(s)
-                    for lm in syn.lemmas():
-                        # [1] adds the snonym(s) to the synonyms list
-                        synonyms.append(lm.name())
-                # [1] prints the synonym(s) of the emotional word(s)
-                print(set(synonyms))
-
-            # [2] Input multiple lines of text
-            docs = list(nlp.pipe([text]))
-        else:
-            synonyms = ["no synonyms found"]
-
-        # for doc in docs:
-            # print('Assessments:', doc._.assessments)
+        return NLP_Words
+    
     else:
-        synonyms = ["Please enter text"]
+        msg = ["No text was detected"]
+        return msg
+            
         
-    return synonyms
 
 '''def homeScreen():
     window = Tk()
@@ -483,10 +505,10 @@ class Page6(Page):
 
 
     def __init__(self, *args, **kwargs):
-        self.nlpList = []
+        self.nlpList = [[]]
         texts = ""
         Page.__init__(self, *args, **kwargs, bg="black")
-        graph_lab = Label(self, text="How are you feeling today:", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
+        graph_lab = Label(self, text="How are you feeling today?", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         graph_lab.grid(row=0, column=0)
         E1 = Entry(self, textvariable=texts)
         E1.grid(row=0, column=1)
@@ -500,12 +522,13 @@ class Page6(Page):
                 break
             else:
                 label.grid_forget()
-        self.nlpList = nlpFunc(word)
+        self.nlpList = nlp_func(word)
         counter = 0
-        for i in self.nlpList:
+        for nlp_list in self.nlpList:
             graph_this = Label(self, text=self.nlpList[counter], justify='center', font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
             graph_this.grid(row=counter, column=3)
             counter += 1
+    
          
 
         
