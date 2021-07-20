@@ -11,6 +11,16 @@ nltk.download('wordnet')
 nlp = spacy.load("en_core_web_sm")
 nlp.add_pipe("spacytextblob")
 
+def polarity(text):
+
+    doc = nlp(text)
+
+    for span in doc.sents:
+
+        print(span.text, span._.polarity, span._.subjectivity)
+        
+        return span._.polarity
+
 
 def nlpFunc(text):
     pos_synonyms = []
