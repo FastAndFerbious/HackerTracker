@@ -92,20 +92,7 @@ def nlp_func(text):
     else:
         msg = ["No text was detected"]
         return msg
-            
-        
 
-'''def homeScreen():
-    window = Tk()
-    window.title("HackerTracker")
-    window.geometry('1000x400')
-    lbl = Label(window, text="Welcome to HackerTracker!", font=("Arial Bold", 50))
-    lbl.grid(column=0, row=0)
-    lbl.place(relx=.5, rely=.5, anchor="c")
-    btn = Button(window, text="Click here to start!", bg="blue")
-    btn.grid(column=0, row=1)
-    btn.place(relx=.5, rely=.65, anchor="c")
-    window.mainloop()'''
 
 
 class Page(tk.Frame):
@@ -120,6 +107,8 @@ class HomePage(Page):
         Page.__init__(self, *args, **kwargs, bg="black")
         lbl = Label(self, text="Welcome to HackerTracker!", font=("Comic Sans MS", 50, 'bold'), bg="black", fg="SpringGreen2")
         lbl.place(relx=0.5, rely=0.5, anchor ="c")
+        clear_btn = Button(self, text="Clear all data", bg="black", fg = "white")
+        clear_btn.place(relx=0.5, rely=0.85, anchor ="c")
 
 #Second page asking for date
 class Page2(Page):
