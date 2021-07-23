@@ -9,7 +9,7 @@ nltk.download('wordnet')
 nlp = spacy.load("en_core_web_sm")
 nlp.add_pipe("spacytextblob")
 
-def get_polarity(text):
+def get_polarity(text): #returms a number, if negative, then mood is sad, if positive it's happy
 
     doc = nlp(text)
 
