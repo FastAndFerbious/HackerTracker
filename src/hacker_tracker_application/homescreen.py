@@ -13,6 +13,21 @@ from nltk.corpus import wordnet
 from spacytextblob.spacytextblob import SpacyTextBlob
 import en_core_web_sm
 
+nltk.download('wordnet')
+
+nlp = spacy.load("en_core_web_sm")
+nlp.add_pipe("spacytextblob")
+
+def get_polarity(text): #returms a number, if negative, then mood is sad, if positive it's happy
+
+    doc = nlp(text)
+
+    for span in doc.sents:
+
+        print(span.text, span._.polarity, span._.subjectivity)
+
+        return span._.polarity
+
 
 window = Tk()
 
@@ -25,7 +40,7 @@ def main():
 
 
 
-def nlp_func(text):
+def nlp_func(text): #sentence
     
     nlp = en_core_web_sm.load()
     nlp.add_pipe("spacytextblob")
@@ -79,7 +94,7 @@ def nlp_func(text):
                             if lm.name() not in neu_synonyms:
                                 neu_synonyms.append(lm.name())
 
-        NLP_Words.append(pos_synonyms)
+        NLP_Words.append(pos_synonyms) #list of lists [pos words[], neg words[]
         NLP_Words.append(neg_synonyms)
         NLP_Words.append(neu_synonyms)
 
@@ -92,6 +107,19 @@ def nlp_func(text):
     else:
         msg = ["No text was detected"]
         return msg
+
+
+def get_polarity(text): #returms a number, if negative, then mood is sad, if positive it's happy
+
+    nlp = en_core_web_sm.load()
+    nlp.add_pipe("spacytextblob")
+    doc = nlp(text)
+
+    for span in doc.sents:
+
+        print(span.text, span._.polarity, span._.subjectivity)
+
+        return span._.polarity
 
 
 
@@ -513,10 +541,16 @@ class Page6(Page):
                 label.grid_forget()
         self.nlpList = nlp_func(word)
         counter = 0
-        for nlp_list in self.nlpList:
-            graph_this = Label(self, text=self.nlpList[counter], justify='center', font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
+        for nlp_list in self.nlpList: #self.nlpList = [pos[], neg[]] #self.nlpList[0] 
+            print(nlp_list)
+            if(counter == 0):
+                graph_this = Label(self, text=self.nlpList[counter], justify='center', font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
+            if(counter == 1):
+                graph_this = Label(self, text=self.nlpList[counter], justify='center', font=("Comic Sans MS", 20, 'bold'), bg="black", fg='red')
             graph_this.grid(row=counter, column=3)
+            print(counter)
             counter += 1
+           
     
          
 
