@@ -9,7 +9,7 @@ motivate the user.
 
 Package Name: hacker-tracker-reeyagup
 Link to repo: https://github.com/FastAndFerbious/HackerTracker.git
-Executable command: python3 homeScreen.py
+
 
 
 git clone https://github.com/FastAndFerbious/HackerTracker.git
@@ -22,7 +22,7 @@ pip install hacker-tracker-reeyagup
 
 python3 -m spacy download en_core_web_sm
 
-hacker-tracker-application
+Executable command: hacker-tracker-application
 
 
 --------------------------------------------------------------------------------------
