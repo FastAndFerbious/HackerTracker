@@ -332,13 +332,31 @@ class Page5(Page):
         self.everything = [[], [], [], [], [], [], [], [], []]
         graph_lab = Label(self, text="Plots", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         graph_lab.place(relx=.5, rely=.05, anchor="c")
-
+        self.cats = StringVar()
+        catsMenu = OptionMenu(self, self.cats, 'Sleep', 'Caffeine', 'Mood', 'Confidence', 'Screen Time', 'Socializing Time', 'Productivity', 'Hygeine')
+        catsMenu.grid(row=0, column=0)
         # sample graph (maybe lol)
 
     def graph(self):
-        self.genGraph(self, 'Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 0, 'Sleep')
-        self.genGraph(self, 'Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 1, 'Exercise')
-        self.genGraph(self, 'Date', 'Milligrams', '0-3', '3-5', '6-8', '9-11', '11+', 2, 'Caffeine')
+        # if self.inputs[0] != 0:
+        #     self.genGraph(self, 'Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 0, 'Sleep')
+        # if self.inputs[1] != 0:
+        #     self.genGraph(self, 'Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 1, 'Exercise')
+        # if self.inputs[2] != 0:
+        #     self.genGraph(self, 'Date', 'Milligrams', '0-3', '3-5', '6-8', '9-11', '11+', 2, 'Caffeine')
+        # if self.inputs[3] != 0:
+        #     self.genGraph(self, 'Date', 'Sad/Mad', 'Tired', 'Neutral', 'Content', 'Happy', 3, 'Mood')
+        # if self.inputs[4] != 0:
+        #     self.genGraph(self, 'Date', 'Rating', '1', '2', '3', '4', '5', 4, 'Confidence')
+        # if self.inputs[5] != 0:
+        #     self.genGraph(self, 'Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 5, 'Screen Time')
+        # if self.inputs[6] != 0:
+        #     self.genGraph(self, 'Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 6, 'Socializing Time')
+        # if self.inputs[7] != 0:
+        #     self.genGraph(self, 'Date', 'Rating', '1', '2', '3', '4', '5', 7, 'Productivity')
+        # if self.inputs[8] != 0:
+        #     self.genGraph(self, 'Date', 'Rating', '1', '2', '3', '4', '5', 8, 'Hygeine')
+
 
 
         data = {'Date': self.dates,
@@ -361,7 +379,6 @@ class Page5(Page):
         ax.set_ylabel('Hours')
 
     def genGraph(self, x_axis, y_axis, fir, sec, thi, four, fif, num, cat):
-
         data = {x_axis: self.x_axis,
                 y_axis: self.everything[num]
                 }
@@ -379,7 +396,7 @@ class Page5(Page):
         ax.set_xticks(range(len(self.x_axis)))
         ax.set_xticklabels(self.x_axis)
         ax.set_title(cat)
-        ax.set_ylabel(y-axis)
+        ax.set_ylabel(y_axis)
 
     def assignIndicies(self):
         if self.outputs[0] == "0-3 hours":
