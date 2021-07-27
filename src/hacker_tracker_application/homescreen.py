@@ -135,8 +135,14 @@ class HomePage(Page):
         Page.__init__(self, *args, **kwargs, bg="black")
         lbl = Label(self, text="Welcome to HackerTracker!", font=("Comic Sans MS", 50, 'bold'), bg="black", fg="SpringGreen2")
         lbl.place(relx=0.5, rely=0.5, anchor ="c")
-        clear_btn = Button(self, text="Clear all data", bg="black", fg = "white")
+        clear_btn = Button(self, text="Clear all data", bg="black", fg = "white", command=lambda x=None: self.clear())
         clear_btn.place(relx=0.5, rely=0.85, anchor ="c")
+
+    def clear(self):
+         with open("saveData.txt", "w") as file:
+             file.truncate()
+             file.close()
+
 
 #Second page asking for date
 class Page2(Page):
@@ -357,6 +363,8 @@ class Page5(Page):
         line.get_tk_widget().place(relx=0.3, rely=0.15)
         df = df[[x_axis, y_axis]].groupby(x_axis).sum()
         df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
+        print(len(self.dates))
+        print(len(self.everything[num]))
         ax.set_yticks([1, 2, 3, 4, 5])
         ax.set_yticklabels([fir, sec, thi, four, fif])
         ax.set_xticks(range(len(self.dates)))
@@ -372,7 +380,7 @@ class Page5(Page):
             self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 1, 'Exercise')
         if self.cats.get() == 'Caffeine':
             self.genGraph('Date', 'Milligrams', '0-3', '3-5', '6-8', '9-11', '11+', 2, 'Caffeine')
-        if self.cats.get() == 'Moof':
+        if self.cats.get() == 'Mood':
             self.genGraph('Date', 'Sad/Mad', 'Tired', 'Neutral', 'Content', 'Happy', 3, 'Mood')
         if self.cats.get() == 'Confidence':
             self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 4, 'Confidence')
