@@ -3,7 +3,9 @@ import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from pandas import DataFrame
 import matplotlib.pyplot as plt
-
+import matplotlib.pyplot as pPlot
+import numpy as npy
+from PIL import Image
 from tkcalendar import Calendar
 # [1] https://towardsdatascience.com/synonyms-and-antonyms-in-python-a865a5e14ce8
 # [2] https://spacytextblob.netlify.app/docs/example
@@ -12,6 +14,22 @@ import spacy
 from nltk.corpus import wordnet
 from spacytextblob.spacytextblob import SpacyTextBlob
 import en_core_web_sm
+import re
+
+nltk.download('wordnet')
+
+nlp = spacy.load("en_core_web_sm")
+nlp.add_pipe("spacytextblob")
+
+def get_polarity(text): #returms a number, if negative, then mood is sad, if positive it's happy
+
+    doc = nlp(text)
+
+    for span in doc.sents:
+
+        print(span.text, span._.polarity, span._.subjectivity)
+
+        return span._.polarity
 
 nltk.download('wordnet')
 
@@ -108,7 +126,6 @@ def nlp_func(text): #sentence
         msg = ["No text was detected"]
         return msg
 
-
 def get_polarity(text): #returms a number, if negative, then mood is sad, if positive it's happy
 
     nlp = en_core_web_sm.load()
@@ -116,13 +133,10 @@ def get_polarity(text): #returms a number, if negative, then mood is sad, if pos
     doc = nlp(text)
 
     for span in doc.sents:
-
         print(span.text, span._.polarity, span._.subjectivity)
 
         return span._.polarity
-
-
-
+            
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
@@ -569,8 +583,6 @@ class Page5(Page):
                      #self.everything[i].pop()
                      i += 1
 
-
-
 #NLP prompting user for input
 class Page6(Page):
 
@@ -588,6 +600,10 @@ class Page6(Page):
         self.output = []
 
     def getNLPWords(self, word):
+        regex = re.compile('[^a-zA-Z]')
+        #First parameter is the replacement, second parameter is your input strin
+        word = regex.sub(' ', word)
+        print(word)
         for label in self.grid_slaves():
             if len(self.grid_slaves()) < 4:
                 break
@@ -596,7 +612,7 @@ class Page6(Page):
         self.nlpList = nlp_func(word)
         counter = 0
         for nlp_list in self.nlpList: #self.nlpList = [pos[], neg[]] #self.nlpList[0] 
-            print(nlp_list)
+
             if(counter == 0):
                 graph_this = Label(self, text=self.nlpList[counter], justify='center', font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
             if(counter == 1):
@@ -604,9 +620,6 @@ class Page6(Page):
             graph_this.grid(row=counter, column=3)
             print(counter)
             counter += 1
-           
-    
-         
 
         
 class MainView(tk.Frame):
