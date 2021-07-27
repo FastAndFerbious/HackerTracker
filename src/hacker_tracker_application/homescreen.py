@@ -532,7 +532,7 @@ class Page6(Page):
     def getNLPWords(self, word):
         regex = re.compile('[^a-zA-Z]')
         #First parameter is the replacement, second parameter is your input strin
-        word = regex.sub('', word)
+        word = regex.sub(' ', word)
         print(word)
         for label in self.grid_slaves():
             if len(self.grid_slaves()) < 4:
