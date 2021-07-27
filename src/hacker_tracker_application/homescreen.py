@@ -31,6 +31,21 @@ def get_polarity(text): #returms a number, if negative, then mood is sad, if pos
 
         return span._.polarity
 
+nltk.download('wordnet')
+
+nlp = spacy.load("en_core_web_sm")
+nlp.add_pipe("spacytextblob")
+
+def get_polarity(text): #returms a number, if negative, then mood is sad, if positive it's happy
+
+    doc = nlp(text)
+
+    for span in doc.sents:
+
+        print(span.text, span._.polarity, span._.subjectivity)
+
+        return span._.polarity
+
 
 window = Tk()
 
@@ -118,7 +133,6 @@ def get_polarity(text): #returms a number, if negative, then mood is sad, if pos
     doc = nlp(text)
 
     for span in doc.sents:
-
         print(span.text, span._.polarity, span._.subjectivity)
 
         return span._.polarity
@@ -135,6 +149,14 @@ class HomePage(Page):
         Page.__init__(self, *args, **kwargs, bg="black")
         lbl = Label(self, text="Welcome to HackerTracker!", font=("Comic Sans MS", 50, 'bold'), bg="black", fg="SpringGreen2")
         lbl.place(relx=0.5, rely=0.5, anchor ="c")
+        clear_btn = Button(self, text="Clear all data", bg="black", fg = "white", command=lambda x=None: self.clear())
+        clear_btn.place(relx=0.5, rely=0.85, anchor ="c")
+
+    def clear(self):
+         with open("saveData.txt", "w") as file:
+             file.truncate()
+             file.close()
+
 
 #Second page asking for date
 class Page2(Page):
@@ -341,7 +363,51 @@ class Page4(Page):
 
 #Page 5 with plots
 class Page5(Page):
-     def __init__(self, *args, **kwargs):
+
+    def genGraph(self, x_axis, y_axis, fir, sec, thi, four, fif, num, cat):
+        data = {x_axis: self.dates,
+                y_axis: self.everything[num]
+                }
+        df = DataFrame(data, columns=[x_axis, y_axis])
+
+        figure = plt.Figure(figsize=(5, 5), dpi=100)
+        ax = figure.add_subplot(111)
+        line = FigureCanvasTkAgg(figure, self)
+        # line2.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
+        line.get_tk_widget().place(relx=0.3, rely=0.15)
+        df = df[[x_axis, y_axis]].groupby(x_axis).sum()
+        df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
+        print(len(self.dates))
+        print(len(self.everything[num]))
+        ax.set_yticks([1, 2, 3, 4, 5])
+        ax.set_yticklabels([fir, sec, thi, four, fif])
+        ax.set_xticks(range(len(self.dates)))
+        ax.set_xticklabels(self.dates)
+        ax.set_title(cat)
+        ax.set_ylabel(y_axis)
+
+    def graph(self):
+        print(self.cats.get())
+        if self.cats.get() == 'Sleep':
+            self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 0, 'Sleep')
+        if self.cats.get() == 'Exercise':
+            self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 1, 'Exercise')
+        if self.cats.get() == 'Caffeine':
+            self.genGraph('Date', 'Milligrams', '0-3', '3-5', '6-8', '9-11', '11+', 2, 'Caffeine')
+        if self.cats.get() == 'Mood':
+            self.genGraph('Date', 'Sad/Mad', 'Tired', 'Neutral', 'Content', 'Happy', 3, 'Mood')
+        if self.cats.get() == 'Confidence':
+            self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 4, 'Confidence')
+        if self.cats.get() == 'Screen Time':
+            self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 5, 'Screen Time')
+        if self.cats.get() == 'Socializing Time':
+            self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 6, 'Socializing Time')
+        if self.cats.get() == 'Productivity':
+            self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 7, 'Productivity')
+        if self.cats.get() == 'Hygeine':
+            self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 8, 'Hygeine')
+
+    def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs, bg="black")
         self.date = ""
         self.categories = []
@@ -351,33 +417,37 @@ class Page5(Page):
         self.everything = [[], [], [], [], [], [], [], [], []]
         graph_lab = Label(self, text="Plots",  font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         graph_lab.place(relx=.5, rely=.05, anchor="c")
+        self.cats = StringVar()
+        self.catsMenu = OptionMenu(self, self.cats, 'Sleep', 'Caffeine', 'Mood', 'Confidence', 'Screen Time',
+                                   'Socializing Time', 'Productivity', 'Hygeine', command=lambda x=None: self.graph())
+        self.catsMenu.grid(row=0, column=0)
+
+    def destroyGrid(self):
+        for label in self.grid_slaves():
+            label.grid_forget()
+
+    # def graph(self):
+    #     data = {'Date': self.dates,
+    #              'Hours of Sleep': self.everything[0]
+    #              }
+    #     df = DataFrame(data, columns=['Date', 'Hours of Sleep'])
+    #
+    #     figure = plt.Figure(figsize=(5, 5), dpi=100)
+    #     ax = figure.add_subplot(111)
+    #     line = FigureCanvasTkAgg(figure, self)
+    #     # line2.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
+    #     line.get_tk_widget().place(relx=0.3, rely=0.15)
+    #     df = df[['Date', 'Hours of Sleep']].groupby('Date').sum()
+    #     df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
+    #     ax.set_yticks([1, 2, 3, 4, 5])
+    #     ax.set_yticklabels(['0-3', '3-5', '6-8', '9-11', '11+'])
+    #     ax.set_xticks(range(len(self.dates)))
+    #     ax.set_xticklabels(self.dates)
+    #     ax.set_title('Sleep')
+    #     ax.set_ylabel('Hours')
 
 
-
-
-        # sample graph (maybe lol)
-     def graph(self):
-        data = {'Date': self.dates,
-                 'Hours of Sleep': self.everything[0]
-                 }
-        df = DataFrame(data, columns=['Date', 'Hours of Sleep'])
-
-        figure = plt.Figure(figsize=(5, 5), dpi=100)
-        ax = figure.add_subplot(111)
-        line = FigureCanvasTkAgg(figure, self)
-        # line2.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
-        line.get_tk_widget().place(relx=0.3, rely=0.15)
-        df = df[['Date', 'Hours of Sleep']].groupby('Date').sum()
-        df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
-        ax.set_yticks([1, 2, 3, 4, 5])
-        ax.set_yticklabels(['0-3', '3-5', '6-8', '9-11', '11+'])
-        ax.set_xticks(range(len(self.dates)))
-        ax.set_xticklabels(self.dates)
-        ax.set_title('Sleep')
-        ax.set_ylabel('Hours')
-
-
-     def assignIndicies(self):
+    def assignIndicies(self):
         if self.outputs[0] == "0-3 hours":
             self.inputs[0] = 1
         elif self.outputs[0] == "3-5 hours":
@@ -477,7 +547,7 @@ class Page5(Page):
         elif self.outputs[8] == "5":
             self.inputs[8] = 5
 
-     def savetoFile(self):
+    def savetoFile(self):
          with open("saveData.txt", "a") as file:
              file.write(str(self.date))
              file.write(" ")
@@ -487,7 +557,7 @@ class Page5(Page):
              file.write("\n")
              file.close()
 
-     def grabFromFile(self):
+    def grabFromFile(self):
          with open("saveData.txt") as file:
              i = 0
              while(True):
@@ -542,6 +612,7 @@ class Page6(Page):
         self.nlpList = nlp_func(word)
         counter = 0
         for nlp_list in self.nlpList: #self.nlpList = [pos[], neg[]] #self.nlpList[0] 
+
             if(counter == 0):
                 graph_this = Label(self, text=self.nlpList[counter], justify='center', font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
             if(counter == 1):
@@ -549,8 +620,6 @@ class Page6(Page):
             graph_this.grid(row=counter, column=3)
             print(counter)
             counter += 1
-     
-
 
         
 class MainView(tk.Frame):
@@ -619,7 +688,7 @@ class MainView(tk.Frame):
                 screens[num + 1].assignIndicies()
                 screens[num + 1].savetoFile()
                 screens[num + 1].grabFromFile()
-                screens[num + 1].graph()
+                #screens[num + 1].graph()
             elif num >= 4:
                 screens[num + 1].date = screens[num].date
                 screens[num + 1].categories = screens[num].categories
