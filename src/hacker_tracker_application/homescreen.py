@@ -237,7 +237,7 @@ class Page4(Page):
         Page.__init__(self, *args, **kwargs, bg="black")
         self.date = ""
         self.categories = []
-        
+
         # choice_lbl = Label(self, text="Select Best Option", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         # choice_lbl.place(relx=.5, rely=.05, anchor="c")
 
@@ -320,7 +320,14 @@ class Page4(Page):
         self.surveyResults = [0,0,0,0,0,0,0,0,0]
         self.outputs = []
 
-
+     def popup(self):
+         popup = tk.Tk()
+         popup.wm_title("Warning!")
+         label = Label(popup, text="Please select at least 1 category.")
+         label.pack(side="top", fill="x", pady=10)
+         b1 = Button(popup, text="Okay", command=popup.destroy)
+         b1.pack()
+         popup.mainloop()
 
      def updatedCategories(self):
         iterr = 0
@@ -331,6 +338,8 @@ class Page4(Page):
                 self.menuList[iterr].grid(row=counter, column=1)
                 counter += 1
             iterr += 1
+        if counter == 0:
+            self.popup()
 
      def destroyGrid(self):
          for label in self.grid_slaves():
@@ -628,6 +637,7 @@ class MainView(tk.Frame):
 
             num += 1
             screens[index+1].show()
+
 
     #move to prev screen
     def goBack(self, index):
