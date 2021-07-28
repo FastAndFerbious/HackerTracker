@@ -3,7 +3,9 @@ import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from pandas import DataFrame
 import matplotlib.pyplot as plt
-
+import matplotlib.pyplot as pPlot
+import numpy as npy
+from PIL import Image
 from tkcalendar import Calendar
 # [1] https://towardsdatascience.com/synonyms-and-antonyms-in-python-a865a5e14ce8
 # [2] https://spacytextblob.netlify.app/docs/example
@@ -12,6 +14,39 @@ import spacy
 from nltk.corpus import wordnet
 from spacytextblob.spacytextblob import SpacyTextBlob
 import en_core_web_sm
+import re
+
+nltk.download('wordnet')
+
+nlp = spacy.load("en_core_web_sm")
+nlp.add_pipe("spacytextblob")
+
+
+def get_polarity(text):  # returms a number, if negative, then mood is sad, if positive it's happy
+
+    doc = nlp(text)
+
+    for span in doc.sents:
+        print(span.text, span._.polarity, span._.subjectivity)
+
+        return span._.polarity
+
+
+nltk.download('wordnet')
+
+nlp = spacy.load("en_core_web_sm")
+nlp.add_pipe("spacytextblob")
+
+
+def get_polarity(text):  # returms a number, if negative, then mood is sad, if positive it's happy
+
+    doc = nlp(text)
+
+    for span in doc.sents:
+        print(span.text, span._.polarity, span._.subjectivity)
+
+        return span._.polarity
+
 
 window = Tk()
 
@@ -24,65 +59,85 @@ def main():
     window.mainloop()
 
 
-def nlpFunc(text):
+def nlp_func(text):  # sentence
+
     nlp = en_core_web_sm.load()
     nlp.add_pipe("spacytextblob")
-    # [1]
-    synonyms = []
 
-    # [2] NLP analysis of single-line text
-    doc = nlp(text)
+    pos_synonyms = []
+    neu_synonyms = []
+    neg_synonyms = []
 
-    # print(doc._.assessments)
+    NLP_Words = []
+
+    # NLP analysis of single-line text
+    doc = list(nlp.pipe([text]))
+    emotional_words = dict()
 
     if len(text) != 0:
 
-        # list comphresion to get the emotional words
-        words = list(zip(*doc._.assessments))
+        for word in doc:  # i am happy and sad
+            # captures the emotional words
+            for assessment in word._.assessments:
+                tmp = assessment[0]
+                polarity = assessment[1]
+                for emotional_word in tmp:
+                    emotional_words[str(emotional_word)] = float(polarity)
 
-        # for index in range(0, len(words)):
-        if (len(words) != 0):
-            word = list(zip(*words[0]))
-            print(word)
-            word3 = list(zip(*word))
+        # [(word, polarity)]
 
-            for index in range(0, len(word3)):
-                # print(index, "-", *word3[index])
-
-                # Word Cloud
-                # [1] looks for synonym(s) of the emotional word(s)
-                for syn in wordnet.synsets(*word3[index]):
-                    # [1] returns the synonyms of the emotional word(s)
+        for x in emotional_words:
+            if (emotional_words[x] > 0):
+                pos_synonyms.append(str(x))
+                for syn in wordnet.synsets(str(x)):
                     for lm in syn.lemmas():
-                        # [1] adds the snonym(s) to the synonyms list
-                        synonyms.append(lm.name())
-                # [1] prints the synonym(s) of the emotional word(s)
-                print(set(synonyms))
+                        # if lm.name()in pos_synonyms :
+                        # adds the snonym(s) to the synonyms list
+                        if lm.name() not in pos_synonyms:
+                            pos_synonyms.append(lm.name())
+            elif (emotional_words[x] < 0):
+                neg_synonyms.append(str(x))
+                for syn in wordnet.synsets(str(x)):
+                    for lm in syn.lemmas():
+                        # if lm.name()in pos_synonyms :
+                        # adds the snonym(s) to the synonyms list
+                        if lm.name() not in neg_synonyms:
+                            neg_synonyms.append(lm.name())
+            # returns the synonyms of the emotional word(s)
+            elif (emotional_words[x] == 0):
+                neu_synonyms.append(str(x))
+                for syn in wordnet.synsets(str(x)):
+                    for lm in syn.lemmas():
+                        # if lm.name()in pos_synonyms :
+                        # adds the snonym(s) to the synonyms list
+                        if lm.name() not in neu_synonyms:
+                            neu_synonyms.append(lm.name())
 
-            # [2] Input multiple lines of text
-            docs = list(nlp.pipe([text]))
-        else:
-            synonyms = ["no synonyms found"]
+        NLP_Words.append(pos_synonyms)  # list of lists [pos words[], neg words[]
+        NLP_Words.append(neg_synonyms)
+        NLP_Words.append(neu_synonyms)
 
-        # for doc in docs:
-        # print('Assessments:', doc._.assessments)
+        if not len(pos_synonyms) and not len(neg_synonyms):
+            msg = ["The natural language processor could not generate any words."]
+            return msg
+
+        return NLP_Words
+
     else:
-        synonyms = ["Please enter text"]
+        msg = ["No text was detected"]
+        return msg
 
-    return synonyms
 
+def get_polarity(text):  # returms a number, if negative, then mood is sad, if positive it's happy
 
-'''def homeScreen():
-    window = Tk()
-    window.title("HackerTracker")
-    window.geometry('1000x400')
-    lbl = Label(window, text="Welcome to HackerTracker!", font=("Arial Bold", 50))
-    lbl.grid(column=0, row=0)
-    lbl.place(relx=.5, rely=.5, anchor="c")
-    btn = Button(window, text="Click here to start!", bg="blue")
-    btn.grid(column=0, row=1)
-    btn.place(relx=.5, rely=.65, anchor="c")
-    window.mainloop()'''
+    nlp = en_core_web_sm.load()
+    nlp.add_pipe("spacytextblob")
+    doc = nlp(text)
+
+    for span in doc.sents:
+        print(span.text, span._.polarity, span._.subjectivity)
+
+        return span._.polarity
 
 
 class Page(tk.Frame):
@@ -100,6 +155,13 @@ class HomePage(Page):
         lbl = Label(self, text="Welcome to HackerTracker!", font=("Comic Sans MS", 50, 'bold'), bg="black",
                     fg="SpringGreen2")
         lbl.place(relx=0.5, rely=0.5, anchor="c")
+        clear_btn = Button(self, text="Clear all data", bg="black", fg="white", command=lambda x=None: self.clear())
+        clear_btn.place(relx=0.5, rely=0.85, anchor="c")
+
+    def clear(self):
+        with open("saveData.txt", "w") as file:
+            file.truncate()
+            file.close()
 
 
 # Second page asking for date
@@ -322,78 +384,6 @@ class Page4(Page):
 
 # Page 5 with plots
 class Page5(Page):
-    def __init__(self, *args, **kwargs):
-        Page.__init__(self, *args, **kwargs, bg="black")
-        self.date = ""
-        self.categories = []
-        self.outputs = []
-        self.inputs = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-        self.dates = []
-        self.everything = [[], [], [], [], [], [], [], [], []]
-        graph_lab = Label(self, text="Plots", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
-        graph_lab.place(relx=.5, rely=.05, anchor="c")
-        self.cats = StringVar()
-        self.catsMenu = OptionMenu(self, self.cats, 'Sleep', 'Caffeine', 'Mood', 'Confidence', 'Screen Time', 'Socializing Time', 'Productivity', 'Hygeine', command=lambda: self.graph())
-        self.catsMenu.grid(row=0, column=0)
-
-    def graph(self):
-        if self.inputs[0] != 0:
-            self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 0, 'Sleep')
-        if self.inputs[1] != 0:
-            self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 1, 'Exercise')
-        if self.inputs[2] != 0:
-            self.genGraph('Date', 'Milligrams', '0-3', '3-5', '6-8', '9-11', '11+', 2, 'Caffeine')
-        if self.inputs[3] != 0:
-            self.genGraph('Date', 'Sad/Mad', 'Tired', 'Neutral', 'Content', 'Happy', 3, 'Mood')
-        if self.inputs[4] != 0:
-            self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 4, 'Confidence')
-        if self.inputs[5] != 0:
-            self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 5, 'Screen Time')
-        if self.inputs[6] != 0:
-            self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 6, 'Socializing Time')
-        if self.inputs[7] != 0:
-            self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 7, 'Productivity')
-        if self.inputs[8] != 0:
-            self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 8, 'Hygeine')
-
-    def graph2(self):
-        if self.catsMenu.get() == 'Sleep':
-            self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 0, 'Sleep')
-        if self.catsMenu.get() == 'Exercise':
-            self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 1, 'Exercise')
-        if self.catsMenu.get() == 'Caffeine':
-            self.genGraph('Date', 'Milligrams', '0-3', '3-5', '6-8', '9-11', '11+', 2, 'Caffeine')
-        if self.catsMenu.get() == 'Moof':
-            self.genGraph('Date', 'Sad/Mad', 'Tired', 'Neutral', 'Content', 'Happy', 3, 'Mood')
-        if self.catsMenu.get() == 'Confidence':
-            self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 4, 'Confidence')
-        if self.catsMenu.get() == 'Screen Time':
-            self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 5, 'Screen Time')
-        if self.catsMenu.get() == 'Socializing Time':
-            self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 6, 'Socializing Time')
-        if self.catsMenu.get() == 'Productivity':
-            self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 7, 'Productivity')
-        if self.catsMenu.get() == 'Hygeine':
-            self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 8, 'Hygeine')
-
-        # data = {'Date': self.dates,
-        #         'Hours of Sleep': self.everything[0]
-        #         }
-        # df = DataFrame(data, columns=['Date', 'Hours of Sleep'])
-        #
-        # figure = plt.Figure(figsize=(5, 5), dpi=100)
-        # ax = figure.add_subplot(111)
-        # line = FigureCanvasTkAgg(figure, self)
-        # # line2.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
-        # line.get_tk_widget().place(relx=0.3, rely=0.15)
-        # df = df[['Date', 'Hours of Sleep']].groupby('Date').sum()
-        # df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
-        # ax.set_yticks([1, 2, 3, 4, 5])
-        # ax.set_yticklabels(['0-3', '3-5', '6-8', '9-11', '11+'])
-        # ax.set_xticks(range(len(self.dates)))
-        # ax.set_xticklabels(self.dates)
-        # ax.set_title('Sleep')
-        # ax.set_ylabel('Hours')
 
     def genGraph(self, x_axis, y_axis, fir, sec, thi, four, fif, num, cat):
         data = {x_axis: self.dates,
@@ -408,12 +398,74 @@ class Page5(Page):
         line.get_tk_widget().place(relx=0.3, rely=0.15)
         df = df[[x_axis, y_axis]].groupby(x_axis).sum()
         df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
+        print(len(self.dates))
+        print(len(self.everything[num]))
         ax.set_yticks([1, 2, 3, 4, 5])
         ax.set_yticklabels([fir, sec, thi, four, fif])
         ax.set_xticks(range(len(self.dates)))
         ax.set_xticklabels(self.dates)
         ax.set_title(cat)
         ax.set_ylabel(y_axis)
+
+    def graph(self):
+        print(self.cats.get())
+        if self.cats.get() == 'Sleep':
+            self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 0, 'Sleep')
+        if self.cats.get() == 'Exercise':
+            self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 1, 'Exercise')
+        if self.cats.get() == 'Caffeine':
+            self.genGraph('Date', 'Milligrams', "0-100 mg", "101-200 mg", "201-300 mg", "301-400 mg", "400+ mg", 2, 'Caffeine')
+        if self.cats.get() == 'Mood':
+            self.genGraph('Date', 'Sad/Mad', 'Tired', 'Neutral', 'Content', 'Happy', 3, 'Mood')
+        if self.cats.get() == 'Confidence':
+            self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 4, 'Confidence')
+        if self.cats.get() == 'Screen Time':
+            self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 5, 'Screen Time')
+        if self.cats.get() == 'Socializing Time':
+            self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 6, 'Socializing Time')
+        if self.cats.get() == 'Productivity':
+            self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 7, 'Productivity')
+        if self.cats.get() == 'Hygeine':
+            self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 8, 'Hygeine')
+
+    def __init__(self, *args, **kwargs):
+        Page.__init__(self, *args, **kwargs, bg="black")
+        self.date = ""
+        self.categories = []
+        self.outputs = []
+        self.inputs = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.dates = []
+        self.everything = [[], [], [], [], [], [], [], [], []]
+        graph_lab = Label(self, text="Plots", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
+        graph_lab.place(relx=.5, rely=.05, anchor="c")
+        self.cats = StringVar()
+        self.catsMenu = OptionMenu(self, self.cats, 'Sleep', 'Caffeine', 'Exercise', 'Mood', 'Confidence', 'Screen Time',
+                                   'Socializing Time', 'Productivity', 'Hygeine', command=lambda x=None: self.graph())
+        self.catsMenu.grid(row=0, column=0)
+
+    def destroyGrid(self):
+        for label in self.grid_slaves():
+            label.grid_forget()
+
+    # def graph(self):
+    #     data = {'Date': self.dates,
+    #              'Hours of Sleep': self.everything[0]
+    #              }
+    #     df = DataFrame(data, columns=['Date', 'Hours of Sleep'])
+    #
+    #     figure = plt.Figure(figsize=(5, 5), dpi=100)
+    #     ax = figure.add_subplot(111)
+    #     line = FigureCanvasTkAgg(figure, self)
+    #     # line2.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
+    #     line.get_tk_widget().place(relx=0.3, rely=0.15)
+    #     df = df[['Date', 'Hours of Sleep']].groupby('Date').sum()
+    #     df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
+    #     ax.set_yticks([1, 2, 3, 4, 5])
+    #     ax.set_yticklabels(['0-3', '3-5', '6-8', '9-11', '11+'])
+    #     ax.set_xticks(range(len(self.dates)))
+    #     ax.set_xticklabels(self.dates)
+    #     ax.set_title('Sleep')
+    #     ax.set_ylabel('Hours')
 
     def assignIndicies(self):
         if self.outputs[0] == "0-3 hours":
@@ -516,18 +568,18 @@ class Page5(Page):
             self.inputs[8] = 5
 
     def savetoFile(self):
-        with open("saveData.txt", "a") as file:
-            file.write(str(self.date))
-            file.write(" ")
-            for i in self.inputs:
-                file.write(str(i))
+        with open("saveData.txt", 'a') as file:
+            if self.date not in self.dates:
+                file.write(str(self.date))
                 file.write(" ")
-            file.write("\n")
+                for i in self.inputs:
+                    file.write(str(i))
+                    file.write(" ")
+                file.write("\n")
             file.close()
 
     def grabFromFile(self):
-        with open("saveData.txt") as file:
-            i = 0
+        with open("saveData.txt", 'r') as file:
             while (True):
                 line = file.readline()
                 if not line:
@@ -547,19 +599,16 @@ class Page5(Page):
                     temporary.pop()
                     for x in range(9):
                         self.everything[x].append(int(temporary[x]))
-                    # self.everything[i] = line.split(" ")
-                    # self.everything[i].pop()
-                    i += 1
 
 
 # NLP prompting user for input
 class Page6(Page):
 
     def __init__(self, *args, **kwargs):
-        self.nlpList = []
+        self.nlpList = [[]]
         texts = ""
         Page.__init__(self, *args, **kwargs, bg="black")
-        graph_lab = Label(self, text="How are you feeling today:", font=("Comic Sans MS", 40, 'bold'), bg="black",
+        graph_lab = Label(self, text="How are you feeling today?", font=("Comic Sans MS", 40, 'bold'), bg="black",
                           fg='SpringGreen2')
         graph_lab.grid(row=0, column=0)
         E1 = Entry(self, textvariable=texts)
@@ -569,17 +618,27 @@ class Page6(Page):
         self.output = []
 
     def getNLPWords(self, word):
+        regex = re.compile('[^a-zA-Z]')
+        # First parameter is the replacement, second parameter is your input strin
+        word = regex.sub(' ', word)
+        print(word)
         for label in self.grid_slaves():
             if len(self.grid_slaves()) < 4:
                 break
             else:
                 label.grid_forget()
-        self.nlpList = nlpFunc(word)
+        self.nlpList = nlp_func(word)
         counter = 0
-        for i in self.nlpList:
-            graph_this = Label(self, text=self.nlpList[counter], justify='center', font=("Comic Sans MS", 20, 'bold'),
-                               bg="black", fg='SpringGreen2')
+        for nlp_list in self.nlpList:  # self.nlpList = [pos[], neg[]] #self.nlpList[0]
+
+            if (counter == 0):
+                graph_this = Label(self, text=self.nlpList[counter], justify='center',
+                                   font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
+            if (counter == 1):
+                graph_this = Label(self, text=self.nlpList[counter], justify='center',
+                                   font=("Comic Sans MS", 20, 'bold'), bg="black", fg='red')
             graph_this.grid(row=counter, column=3)
+            print(counter)
             counter += 1
 
 
@@ -649,7 +708,7 @@ class MainView(tk.Frame):
                 screens[num + 1].assignIndicies()
                 screens[num + 1].savetoFile()
                 screens[num + 1].grabFromFile()
-                screens[num + 1].graph()
+                # screens[num + 1].graph()
             elif num >= 4:
                 screens[num + 1].date = screens[num].date
                 screens[num + 1].categories = screens[num].categories
