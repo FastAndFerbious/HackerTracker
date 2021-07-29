@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter as tk
+import time
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from pandas import DataFrame
 import matplotlib.pyplot as plt
@@ -7,6 +8,8 @@ import matplotlib.pyplot as pPlot
 import numpy as npy
 from PIL import Image
 from tkcalendar import Calendar
+import matplotlib.pyplot as plt
+import pandas as pd
 # [1] https://towardsdatascience.com/synonyms-and-antonyms-in-python-a865a5e14ce8
 # [2] https://spacytextblob.netlify.app/docs/example
 import nltk
@@ -16,10 +19,26 @@ from spacytextblob.spacytextblob import SpacyTextBlob
 import en_core_web_sm
 import re
 
+# from wordcloud import STOPWORDS, WordCloud
+
 nltk.download('wordnet')
 
 nlp = spacy.load("en_core_web_sm")
 nlp.add_pipe("spacytextblob")
+
+
+def word_cloud(text):
+    words = ""
+
+    for word in text:
+        words = words + str(word).replace("'", "")
+
+    wordcloud = WordCloud(height=400, background_color='white', stopwords=STOPWORDS).generate(words)
+
+    plt.figure()
+    plt.imshow(wordcloud)
+    plt.axis("off")
+    plt.show()
 
 
 def get_polarity(text):  # returms a number, if negative, then mood is sad, if positive it's happy
@@ -36,17 +55,6 @@ nltk.download('wordnet')
 
 nlp = spacy.load("en_core_web_sm")
 nlp.add_pipe("spacytextblob")
-
-
-def get_polarity(text):  # returms a number, if negative, then mood is sad, if positive it's happy
-
-    doc = nlp(text)
-
-    for span in doc.sents:
-        print(span.text, span._.polarity, span._.subjectivity)
-
-        return span._.polarity
-
 
 window = Tk()
 
@@ -61,8 +69,8 @@ def main():
 
 def nlp_func(text):  # sentence
 
-    nlp = en_core_web_sm.load()
-    nlp.add_pipe("spacytextblob")
+    # nlp = en_core_web_sm.load()
+    # nlp.add_pipe("spacytextblob")
 
     pos_synonyms = []
     neu_synonyms = []
@@ -120,24 +128,16 @@ def nlp_func(text):  # sentence
         if not len(pos_synonyms) and not len(neg_synonyms):
             msg = ["The natural language processor could not generate any words."]
             return msg
-
-        return NLP_Words
+        else:
+            word_cloud(NLP_Words)
+            #abc = NLP_Words
+            #print("global " + str(abc))
+            msg = ["Please exit the Word Cloud to continue!"]
+            return msg
 
     else:
         msg = ["No text was detected"]
         return msg
-
-
-def get_polarity(text):  # returms a number, if negative, then mood is sad, if positive it's happy
-
-    nlp = en_core_web_sm.load()
-    nlp.add_pipe("spacytextblob")
-    doc = nlp(text)
-
-    for span in doc.sents:
-        print(span.text, span._.polarity, span._.subjectivity)
-
-        return span._.polarity
 
 
 class Page(tk.Frame):
@@ -365,11 +365,19 @@ class Page4(Page):
         iterr = 0
         counter = 0
         for i in self.categories:
+            title = Label(self, text="Please answer the following questions",
+                          font=("Comic Sans MS", 30, 'bold'), bg="black", fg='SpringGreen2')
+            title.grid(row=0, column=0)
+
             if i == 1:
-                self.labelList[iterr].grid(row=counter, column=0)
-                self.menuList[iterr].grid(row=counter, column=1)
+                self.labelList[iterr].grid(row=counter + 1, column=0)
+                self.menuList[iterr].grid(row=counter + 1, column=1)
                 counter += 1
             iterr += 1
+        if counter == 0:
+            error_label = Label(self, text="Please go back and select at least one category!",
+                                font=("Comic Sans MS", 30, 'bold'), bg="black", fg='red')
+            error_label.grid(row=0, column=0)
 
     def destroyGrid(self):
         for label in self.grid_slaves():
@@ -409,30 +417,59 @@ class Page5(Page):
         if self.cats.get() == 'Sleep':
             if self.categories[0] == 1:
                 self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 0, 'Sleep')
+            else:
+                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='red')
+                error_label.place(relx=.5, rely=.5, anchor='c')
+
         if self.cats.get() == 'Exercise':
             if self.categories[1] == 1:
                 self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 1, 'Exercise')
+            else:
+                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='brown')
+                error_label.place(relx=.5, rely=.5, anchor='c')
         if self.cats.get() == 'Caffeine':
             if self.categories[2] == 1:
                 self.genGraph('Date', 'Milligrams', '0-3', '3-5', '6-8', '9-11', '11+', 2, 'Caffeine')
+            else:
+                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='grey')
+                error_label.place(relx=.5, rely=.5, anchor='c')
         if self.cats.get() == 'Mood':
             if self.categories[3] == 1:
-                self.genGraph('Date', 'Sad/Mad', 'Tired', 'Neutral', 'Content', 'Happy', 3, 'Mood')
+                self.genGraph('Date', 'Emotion', 'Sad/Mad', 'Tired', 'Neutral', 'Content', 'Happy', 3, 'Mood')
+            else:
+                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='pink')
+                error_label.place(relx=.5, rely=.5, anchor='c')
         if self.cats.get() == 'Confidence':
             if self.categories[4] == 1:
                 self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 4, 'Confidence')
+            else:
+                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='purple')
+                error_label.place(relx=.5, rely=.5, anchor='c')
         if self.cats.get() == 'Screen Time':
             if self.categories[5] == 1:
-                self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 5, 'Screen Time')
+                self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 6, 'Screen Time')
+            else:
+                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='blue')
+                error_label.place(relx=.5, rely=.5, anchor='c')
         if self.cats.get() == 'Socializing Time':
             if self.categories[6] == 1:
                 self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 6, 'Socializing Time')
+            else:
+                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='yellow')
+                error_label.place(relx=.5, rely=.5, anchor='c')
         if self.cats.get() == 'Productivity':
             if self.categories[7] == 1:
                 self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 7, 'Productivity')
+            else:
+                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='red')
+                error_label.place(relx=.5, rely=.5, anchor='c')
         if self.cats.get() == 'Hygeine':
             if self.categories[8] == 1:
                 self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 8, 'Hygeine')
+            else:
+                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='orange')
+                error_label.place(relx=.5, rely=.5, anchor='c')
+
 
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs, bg="black")
@@ -448,6 +485,8 @@ class Page5(Page):
         self.catsMenu = OptionMenu(self, self.cats, 'Sleep', 'Exercise', 'Caffeine', 'Mood', 'Confidence', 'Screen Time',
                                    'Socializing Time', 'Productivity', 'Hygeine', command=lambda x=None: self.graph())
         self.catsMenu.grid(row=0, column=0)
+        title = Label(self, text="Please choose category from dropdown menu to display plot.", font=("Comic Sans MS", 16, 'bold'), bg="black", fg='SpringGreen2')
+        title.place(relx=.5, rely=.5, anchor='c')
 
     def destroyGrid(self):
         for label in self.grid_slaves():
@@ -574,6 +613,17 @@ class Page5(Page):
             self.inputs[8] = 5
 
     def savetoFile(self):
+        i = 0
+        first = -1
+        second = -1
+        for char in self.date:
+            if char == "/":
+                if first != -1:
+                    second = i
+                    break
+                else:
+                    first = i
+            i += 1
         lines = ""
         with open("saveData.txt", "r") as file:
             lines = file.readlines()
@@ -581,13 +631,29 @@ class Page5(Page):
         with open("saveData.txt", "w") as file:
             repeat = False
             for line in lines:
+                j = 0
                 temp = ""
+                first_occurrence = -1
+                second_occurrence = -1
                 for char in line:
                     if char == " ":
                         break
+                    elif char == "/":
+                        if first_occurrence != -1:
+                            second_occurrence = j
+                        else:
+                            first_occurrence = j
+                        temp += char
                     else:
                         temp += char
-                if self.date == temp:
+                    j += 1
+                if not repeat and (
+                        self.date == temp or int(self.date[second + 1:]) < int(temp[second_occurrence + 1:]) or \
+                        (int(self.date[second + 1:]) == int(temp[second_occurrence + 1:]) and
+                         int(self.date[0:first]) < int(temp[0:first_occurrence])) or \
+                        (int(self.date[second + 1:]) == int(temp[second_occurrence + 1:]) and
+                         int(self.date[0:first]) == int(temp[0:first_occurrence]) and
+                         int(self.date[first + 1:second]) < int(temp[first_occurrence + 1:second_occurrence]))):
                     repeat = True
                     file.write(str(self.date))
                     file.write(" ")
@@ -595,6 +661,8 @@ class Page5(Page):
                         file.write(str(i))
                         file.write(" ")
                     file.write("\n")
+                    if self.date != temp:
+                        file.write(line)
                 else:
                     file.write(line)
             if not repeat:
@@ -645,36 +713,41 @@ class Page6(Page):
         Page.__init__(self, *args, **kwargs, bg="black")
         graph_lab = Label(self, text="How are you feeling today?", font=("Comic Sans MS", 40, 'bold'), bg="black",
                           fg='SpringGreen2')
-        graph_lab.grid(row=0, column=0)
+        graph_lab.grid(row=0, column=1, columnspan=3)
         E1 = Entry(self, textvariable=texts)
-        E1.grid(row=0, column=1)
+        E1.grid(row=2, column=1)
         blueButton = Button(self, text="Submit", fg="blue", command=lambda: self.getNLPWords(str(E1.get())))
-        blueButton.grid(row=0, column=2)
+        blueButton.grid(row=4, column=1)
+        spacer = Label(self, text="The natural language processor could not generate any words.", justify='center',
+                           font=("Comic Sans MS", 20, 'bold'), bg="black", fg='black')
+        spacer.grid(row=5, column=1)
         self.output = []
 
     def getNLPWords(self, word):
         regex = re.compile('[^a-zA-Z]')
         # First parameter is the replacement, second parameter is your input strin
         word = regex.sub(' ', word)
-        print(word)
+        # print(word)
+
         for label in self.grid_slaves():
-            if len(self.grid_slaves()) < 4:
+            if len(self.grid_slaves()) < 6:
                 break
             else:
                 label.grid_forget()
+
         self.nlpList = nlp_func(word)
-        counter = 0
+        print("nlp shit " + str(self.nlpList))
+
+
         for nlp_list in self.nlpList:  # self.nlpList = [pos[], neg[]] #self.nlpList[0]
 
-            if (counter == 0):
-                graph_this = Label(self, text=self.nlpList[counter], justify='center',
-                                   font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
-            if (counter == 1):
-                graph_this = Label(self, text=self.nlpList[counter], justify='center',
-                                   font=("Comic Sans MS", 20, 'bold'), bg="black", fg='red')
-            graph_this.grid(row=counter, column=3)
-            print(counter)
-            counter += 1
+            graph_this = Label(self, text=self.nlpList[0], justify='center',
+                                    font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
+            graph_this.grid(row=6, column=1)
+
+        # if self.nlpList ==["Please exit the Word Cloud to continue!"]:
+        #     print("asdfaf " + str(abc))
+        #     word_cloud(abc)
 
 
 class MainView(tk.Frame):
