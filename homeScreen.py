@@ -398,7 +398,7 @@ class Page5(Page):
         line.get_tk_widget().place(relx=0.3, rely=0.15)
         df = df[[x_axis, y_axis]].groupby(x_axis).sum()
         df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
-        print(len(self.dates))
+        print("length of dates: " + str(len(self.dates)))
         print(len(self.everything[num]))
         ax.set_yticks([1, 2, 3, 4, 5])
         ax.set_yticklabels([fir, sec, thi, four, fif])
@@ -568,8 +568,21 @@ class Page5(Page):
             self.inputs[8] = 5
 
     def savetoFile(self):
-        with open("saveData.txt", 'a') as file:
-            if self.date not in self.dates:
+        with open("saveData.txt", 'r+') as file:
+            has = self.check_if_string_in_file("saveData.txt", self.date)
+            print(has)
+            print(self.date)
+            if has == -1:
+                file.write(str(self.date))
+                file.write(" ")
+                for i in self.inputs:
+                    file.write(str(i))
+                    file.write(" ")
+                file.write("\n")
+            else:
+                # lines = file.readlines()
+                # del file[has]
+                # file.write(has.replace(file.lines_to_read([has, has+1]), self.date + " " + self.inputs))
                 file.write(str(self.date))
                 file.write(" ")
                 for i in self.inputs:
@@ -578,8 +591,21 @@ class Page5(Page):
                 file.write("\n")
             file.close()
 
+    def check_if_string_in_file(self, file_name, string_to_search):
+        c = 0
+        with open(file_name, 'r') as read_obj:
+             # Read all lines in the file one by one
+            for line in read_obj:
+            # For each line, check if line contains the string
+                if string_to_search in line:
+                    read_obj.close()
+                    return c
+                c += 1
+            read_obj.close()
+            return -1
+
     def grabFromFile(self):
-        with open("saveData.txt", 'r') as file:
+        with open("saveData.txt", 'r+') as file:
             while (True):
                 line = file.readline()
                 if not line:
@@ -597,8 +623,11 @@ class Page5(Page):
                             j += 1
                     temporary = line.split(" ")
                     temporary.pop()
+                    # self.dates.pop()
+                    # print("len of dates: "+str(len(self.dates)))
                     for x in range(9):
                         self.everything[x].append(int(temporary[x]))
+                        # print(str(self.everything[x]) + " ")
 
 
 # NLP prompting user for input
@@ -722,6 +751,8 @@ class MainView(tk.Frame):
             global num
             if num == 3:
                 screens[num].destroyGrid()
+            # if num == 4:
+            #     self.dates.pop()
             num -= 1
             screens[index - 1].show()
 
