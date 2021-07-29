@@ -377,8 +377,6 @@ class Page5(Page):
         line.get_tk_widget().place(relx=0.3, rely=0.15)
         df = df[[x_axis, y_axis]].groupby(x_axis).sum()
         df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
-        print(len(self.dates))
-        print(len(self.everything[num]))
         ax.set_yticks([1, 2, 3, 4, 5])
         ax.set_yticklabels([fir, sec, thi, four, fif])
         ax.set_xticks(range(len(self.dates)))
@@ -387,7 +385,6 @@ class Page5(Page):
         ax.set_ylabel(y_axis)
 
     def graph(self):
-        print(self.cats.get())
         if self.cats.get() == 'Sleep':
             self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 0, 'Sleep')
         if self.cats.get() == 'Exercise':
@@ -554,9 +551,7 @@ class Page5(Page):
             file.close()
         with open("saveData.txt", "w") as file:
             repeat = False
-            print(lines)
             for line in lines:
-                print(line)
                 temp = ""
                 for char in line:
                     if char == " ":
@@ -564,7 +559,6 @@ class Page5(Page):
                     else:
                         temp += char
                 if self.date == temp:
-                    print("repeat!")
                     repeat = True
                     file.write(str(self.date))
                     file.write(" ")
@@ -584,34 +578,34 @@ class Page5(Page):
             file.close()
 
 
-
-
-
     def grabFromFile(self):
-         with open("saveData.txt") as file:
-             i = 0
-             while(True):
-                 line = file.readline()
-                 if not line:
-                     break
-                 else:
-                     temp = ""
-                     j = 0
-                     for char in line:
-                         if char == " ":
-                             self.dates.append(temp)
-                             line = line[j+1:]
-                             break
-                         else:
-                             temp += char
-                             j += 1
-                     temporary = line.split(" ")
-                     temporary.pop()
-                     for x in range(9):
-                        self.everything[x].append(int(temporary[x]))
-                     #self.everything[i] = line.split(" ")
-                     #self.everything[i].pop()
-                     i += 1
+        self.dates.clear()
+        for x in range(9):
+            self.everything[x].clear()
+        with open("saveData.txt") as file:
+            i = 0
+            while(True):
+                line = file.readline()
+                if not line:
+                    break
+                else:
+                    temp = ""
+                    j = 0
+                    for char in line:
+                        if char == " ":
+                            self.dates.append(temp)
+                            line = line[j+1:]
+                            break
+                        else:
+                            temp += char
+                            j += 1
+                    temporary = line.split(" ")
+                    temporary.pop()
+                    for x in range(9):
+                       self.everything[x].append(int(temporary[x]))
+                    #self.everything[i] = line.split(" ")
+                    #self.everything[i].pop()
+                    i += 1
 
 #NLP prompting user for input
 class Page6(Page):
