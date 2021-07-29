@@ -328,11 +328,19 @@ class Page4(Page):
         iterr = 0
         counter = 0
         for i in self.categories:
+            title = Label(self, text="Please answer the following questions",
+                                font=("Comic Sans MS", 30, 'bold'), bg="black", fg='SpringGreen2')
+            title.grid(row=0, column=0)
+
             if i == 1:
-                self.labelList[iterr].grid(row=counter, column=0)
-                self.menuList[iterr].grid(row=counter, column=1)
+                self.labelList[iterr].grid(row=counter+1, column=0)
+                self.menuList[iterr].grid(row=counter+1, column=1)
                 counter += 1
             iterr += 1
+        if counter == 0:
+            error_label = Label(self, text="Please go back and select at least one category!",
+                             font=("Comic Sans MS", 30, 'bold'), bg="black", fg='red')
+            error_label.grid(row=0, column=0)
 
      def destroyGrid(self):
          for label in self.grid_slaves():
