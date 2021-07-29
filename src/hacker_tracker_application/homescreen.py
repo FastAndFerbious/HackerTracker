@@ -19,10 +19,27 @@ from spacytextblob.spacytextblob import SpacyTextBlob
 import en_core_web_sm
 import re
 
+from wordcloud import STOPWORDS, WordCloud
+
 nltk.download('wordnet')
 
 nlp = spacy.load("en_core_web_sm")
 nlp.add_pipe("spacytextblob")
+
+def word_cloud(text):
+
+    words = ""
+
+    for word in text:
+
+        words = words + str(word).replace("'", "")
+
+    wordcloud = WordCloud(height=400, background_color='white', stopwords=STOPWORDS).generate(words)
+
+    plt.figure()
+    plt.imshow(wordcloud)
+    plt.axis("off")
+    plt.show()
 
 def get_polarity(text): #returms a number, if negative, then mood is sad, if positive it's happy
 
@@ -628,44 +645,47 @@ class Page5(Page):
 #NLP prompting user for input
 class Page6(Page):
 
-
     def __init__(self, *args, **kwargs):
-        self.first_time = 0
         self.nlpList = [[]]
         texts = ""
         Page.__init__(self, *args, **kwargs, bg="black")
-        graph_lab = Label(self, text="How are you feeling today?", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
-        graph_lab.grid(row=0, column=0)
+        graph_lab = Label(self, text="How are you feeling today?", font=("Comic Sans MS", 40, 'bold'), bg="black",
+                          fg='SpringGreen2')
+        graph_lab.grid(row=0, column=1, columnspan=3)
         E1 = Entry(self, textvariable=texts)
-        E1.grid(row=0, column=1)
-        blueButton = Button(self, text="Submit", fg="blue", command=lambda : self.getNLPWords(str(E1.get())))
-        blueButton.grid(row=0, column=2)
+        E1.grid(row=2, column=1)
+        blueButton = Button(self, text="Submit", fg="blue", command=lambda: self.getNLPWords(str(E1.get())))
+        blueButton.grid(row=4, column=1)
+        spacer = Label(self, text="The natural language processor could not generate any words.", justify='center',
+                           font=("Comic Sans MS", 20, 'bold'), bg="black", fg='black')
+        spacer.grid(row=5, column=1)
         self.output = []
 
     def getNLPWords(self, word):
-        
         regex = re.compile('[^a-zA-Z]')
-        #First parameter is the replacement, second parameter is your input string
+        # First parameter is the replacement, second parameter is your input strin
         word = regex.sub(' ', word)
-        
-        self.nlpList = nlp_func(word, False)
+        # print(word)
+
         for label in self.grid_slaves():
-            if len(self.grid_slaves()) < 4:
+            if len(self.grid_slaves()) < 6:
                 break
             else:
                 label.grid_forget()
-    
-        
-        counter = 0
-        for nlp_list in self.nlpList: #self.nlpList = [pos[], neg[]] #self.nlpList[0] 
-            if(counter == 0):
-                graph_this = Label(self, text=self.nlpList[counter], justify='center', font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
-            if(counter == 1):
-                graph_this = Label(self, text=self.nlpList[counter], justify='center', font=("Comic Sans MS", 20, 'bold'), bg="black", fg='red')
-            graph_this.grid(row=counter, column=3)
-            print(counter)
-            counter += 1
 
+        self.nlpList = nlp_func(word)
+        print("nlp shit " + str(self.nlpList))
+
+
+        for nlp_list in self.nlpList:  # self.nlpList = [pos[], neg[]] #self.nlpList[0]
+
+            graph_this = Label(self, text=self.nlpList[0], justify='center',
+                                    font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
+            graph_this.grid(row=6, column=1)
+
+        # if self.nlpList ==["Please exit the Word Cloud to continue!"]:
+        #     print("asdfaf " + str(abc))
+        #     word_cloud(abc)
         
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
