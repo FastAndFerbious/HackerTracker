@@ -406,8 +406,8 @@ class Page4(Page):
         counter = 0
         for i in self.categories:
             if i == 1:
-                self.labelList[iterr].grid(row=counter, column=0)
-                self.menuList[iterr].grid(row=counter, column=1)
+                self.labelList[iterr].grid(row=counter+1, column=0)
+                self.menuList[iterr].grid(row=counter+1, column=1)
                 counter += 1
             iterr += 1
 
