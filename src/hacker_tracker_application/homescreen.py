@@ -38,6 +38,10 @@ def word_cloud(text):
     plt.figure()
     plt.imshow(wordcloud)
     plt.axis("off")
+    plt.annotate("Please close this window before continuing with the program", xy=(0.5, 0.9), xytext=(0, 10),
+            xycoords=('axes fraction', 'figure fraction'),
+            textcoords='offset points',
+            size=14, ha='center', va='bottom')
     plt.show()
 
 
@@ -65,7 +69,6 @@ def main():
     window.title("HackerTracker")
     window.geometry('1200x600')
     window.mainloop()
-
 
 def nlp_func(text):  # sentence
 
@@ -129,7 +132,76 @@ def nlp_func(text):  # sentence
             msg = ["The natural language processor could not generate any words."]
             return msg
         else:
-            word_cloud(NLP_Words)
+
+            return NLP_Words
+
+    else:
+        msg = ["No text was detected"]
+        return msg
+
+def nlp_msg(text):  # sentence
+
+    # nlp = en_core_web_sm.load()
+    # nlp.add_pipe("spacytextblob")
+
+    pos_synonyms = []
+    neu_synonyms = []
+    neg_synonyms = []
+
+    NLP_Words = []
+
+    # NLP analysis of single-line text
+    doc = list(nlp.pipe([text]))
+    emotional_words = dict()
+
+    if len(text) != 0:
+
+        for word in doc:  # i am happy and sad
+            # captures the emotional words
+            for assessment in word._.assessments:
+                tmp = assessment[0]
+                polarity = assessment[1]
+                for emotional_word in tmp:
+                    emotional_words[str(emotional_word)] = float(polarity)
+
+        # [(word, polarity)]
+
+        for x in emotional_words:
+            if (emotional_words[x] > 0):
+                pos_synonyms.append(str(x))
+                for syn in wordnet.synsets(str(x)):
+                    for lm in syn.lemmas():
+                        # if lm.name()in pos_synonyms :
+                        # adds the snonym(s) to the synonyms list
+                        if lm.name() not in pos_synonyms:
+                            pos_synonyms.append(lm.name())
+            elif (emotional_words[x] < 0):
+                neg_synonyms.append(str(x))
+                for syn in wordnet.synsets(str(x)):
+                    for lm in syn.lemmas():
+                        # if lm.name()in pos_synonyms :
+                        # adds the snonym(s) to the synonyms list
+                        if lm.name() not in neg_synonyms:
+                            neg_synonyms.append(lm.name())
+            # returns the synonyms of the emotional word(s)
+            elif (emotional_words[x] == 0):
+                neu_synonyms.append(str(x))
+                for syn in wordnet.synsets(str(x)):
+                    for lm in syn.lemmas():
+                        # if lm.name()in pos_synonyms :
+                        # adds the snonym(s) to the synonyms list
+                        if lm.name() not in neu_synonyms:
+                            neu_synonyms.append(lm.name())
+
+        NLP_Words.append(pos_synonyms)  # list of lists [pos words[], neg words[]
+        NLP_Words.append(neg_synonyms)
+        NLP_Words.append(neu_synonyms)
+
+        if not len(pos_synonyms) and not len(neg_synonyms):
+            msg = ["The natural language processor could not generate any words."]
+            return msg
+        else:
+            #word_cloud(NLP_Words)
             #abc = NLP_Words
             #print("global " + str(abc))
             msg = ["Please exit the Word Cloud to continue!"]
@@ -158,10 +230,18 @@ class HomePage(Page):
         clear_btn = Button(self, text="Clear all data", bg="black", fg="white", command=lambda x=None: self.clear())
         clear_btn.place(relx=0.5, rely=0.85, anchor="c")
 
+    def reset_clear(self):
+        lbl = Label(self, text="                          ", font=("Comic Sans MS", 15, 'bold'), bg="black",
+                    fg="SpringGreen2")
+        lbl.place(relx=0.5, rely=0.9, anchor="c")
+
     def clear(self):
         with open("saveData.txt", "w") as file:
             file.truncate()
             file.close()
+        lbl = Label(self, text="Data cleared", font=("Comic Sans MS", 10, 'bold'), bg="black",
+                    fg="SpringGreen2")
+        lbl.place(relx=0.5, rely=0.9, anchor="c")
 
 
 # Second page asking for date
@@ -682,6 +762,7 @@ class Page6(Page):
                            font=("Comic Sans MS", 20, 'bold'), bg="black", fg='black')
         spacer.grid(row=5, column=1)
         self.output = []
+        self.msg = [[]]
 
     def getNLPWords(self, word):
         regex = re.compile('[^a-zA-Z]')
@@ -695,19 +776,19 @@ class Page6(Page):
             else:
                 label.grid_forget()
 
-        self.nlpList = nlp_func(word)
-        print("nlp shit " + str(self.nlpList))
+        self.msg = nlp_msg(word)
+        print("nlp shit " + str(self.msg))
 
 
-        for nlp_list in self.nlpList:  # self.nlpList = [pos[], neg[]] #self.nlpList[0]
+        #for nlp_list in self.msg:  # self.nlpList = [pos[], neg[]] #self.nlpList[0]
+        print(self.msg[0])
+        graph_this = Label(self, text=self.msg[0], justify='center',
+                                font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
+        graph_this.grid(row=6, column=1)
 
-            graph_this = Label(self, text=self.nlpList[0], justify='center',
-                                    font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
-            graph_this.grid(row=6, column=1)
-
-        # if self.nlpList ==["Please exit the Word Cloud to continue!"]:
-        #     print("asdfaf " + str(abc))
-        #     word_cloud(abc)
+        if self.msg ==["Please exit the Word Cloud to continue!"]:
+            #print("asdfaf " + str(abc))
+            word_cloud(nlp_func(word))
 
 
 class MainView(tk.Frame):
@@ -788,6 +869,8 @@ class MainView(tk.Frame):
     def goBack(self, index):
         if index > 0:
             global num
+            if num == 1:
+                screens[num - 1].reset_clear()
             if num == 3:
                 screens[num].destroyGrid()
             num -= 1
