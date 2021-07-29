@@ -374,7 +374,7 @@ class Page5(Page):
         if self.cats.get() == 'Caffeine':
             self.genGraph('Date', 'Milligrams', '0-3', '3-5', '6-8', '9-11', '11+', 2, 'Caffeine')
         if self.cats.get() == 'Mood':
-            self.genGraph('Date', 'Sad/Mad', 'Tired', 'Neutral', 'Content', 'Happy', 3, 'Mood')
+            self.genGraph('Date', 'Emotion', 'Sad/Mad', 'Tired', 'Neutral', 'Content', 'Happy', 3, 'Mood')
         if self.cats.get() == 'Confidence':
             self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 4, 'Confidence')
         if self.cats.get() == 'Screen Time':
@@ -527,6 +527,17 @@ class Page5(Page):
             self.inputs[8] = 5
 
     def savetoFile(self):
+        i = 0
+        first = -1
+        second = -1
+        for char in self.date:
+            if char == "/":
+                if first != -1:
+                    second = i
+                    break
+                else:
+                    first = i
+            i += 1
         lines = ""
         with open("saveData.txt", "r") as file:
             lines = file.readlines()
@@ -534,13 +545,28 @@ class Page5(Page):
         with open("saveData.txt", "w") as file:
             repeat = False
             for line in lines:
+                j = 0
                 temp = ""
+                first_occurrence = -1
+                second_occurrence = -1
                 for char in line:
                     if char == " ":
                         break
+                    elif char == "/":
+                        if first_occurrence != -1:
+                            second_occurrence = j
+                        else:
+                            first_occurrence = j
+                        temp += char
                     else:
                         temp += char
-                if self.date == temp:
+                    j += 1
+                if not repeat and (self.date == temp or int(self.date[second + 1:]) < int(temp[second_occurrence +1:]) or \
+                        (int(self.date[second + 1:]) == int(temp[second_occurrence +1:]) and
+                         int(self.date[0:first]) < int(temp[0:first_occurrence])) or \
+                        (int(self.date[second + 1:]) == int(temp[second_occurrence +1:]) and
+                         int(self.date[0:first]) == int(temp[0:first_occurrence]) and
+                         int(self.date[first+1:second]) < int(temp[first_occurrence+1:second_occurrence]))):
                     repeat = True
                     file.write(str(self.date))
                     file.write(" ")
@@ -548,6 +574,8 @@ class Page5(Page):
                         file.write(str(i))
                         file.write(" ")
                     file.write("\n")
+                    if self.date != temp:
+                        file.write(line)
                 else:
                     file.write(line)
             if not repeat:
