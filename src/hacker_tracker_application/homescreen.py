@@ -548,14 +548,44 @@ class Page5(Page):
             self.inputs[8] = 5
 
     def savetoFile(self):
-         with open("saveData.txt", "a") as file:
-             file.write(str(self.date))
-             file.write(" ")
-             for i in self.inputs:
-                 file.write(str(i))
-                 file.write(" ")
-             file.write("\n")
-             file.close()
+        lines = ""
+        with open("saveData.txt", "r") as file:
+            lines = file.readlines()
+            file.close()
+        with open("saveData.txt", "w") as file:
+            repeat = False
+            print(lines)
+            for line in lines:
+                print(line)
+                temp = ""
+                for char in line:
+                    if char == " ":
+                        break
+                    else:
+                        temp += char
+                if self.date == temp:
+                    print("repeat!")
+                    repeat = True
+                    file.write(str(self.date))
+                    file.write(" ")
+                    for i in self.inputs:
+                        file.write(str(i))
+                        file.write(" ")
+                    file.write("\n")
+                else:
+                    file.write(line)
+            if not repeat:
+                file.write(str(self.date))
+                file.write(" ")
+                for i in self.inputs:
+                    file.write(str(i))
+                    file.write(" ")
+                file.write("\n")
+            file.close()
+
+
+
+
 
     def grabFromFile(self):
          with open("saveData.txt") as file:
