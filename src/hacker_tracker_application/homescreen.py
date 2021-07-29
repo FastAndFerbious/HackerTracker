@@ -26,12 +26,11 @@ nltk.download('wordnet')
 nlp = spacy.load("en_core_web_sm")
 nlp.add_pipe("spacytextblob")
 
-def word_cloud(text):
 
+def word_cloud(text):
     words = ""
 
     for word in text:
-
         words = words + str(word).replace("'", "")
 
     wordcloud = WordCloud(height=400, background_color='white', stopwords=STOPWORDS).generate(words)
@@ -41,15 +40,16 @@ def word_cloud(text):
     plt.axis("off")
     plt.show()
 
-def get_polarity(text): #returms a number, if negative, then mood is sad, if positive it's happy
+
+def get_polarity(text):  # returms a number, if negative, then mood is sad, if positive it's happy
 
     doc = nlp(text)
 
     for span in doc.sents:
-
         print(span.text, span._.polarity, span._.subjectivity)
 
         return span._.polarity
+
 
 nltk.download('wordnet')
 
@@ -67,11 +67,10 @@ def main():
     window.mainloop()
 
 
+def nlp_func(text):  # sentence
 
-def nlp_func(text, first_time): #sentence
-    
-    nlp = en_core_web_sm.load()
-    nlp.add_pipe("spacytextblob")
+    # nlp = en_core_web_sm.load()
+    # nlp.add_pipe("spacytextblob")
 
     pos_synonyms = []
     neu_synonyms = []
@@ -84,135 +83,150 @@ def nlp_func(text, first_time): #sentence
     emotional_words = dict()
 
     if len(text) != 0:
-        
-        for word in doc: # i am happy and sad
-            #captures the emotional words
+
+        for word in doc:  # i am happy and sad
+            # captures the emotional words
             for assessment in word._.assessments:
                 tmp = assessment[0]
                 polarity = assessment[1]
                 for emotional_word in tmp:
                     emotional_words[str(emotional_word)] = float(polarity)
 
-        #[(word, polarity)]
+        # [(word, polarity)]
 
         for x in emotional_words:
-            if(emotional_words[x] > 0):
-                    pos_synonyms.append(str(x))
-                    for syn in wordnet.synsets(str(x)):
-                        for lm in syn.lemmas():
-                            #if lm.name()in pos_synonyms :
-                            # adds the snonym(s) to the synonyms list
-                            if lm.name() not in pos_synonyms:
-                                pos_synonyms.append(lm.name())
-            elif(emotional_words[x] < 0):
-                    neg_synonyms.append(str(x))
-                    for syn in wordnet.synsets(str(x)):
-                        for lm in syn.lemmas():
-                            #if lm.name()in pos_synonyms :
-                            # adds the snonym(s) to the synonyms list
-                            if lm.name() not in neg_synonyms:
-                                neg_synonyms.append(lm.name())
-                #returns the synonyms of the emotional word(s)
-            elif(emotional_words[x] == 0):
-                    neu_synonyms.append(str(x))
-                    for syn in wordnet.synsets(str(x)):
-                        for lm in syn.lemmas():
-                            #if lm.name()in pos_synonyms :
-                            # adds the snonym(s) to the synonyms list
-                            if lm.name() not in neu_synonyms:
-                                neu_synonyms.append(lm.name())
+            if (emotional_words[x] > 0):
+                pos_synonyms.append(str(x))
+                for syn in wordnet.synsets(str(x)):
+                    for lm in syn.lemmas():
+                        # if lm.name()in pos_synonyms :
+                        # adds the snonym(s) to the synonyms list
+                        if lm.name() not in pos_synonyms:
+                            pos_synonyms.append(lm.name())
+            elif (emotional_words[x] < 0):
+                neg_synonyms.append(str(x))
+                for syn in wordnet.synsets(str(x)):
+                    for lm in syn.lemmas():
+                        # if lm.name()in pos_synonyms :
+                        # adds the snonym(s) to the synonyms list
+                        if lm.name() not in neg_synonyms:
+                            neg_synonyms.append(lm.name())
+            # returns the synonyms of the emotional word(s)
+            elif (emotional_words[x] == 0):
+                neu_synonyms.append(str(x))
+                for syn in wordnet.synsets(str(x)):
+                    for lm in syn.lemmas():
+                        # if lm.name()in pos_synonyms :
+                        # adds the snonym(s) to the synonyms list
+                        if lm.name() not in neu_synonyms:
+                            neu_synonyms.append(lm.name())
 
-        NLP_Words.append(pos_synonyms) #list of lists [pos words[], neg words[]
+        NLP_Words.append(pos_synonyms)  # list of lists [pos words[], neg words[]
         NLP_Words.append(neg_synonyms)
         NLP_Words.append(neu_synonyms)
 
         if not len(pos_synonyms) and not len(neg_synonyms):
             msg = ["The natural language processor could not generate any words."]
             return msg
-        
-        return NLP_Words
-    
+        else:
+            word_cloud(NLP_Words)
+            #abc = NLP_Words
+            #print("global " + str(abc))
+            msg = ["Please exit the Word Cloud to continue!"]
+            return msg
+
     else:
         msg = ["No text was detected"]
         return msg
-            
+
+
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
+
     def show(self):
         self.lift()
 
-#home page
+
+# home page
 class HomePage(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs, bg="black")
-        lbl = Label(self, text="Welcome to HackerTracker!", font=("Comic Sans MS", 50, 'bold'), bg="black", fg="SpringGreen2")
-        lbl.place(relx=0.5, rely=0.5, anchor ="c")
-        clear_btn = Button(self, text="Clear all data", bg="black", fg = "white", command=lambda x=None: self.clear())
-        clear_btn.place(relx=0.5, rely=0.85, anchor ="c")
+        lbl = Label(self, text="Welcome to HackerTracker!", font=("Comic Sans MS", 50, 'bold'), bg="black",
+                    fg="SpringGreen2")
+        lbl.place(relx=0.5, rely=0.5, anchor="c")
+        clear_btn = Button(self, text="Clear all data", bg="black", fg="white", command=lambda x=None: self.clear())
+        clear_btn.place(relx=0.5, rely=0.85, anchor="c")
 
     def clear(self):
-         with open("saveData.txt", "w") as file:
-             file.truncate()
-             file.close()
+        with open("saveData.txt", "w") as file:
+            file.truncate()
+            file.close()
 
 
-#Second page asking for date
+# Second page asking for date
 class Page2(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs, bg="black")
-        lbl = Label(self, text="Please select today's date:  ",font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
+        lbl = Label(self, text="Please select today's date:  ", font=("Comic Sans MS", 40, 'bold'), bg="black",
+                    fg='SpringGreen2')
         lbl.place(relx=.5, rely=.05, anchor="c")
 
-        #cal = Calendar(self, selectmode="day", year=2021, month=6, day=21, selectforeground='pink', foreground='yellow', highlightcolor='pink', normalforeground='orange', font=("Comic Sans MS", 20))
+        # cal = Calendar(self, selectmode="day", year=2021, month=6, day=21, selectforeground='pink', foreground='yellow', highlightcolor='pink', normalforeground='orange', font=("Comic Sans MS", 20))
         cal = Calendar(self, background="black", disabledbackground="black", bordercolor="black",
-                 headersbackground="black", normalbackground="black", foreground='white',
-                 normalforeground='white', headersforeground='white', font=("Comic Sans MS", 20))
+                       headersbackground="black", normalbackground="black", foreground='white',
+                       normalforeground='white', headersforeground='white', font=("Comic Sans MS", 20))
         cal.place(relx=.5, rely=.5, anchor="c")
         self.calendar = cal
 
-        #create spins to add date
-        #month = Label(self, text="Month")
-        #month.grid(column=0, row=1, sticky="")
-        #spin = Spinbox(self, from_=1, to=12, width=5, format="%02.0f")
-        #spin.grid(column=0, row=2, sticky="")
+        # create spins to add date
+        # month = Label(self, text="Month")
+        # month.grid(column=0, row=1, sticky="")
+        # spin = Spinbox(self, from_=1, to=12, width=5, format="%02.0f")
+        # spin.grid(column=0, row=2, sticky="")
 
-        #day = Label(self, text="Day")
-        #day.grid(column=1, row=1, sticky="")
-        #spin2 = Spinbox(self, from_=1, to=30, width=5, format="%02.0f")
-        #spin2.grid(column=1, row=2, sticky="")
+        # day = Label(self, text="Day")
+        # day.grid(column=1, row=1, sticky="")
+        # spin2 = Spinbox(self, from_=1, to=30, width=5, format="%02.0f")
+        # spin2.grid(column=1, row=2, sticky="")
 
-        #year = Label(self, text="Year")
-        #year.grid(column=2, row=1, sticky="")
-        #spin3 = Spinbox(self, from_=0000, to=9999, width=5, format="%04.0f")
-        #spin3.grid(column=2, row=2, sticky="")        # spin3.grid(column=2, row=2, sticky="")
+        # year = Label(self, text="Year")
+        # year.grid(column=2, row=1, sticky="")
+        # spin3 = Spinbox(self, from_=0000, to=9999, width=5, format="%04.0f")
+        # spin3.grid(column=2, row=2, sticky="")        # spin3.grid(column=2, row=2, sticky="")
 
-#Third page asking to select options
+
+# Third page asking to select options
 class Page3(Page):
     def __init__(self, *args, **kwargs):
-        Page.__init__(self, *args, **kwargs, bg="black")                            #copy these 3 lines to make a new class
+        Page.__init__(self, *args, **kwargs, bg="black")  # copy these 3 lines to make a new class
         self.date = ""
-        #make checkbutton for multiselect
-        lbl = Label(self, text="Select desired categories", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
+        # make checkbutton for multiselect
+        lbl = Label(self, text="Select desired categories", font=("Comic Sans MS", 40, 'bold'), bg="black",
+                    fg='SpringGreen2')
         lbl.place(relx=.5, rely=.05, anchor="c")
 
         self.sleep_state = IntVar()
-        sleep = Checkbutton(self, text="Sleep", variable=self.sleep_state, font=("Comic Sans MS", 20), bg="SpringGreen2",
+        sleep = Checkbutton(self, text="Sleep", variable=self.sleep_state, font=("Comic Sans MS", 20),
+                            bg="SpringGreen2",
                             fg='black', highlightbackground="SpringGreen2")
         sleep.place(relx=.28, rely=.2, anchor="c")
 
         self.exercise_state = IntVar()
-        exercise = Checkbutton(self, text="Exercise", variable=self.exercise_state, font=("Comic Sans MS", 20), bg="SpringGreen2",
+        exercise = Checkbutton(self, text="Exercise", variable=self.exercise_state, font=("Comic Sans MS", 20),
+                               bg="SpringGreen2",
                                fg='black', highlightbackground="SpringGreen2")
         exercise.place(relx=.28, rely=.3, anchor="c")
 
         self.caffeine_state = IntVar()
-        caffeine = Checkbutton(self, text="Caffeine", variable=self.caffeine_state, font=("Comic Sans MS", 20), bg="SpringGreen2",
+        caffeine = Checkbutton(self, text="Caffeine", variable=self.caffeine_state, font=("Comic Sans MS", 20),
+                               bg="SpringGreen2",
                                fg='black', highlightbackground="SpringGreen2")
         caffeine.place(relx=.28, rely=.4, anchor="c")
 
         self.mood_state = IntVar()
-        mood = Checkbutton(self, text="Mood", variable=self.mood_state, font=("Comic Sans MS", 20), bg="SpringGreen2", fg='black',
+        mood = Checkbutton(self, text="Mood", variable=self.mood_state, font=("Comic Sans MS", 20), bg="SpringGreen2",
+                           fg='black',
                            highlightbackground="SpringGreen2")
         mood.place(relx=.28, rely=.5, anchor="c")
 
@@ -232,31 +246,36 @@ class Page3(Page):
         socializing.place(relx=.48, rely=.4, anchor="c")
 
         self.productivity_state = IntVar()
-        productivity = Checkbutton(self, text="Productivity", variable=self.productivity_state, font=("Comic Sans MS", 20),
+        productivity = Checkbutton(self, text="Productivity", variable=self.productivity_state,
+                                   font=("Comic Sans MS", 20),
                                    bg="SpringGreen2", fg='black', highlightbackground="SpringGreen2")
         productivity.place(relx=.48, rely=.5, anchor="c")
 
         self.hygiene_state = IntVar()
-        hygiene = Checkbutton(self, text="Hygiene", variable=self.hygiene_state, font=("Comic Sans MS", 20), bg="SpringGreen2",
+        hygiene = Checkbutton(self, text="Hygiene", variable=self.hygiene_state, font=("Comic Sans MS", 20),
+                              bg="SpringGreen2",
                               fg='black', highlightbackground="SpringGreen2")
         hygiene.place(relx=.68, rely=.2, anchor="c")
 
         self.categories = []
 
     def newCategories(self):
-        self.categories = [self.sleep_state.get(), self.exercise_state.get(), self.caffeine_state.get(), self.mood_state.get(),
-                      self.confidence_state.get(), self.screenTime_state.get(), self.socializing_state.get(), self.productivity_state.get(),
-                      self.hygiene_state.get()]
+        self.categories = [self.sleep_state.get(), self.exercise_state.get(), self.caffeine_state.get(),
+                           self.mood_state.get(),
+                           self.confidence_state.get(), self.screenTime_state.get(), self.socializing_state.get(),
+                           self.productivity_state.get(),
+                           self.hygiene_state.get()]
 
-    #https://likegeeks.com/python-gui-examples-tkinter-tutorial/
+    # https://likegeeks.com/python-gui-examples-tkinter-tutorial/
 
-#Fourth Page prompting journaling input
+
+# Fourth Page prompting journaling input
 class Page4(Page):
-     def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs, bg="black")
         self.date = ""
         self.categories = []
-        
+
         # choice_lbl = Label(self, text="Select Best Option", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         # choice_lbl.place(relx=.5, rely=.05, anchor="c")
 
@@ -265,7 +284,8 @@ class Page4(Page):
                             bg="black", fg='white')
         # sleep_label.grid(row=0, column=0)
         self.sleepMenuVar = StringVar()
-        sleepMenu = OptionMenu(self, self.sleepMenuVar, "0-3 hours", "3-5 hours", "6-8 hours", "9-11 hours", "11+ hours")
+        sleepMenu = OptionMenu(self, self.sleepMenuVar, "0-3 hours", "3-5 hours", "6-8 hours", "9-11 hours",
+                               "11+ hours")
         # sleepMenu.grid(row=0, column=1)
 
         # exercise
@@ -334,41 +354,43 @@ class Page4(Page):
         hyMenu = OptionMenu(self, self.hyMenuVar, "1", "2", "3", "4", "5")
         # hyMenu.grid(row=8, column=1)
 
-        self.labelList = [sleep_label, exercise_label, caffeine_label, mood_label, con_label, screen_label, social_label, prod_label, hy_label]
-        self.menuList = [sleepMenu, exerciseMenu, caffeineMenu, moodMenu, conMenu, screenMenu, socialMenu, prodMenu, hyMenu]
-        self.surveyResults = [0,0,0,0,0,0,0,0,0]
+        self.labelList = [sleep_label, exercise_label, caffeine_label, mood_label, con_label, screen_label,
+                          social_label, prod_label, hy_label]
+        self.menuList = [sleepMenu, exerciseMenu, caffeineMenu, moodMenu, conMenu, screenMenu, socialMenu, prodMenu,
+                         hyMenu]
+        self.surveyResults = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.outputs = []
 
-
-
-     def updatedCategories(self):
+    def updatedCategories(self):
         iterr = 0
         counter = 0
         for i in self.categories:
             title = Label(self, text="Please answer the following questions",
-                                font=("Comic Sans MS", 30, 'bold'), bg="black", fg='SpringGreen2')
+                          font=("Comic Sans MS", 30, 'bold'), bg="black", fg='SpringGreen2')
             title.grid(row=0, column=0)
 
             if i == 1:
-                self.labelList[iterr].grid(row=counter+1, column=0)
-                self.menuList[iterr].grid(row=counter+1, column=1)
+                self.labelList[iterr].grid(row=counter + 1, column=0)
+                self.menuList[iterr].grid(row=counter + 1, column=1)
                 counter += 1
             iterr += 1
         if counter == 0:
             error_label = Label(self, text="Please go back and select at least one category!",
-                             font=("Comic Sans MS", 30, 'bold'), bg="black", fg='red')
+                                font=("Comic Sans MS", 30, 'bold'), bg="black", fg='red')
             error_label.grid(row=0, column=0)
 
-     def destroyGrid(self):
-         for label in self.grid_slaves():
-             label.grid_forget()
+    def destroyGrid(self):
+        for label in self.grid_slaves():
+            label.grid_forget()
 
-     def transition(self):
-         self.outputs = [self.sleepMenuVar.get(), self.exerciseMenuVar.get(), self.caffineMenuVar.get(), self.moodMenuVar.get(), self.conMenuVar.get(),
-                        self.screenMenuVar.get(), self.socialMenuVar.get(), self.prodMenuVar.get(), self.hyMenuVar.get()]
+    def transition(self):
+        self.outputs = [self.sleepMenuVar.get(), self.exerciseMenuVar.get(), self.caffineMenuVar.get(),
+                        self.moodMenuVar.get(), self.conMenuVar.get(),
+                        self.screenMenuVar.get(), self.socialMenuVar.get(), self.prodMenuVar.get(),
+                        self.hyMenuVar.get()]
 
 
-#Page 5 with plots
+# Page 5 with plots
 class Page5(Page):
 
     def genGraph(self, x_axis, y_axis, fir, sec, thi, four, fif, num, cat):
@@ -416,10 +438,10 @@ class Page5(Page):
         self.date = ""
         self.categories = []
         self.outputs = []
-        self.inputs = [0,0,0,0,0,0,0,0,0]
+        self.inputs = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.dates = []
         self.everything = [[], [], [], [], [], [], [], [], []]
-        graph_lab = Label(self, text="Plots",  font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
+        graph_lab = Label(self, text="Plots", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         graph_lab.place(relx=.5, rely=.05, anchor="c")
         self.cats = StringVar()
         self.catsMenu = OptionMenu(self, self.cats, 'Sleep', 'Caffeine', 'Mood', 'Confidence', 'Screen Time',
@@ -449,7 +471,6 @@ class Page5(Page):
     #     ax.set_xticklabels(self.dates)
     #     ax.set_title('Sleep')
     #     ax.set_ylabel('Hours')
-
 
     def assignIndicies(self):
         if self.outputs[0] == "0-3 hours":
@@ -586,12 +607,13 @@ class Page5(Page):
                     else:
                         temp += char
                     j += 1
-                if not repeat and (self.date == temp or int(self.date[second + 1:]) < int(temp[second_occurrence +1:]) or \
-                        (int(self.date[second + 1:]) == int(temp[second_occurrence +1:]) and
+                if not repeat and (
+                        self.date == temp or int(self.date[second + 1:]) < int(temp[second_occurrence + 1:]) or \
+                        (int(self.date[second + 1:]) == int(temp[second_occurrence + 1:]) and
                          int(self.date[0:first]) < int(temp[0:first_occurrence])) or \
-                        (int(self.date[second + 1:]) == int(temp[second_occurrence +1:]) and
+                        (int(self.date[second + 1:]) == int(temp[second_occurrence + 1:]) and
                          int(self.date[0:first]) == int(temp[0:first_occurrence]) and
-                         int(self.date[first+1:second]) < int(temp[first_occurrence+1:second_occurrence]))):
+                         int(self.date[first + 1:second]) < int(temp[first_occurrence + 1:second_occurrence]))):
                     repeat = True
                     file.write(str(self.date))
                     file.write(" ")
@@ -612,14 +634,13 @@ class Page5(Page):
                 file.write("\n")
             file.close()
 
-
     def grabFromFile(self):
         self.dates.clear()
         for x in range(9):
             self.everything[x].clear()
         with open("saveData.txt") as file:
             i = 0
-            while(True):
+            while (True):
                 line = file.readline()
                 if not line:
                     break
@@ -629,7 +650,7 @@ class Page5(Page):
                     for char in line:
                         if char == " ":
                             self.dates.append(temp)
-                            line = line[j+1:]
+                            line = line[j + 1:]
                             break
                         else:
                             temp += char
@@ -637,12 +658,13 @@ class Page5(Page):
                     temporary = line.split(" ")
                     temporary.pop()
                     for x in range(9):
-                       self.everything[x].append(int(temporary[x]))
-                    #self.everything[i] = line.split(" ")
-                    #self.everything[i].pop()
+                        self.everything[x].append(int(temporary[x]))
+                    # self.everything[i] = line.split(" ")
+                    # self.everything[i].pop()
                     i += 1
 
-#NLP prompting user for input
+
+# NLP prompting user for input
 class Page6(Page):
 
     def __init__(self, *args, **kwargs):
@@ -686,11 +708,12 @@ class Page6(Page):
         # if self.nlpList ==["Please exit the Word Cloud to continue!"]:
         #     print("asdfaf " + str(abc))
         #     word_cloud(abc)
-        
+
+
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
-        #objects for each of the screens
+        # objects for each of the screens
         home = HomePage(self)
         date = Page2(self)
         options = Page3(self)
@@ -698,13 +721,13 @@ class MainView(tk.Frame):
         plots = Page5(self)
         nlp = Page6(self)
 
-        #global variables
+        # global variables
         global screens
         screens = [home, date, options, choices, plots, nlp]
         global num
         num = 0
 
-        #create menu
+        # create menu
         menu = Menu(window)
         new_item = Menu(menu)
         new_item.add_command(label='Next', command=lambda: self.goNext(num))
@@ -713,18 +736,18 @@ class MainView(tk.Frame):
         menu.add_cascade(label='File', menu=new_item)
         window.config(menu=menu)
 
-        #make frames
+        # make frames
         button_frame = tk.Frame(self, bg="gray")
         container = tk.Frame(self, bg="black")
         button_frame.pack(side="top", fill="x", expand=False)
         container.pack(side="top", fill="both", expand=True)
-        #create next button
+        # create next button
         next_btn = Button(button_frame, text="Next", bg="blue", command=lambda: self.goNext(num))
         next_btn.pack(side="right")
-        #create back button
+        # create back button
         back_btn = Button(button_frame, text="Back", bg="blue", command=lambda: self.goBack(num))
         back_btn.pack(side="left")
-        #place screens into a container
+        # place screens into a container
         home.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         date.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         options.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
@@ -734,9 +757,9 @@ class MainView(tk.Frame):
 
         screens[0].show()
 
-    #moves to next screen
+    # moves to next screen
     def goNext(self, index):
-        if index < len(screens)-1:
+        if index < len(screens) - 1:
             global num
             if num == 1:
                 screens[num + 1].date = screens[num].calendar.get_date()
@@ -753,24 +776,24 @@ class MainView(tk.Frame):
                 screens[num + 1].assignIndicies()
                 screens[num + 1].savetoFile()
                 screens[num + 1].grabFromFile()
-                #screens[num + 1].graph()
+                # screens[num + 1].graph()
             elif num >= 4:
                 screens[num + 1].date = screens[num].date
                 screens[num + 1].categories = screens[num].categories
 
             num += 1
-            screens[index+1].show()
+            screens[index + 1].show()
 
-    #move to prev screen
+    # move to prev screen
     def goBack(self, index):
         if index > 0:
             global num
             if num == 3:
                 screens[num].destroyGrid()
             num -= 1
-            screens[index-1].show()
+            screens[index - 1].show()
 
-    #exits GUI
+    # exits GUI
     def close(self):
         window.destroy()
         exit()
