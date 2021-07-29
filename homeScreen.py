@@ -398,8 +398,6 @@ class Page5(Page):
         line.get_tk_widget().place(relx=0.3, rely=0.15)
         df = df[[x_axis, y_axis]].groupby(x_axis).sum()
         df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
-        print("length of dates: " + str(len(self.dates)))
-        print(len(self.everything[num]))
         ax.set_yticks([1, 2, 3, 4, 5])
         ax.set_yticklabels([fir, sec, thi, four, fif])
         ax.set_xticks(range(len(self.dates)))
@@ -408,25 +406,33 @@ class Page5(Page):
         ax.set_ylabel(y_axis)
 
     def graph(self):
-        print(self.cats.get())
         if self.cats.get() == 'Sleep':
-            self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 0, 'Sleep')
+            if self.categories[0] == 1:
+                self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 0, 'Sleep')
         if self.cats.get() == 'Exercise':
-            self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 1, 'Exercise')
+            if self.categories[1] == 1:
+                self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 1, 'Exercise')
         if self.cats.get() == 'Caffeine':
-            self.genGraph('Date', 'Milligrams', "0-100 mg", "101-200 mg", "201-300 mg", "301-400 mg", "400+ mg", 2, 'Caffeine')
+            if self.categories[2] == 1:
+                self.genGraph('Date', 'Milligrams', '0-3', '3-5', '6-8', '9-11', '11+', 2, 'Caffeine')
         if self.cats.get() == 'Mood':
-            self.genGraph('Date', 'Sad/Mad', 'Tired', 'Neutral', 'Content', 'Happy', 3, 'Mood')
+            if self.categories[3] == 1:
+                self.genGraph('Date', 'Sad/Mad', 'Tired', 'Neutral', 'Content', 'Happy', 3, 'Mood')
         if self.cats.get() == 'Confidence':
-            self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 4, 'Confidence')
+            if self.categories[4] == 1:
+                self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 4, 'Confidence')
         if self.cats.get() == 'Screen Time':
-            self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 5, 'Screen Time')
+            if self.categories[5] == 1:
+                self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 5, 'Screen Time')
         if self.cats.get() == 'Socializing Time':
-            self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 6, 'Socializing Time')
+            if self.categories[6] == 1:
+                self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 6, 'Socializing Time')
         if self.cats.get() == 'Productivity':
-            self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 7, 'Productivity')
+            if self.categories[7] == 1:
+                self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 7, 'Productivity')
         if self.cats.get() == 'Hygeine':
-            self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 8, 'Hygeine')
+            if self.categories[8] == 1:
+                self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 8, 'Hygeine')
 
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs, bg="black")
@@ -439,7 +445,7 @@ class Page5(Page):
         graph_lab = Label(self, text="Plots", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         graph_lab.place(relx=.5, rely=.05, anchor="c")
         self.cats = StringVar()
-        self.catsMenu = OptionMenu(self, self.cats, 'Sleep', 'Caffeine', 'Exercise', 'Mood', 'Confidence', 'Screen Time',
+        self.catsMenu = OptionMenu(self, self.cats, 'Sleep', 'Exercise', 'Caffeine', 'Mood', 'Confidence', 'Screen Time',
                                    'Socializing Time', 'Productivity', 'Hygeine', command=lambda x=None: self.graph())
         self.catsMenu.grid(row=0, column=0)
 
@@ -568,21 +574,30 @@ class Page5(Page):
             self.inputs[8] = 5
 
     def savetoFile(self):
-        with open("saveData.txt", 'r+') as file:
-            has = self.check_if_string_in_file("saveData.txt", self.date)
-            print(has)
-            print(self.date)
-            if has == -1:
-                file.write(str(self.date))
-                file.write(" ")
-                for i in self.inputs:
-                    file.write(str(i))
+        lines = ""
+        with open("saveData.txt", "r") as file:
+            lines = file.readlines()
+            file.close()
+        with open("saveData.txt", "w") as file:
+            repeat = False
+            for line in lines:
+                temp = ""
+                for char in line:
+                    if char == " ":
+                        break
+                    else:
+                        temp += char
+                if self.date == temp:
+                    repeat = True
+                    file.write(str(self.date))
                     file.write(" ")
-                file.write("\n")
-            else:
-                # lines = file.readlines()
-                # del file[has]
-                # file.write(has.replace(file.lines_to_read([has, has+1]), self.date + " " + self.inputs))
+                    for i in self.inputs:
+                        file.write(str(i))
+                        file.write(" ")
+                    file.write("\n")
+                else:
+                    file.write(line)
+            if not repeat:
                 file.write(str(self.date))
                 file.write(" ")
                 for i in self.inputs:
@@ -591,21 +606,12 @@ class Page5(Page):
                 file.write("\n")
             file.close()
 
-    def check_if_string_in_file(self, file_name, string_to_search):
-        c = 0
-        with open(file_name, 'r') as read_obj:
-             # Read all lines in the file one by one
-            for line in read_obj:
-            # For each line, check if line contains the string
-                if string_to_search in line:
-                    read_obj.close()
-                    return c
-                c += 1
-            read_obj.close()
-            return -1
-
     def grabFromFile(self):
-        with open("saveData.txt", 'r+') as file:
+        self.dates.clear()
+        for x in range(9):
+            self.everything[x].clear()
+        with open("saveData.txt") as file:
+            i = 0
             while (True):
                 line = file.readline()
                 if not line:
@@ -623,11 +629,11 @@ class Page5(Page):
                             j += 1
                     temporary = line.split(" ")
                     temporary.pop()
-                    # self.dates.pop()
-                    # print("len of dates: "+str(len(self.dates)))
                     for x in range(9):
                         self.everything[x].append(int(temporary[x]))
-                        # print(str(self.everything[x]) + " ")
+                    # self.everything[i] = line.split(" ")
+                    # self.everything[i].pop()
+                    i += 1
 
 
 # NLP prompting user for input
@@ -751,8 +757,6 @@ class MainView(tk.Frame):
             global num
             if num == 3:
                 screens[num].destroyGrid()
-            # if num == 4:
-            #     self.dates.pop()
             num -= 1
             screens[index - 1].show()
 
