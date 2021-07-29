@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter as tk
+import time
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from pandas import DataFrame
 import matplotlib.pyplot as plt
@@ -7,6 +8,8 @@ import matplotlib.pyplot as pPlot
 import numpy as npy
 from PIL import Image
 from tkcalendar import Calendar
+import matplotlib.pyplot as plt
+import pandas as pd
 # [1] https://towardsdatascience.com/synonyms-and-antonyms-in-python-a865a5e14ce8
 # [2] https://spacytextblob.netlify.app/docs/example
 import nltk
@@ -36,18 +39,8 @@ nltk.download('wordnet')
 nlp = spacy.load("en_core_web_sm")
 nlp.add_pipe("spacytextblob")
 
-def get_polarity(text): #returms a number, if negative, then mood is sad, if positive it's happy
-
-    doc = nlp(text)
-
-    for span in doc.sents:
-
-        print(span.text, span._.polarity, span._.subjectivity)
-
-        return span._.polarity
-
-
 window = Tk()
+
 
 def main():
     main = MainView(window)
@@ -58,7 +51,7 @@ def main():
 
 
 
-def nlp_func(text): #sentence
+def nlp_func(text, first_time): #sentence
     
     nlp = en_core_web_sm.load()
     nlp.add_pipe("spacytextblob")
@@ -125,17 +118,6 @@ def nlp_func(text): #sentence
     else:
         msg = ["No text was detected"]
         return msg
-
-def get_polarity(text): #returms a number, if negative, then mood is sad, if positive it's happy
-
-    nlp = en_core_web_sm.load()
-    nlp.add_pipe("spacytextblob")
-    doc = nlp(text)
-
-    for span in doc.sents:
-        print(span.text, span._.polarity, span._.subjectivity)
-
-        return span._.polarity
             
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -588,6 +570,7 @@ class Page6(Page):
 
 
     def __init__(self, *args, **kwargs):
+        self.first_time = 0
         self.nlpList = [[]]
         texts = ""
         Page.__init__(self, *args, **kwargs, bg="black")
@@ -600,19 +583,21 @@ class Page6(Page):
         self.output = []
 
     def getNLPWords(self, word):
+        
         regex = re.compile('[^a-zA-Z]')
-        #First parameter is the replacement, second parameter is your input strin
+        #First parameter is the replacement, second parameter is your input string
         word = regex.sub(' ', word)
-        print(word)
+        
+        self.nlpList = nlp_func(word, False)
         for label in self.grid_slaves():
             if len(self.grid_slaves()) < 4:
                 break
             else:
                 label.grid_forget()
-        self.nlpList = nlp_func(word)
+    
+        
         counter = 0
         for nlp_list in self.nlpList: #self.nlpList = [pos[], neg[]] #self.nlpList[0] 
-
             if(counter == 0):
                 graph_this = Label(self, text=self.nlpList[counter], justify='center', font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
             if(counter == 1):
