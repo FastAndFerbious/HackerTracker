@@ -26,7 +26,6 @@ import re
 from wordcloud import STOPWORDS, WordCloud
 
 nltk.download('wordnet')
-
 nlp = spacy.load("en_core_web_sm")
 nlp.add_pipe("spacytextblob")
 
@@ -57,18 +56,38 @@ def get_polarity(text):  # returns a number, if negative, then mood is sad, if p
 
 
 def get_triggers_for_trend_analysis(text):
+    
+    doc = list(nlp.pipe([text]))
+    emotional_words = []
+
+    if len(text) != 0:
+
+        for word in doc:  # i am happy and sad
+            # captures the emotional words
+            for assessment in word._.assessments:
+                tmp = assessment[0]
+                polarity = assessment[1]
+                for emotional_word in tmp:
+                    emotional_words.append(emotional_word)
+    print(emotional_words)
+    
+    
     is_noun = lambda pos: pos[:2] == 'NN'
     # do the nlp stuff
     tokenized = nltk.word_tokenize(text)
     nouns = [word for (word, pos) in nltk.pos_tag(tokenized) if is_noun(pos)]
+    print(nouns)
 
-    return nouns
+    no_duplicates = []
 
+    nouns+=emotional_words
 
-nltk.download('wordnet')
+    for word in nouns:
+        if word not in no_duplicates:
+            no_duplicates.append(word)
+    
 
-nlp = spacy.load("en_core_web_sm")
-nlp.add_pipe("spacytextblob")
+    return no_duplicates
 
 window = Tk()
 
