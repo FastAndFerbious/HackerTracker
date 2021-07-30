@@ -800,7 +800,6 @@ class scatter_plot():
     polarity_arr = []
     hover_values = []
 
-#for trend analysis
 class Page7(Page):
 
     def __init__(self, *args, **kwargs):
@@ -887,6 +886,7 @@ class Page7(Page):
                     break  
 
  #exit page
+
 
  class Page8(Page):
 
