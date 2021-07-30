@@ -981,37 +981,51 @@ class Page7(Page):
         self.button.pack()
 
         # self.canvas.get_tk_widget().pack()
-
     def read_inputs(self):
 
         self.grabFromFile()
+        neg_arr = []
+        pos_arr = []
+        
+        scatter_plot.dates.pop()
+        x_neg = []
+        x_pos = []
 
-        x_arr = scatter_plot.dates
-        x_arr.pop()
-        y_arr = scatter_plot.polarity_arr
+        index = 0
+        for data_point in self.scatter_plot.polarity_arr:
+            if data_point<0:
+                neg_arr.append(data_point)
+                x_neg.append(scatter_plot.dates[index])
+            else:
+                pos_arr.append(data_point)
+                x_pos.append(scatter_plot.dates[index])
+            index+=1
 
-        return x_arr, y_arr
+            
+
+        return x_pos, x_neg, neg_arr, pos_arr
 
     def plot(self):
         self.a.cla()
-        x, v = self.read_inputs()
+        x_pos, x_neg, neg, pos = self.read_inputs()
 
-        self.a.scatter(x, v, color='red')
+        self.a.scatter(x_pos, pos, color='green')
+        self.a.scatter(x_neg, neg, color='red')
+
 
         n = self.scatter_plot.hover_values
         for i, txt in enumerate(n):
-            new_txt = ",".join(txt)
-            self.a.annotate(new_txt, (x[i], v[i]))
+            new_txt = "\n".join(txt)
+            self.a.annotate(new_txt, (self.scatter_plot.dates[i], self.scatter_plot.polarity_arr[i]))
 
-        self.a.set_title("Happiness Index", fontsize=11)
-        self.a.set_yticks([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])
-        self.a.set_yticklabels([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])
+        self.a.set_yticks([-1.6, -1.4, -1.2, -1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6])
+        self.a.set_yticklabels([-1.6, -1.4, -1.2,-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6])
         self.a.set_ylabel("Trend", fontsize=10)
         self.a.set_xlabel("Dates", fontsize=10)
 
-        # CreateToolTip(button, "happy, sad, coffee")
         self.canvas.draw()
         self.canvas.get_tk_widget().pack()
+
 
     def grabFromFile(self):
         self.scatter_plot.dates.clear()
