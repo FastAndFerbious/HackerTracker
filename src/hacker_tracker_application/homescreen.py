@@ -850,6 +850,7 @@ class Page7(Page):
     def plot(self):
         self.a.cla()
         x, v = self.read_inputs()
+
         self.a.scatter(x, v, color='red')
 
         n = self.scatter_plot.hover_values
@@ -867,13 +868,64 @@ class Page7(Page):
         self.canvas.draw()
 
     def savetoFile(self, new_date, new_polarity, new_hover_words):
-        comma = ", "
-        with open("trend_data.txt", "a") as file:
-            file.write(str(new_date) + ":" + str(new_polarity) + ":" + str(comma.join(new_hover_words)))
-            file.write('\n')
+        comma = ","
+        i = 0
+        first = -1
+        second = -1
+        for char in self.date:
+            if char == "/":
+                if first != -1:
+                    second = i
+                    break
+                else:
+                    first = i
+            i += 1
+        lines = ""
+        with open("trend_data.txt", "r") as file:
+            lines = file.readlines()
+            file.close()
+        with open("trend_data.txt", "w") as file:
+            repeat = False
+            for line in lines:
+                j = 0
+                temp = ""
+                first_occurrence = -1
+                second_occurrence = -1
+                for char in line:
+                    if char == ":":
+                        break
+                    elif char == "/":
+                        if first_occurrence != -1:
+                            second_occurrence = j
+                        else:
+                            first_occurrence = j
+                        temp += char
+                    else:
+                        temp += char
+                    j += 1
+                if not repeat and (
+                        self.date == temp or int(self.date[second + 1:]) < int(temp[second_occurrence + 1:]) or \
+                        (int(self.date[second + 1:]) == int(temp[second_occurrence + 1:]) and
+                         int(self.date[0:first]) < int(temp[0:first_occurrence])) or \
+                        (int(self.date[second + 1:]) == int(temp[second_occurrence + 1:]) and
+                         int(self.date[0:first]) == int(temp[0:first_occurrence]) and
+                         int(self.date[first + 1:second]) < int(temp[first_occurrence + 1:second_occurrence]))):
+                    repeat = True
+                    file.write(str(new_date) + ":" + str(new_polarity) + ":" + str(comma.join(new_hover_words)))
+                    file.write('\n')
+                    if self.date != temp:
+                        file.write(line)
+                else:
+                    file.write(line)
+            if not repeat:
+                file.write(str(new_date) + ":" + str(new_polarity) + ":" + str(comma.join(new_hover_words)))
+                file.write('\n')
             file.close()
 
     def grabFromFile(self):
+        self.scatter_plot.dates.clear()
+        self.scatter_plot.hover_values.clear()
+        self.scatter_plot.polarity_arr.clear()
         with open("trend_data.txt") as file:
             i = 0
             while (True):
@@ -891,9 +943,6 @@ class Page7(Page):
 
                 if not line:
                     break
-
-                    # exit page
-
 
 class Page8(Page):
 
