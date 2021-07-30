@@ -22,7 +22,7 @@ from spacytextblob.spacytextblob import SpacyTextBlob
 import en_core_web_sm
 import re
 
-#from wordcloud import STOPWORDS, WordCloud
+from wordcloud import STOPWORDS, WordCloud
 
 nltk.download('wordnet')
 nlp = spacy.load("en_core_web_sm")
