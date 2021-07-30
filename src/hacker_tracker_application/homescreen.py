@@ -45,15 +45,21 @@ def word_cloud(text):
     plt.show()
 
 
+
 def get_polarity(text):  # returms a number, if negative, then mood is sad, if positive it's happy
 
     doc = nlp(text)
 
-    for span in doc.sents:
-        print(span.text, span._.polarity, span._.subjectivity)
+    return doc._.polarity
 
-        return span._.polarity
+def get_triggers_for_trend_analysis(text):  
 
+    is_noun = lambda pos: pos[:2] == 'NN'
+    # do the nlp stuff
+    tokenized = nltk.word_tokenize(text)
+    nouns = [word for (word, pos) in nltk.pos_tag(tokenized) if is_noun(pos)] 
+
+    return nouns
 
 nltk.download('wordnet')
 
@@ -789,6 +795,108 @@ class Page6(Page):
         if self.msg ==["Please exit the Word Cloud to continue!"]:
             #print("asdfaf " + str(abc))
             word_cloud(nlp_func(word))
+class scatter_plot():
+    dates = []
+    polarity_arr = []
+    hover_values = []
+
+#for trend analysis
+class Page7(Page):
+
+    def __init__(self, *args, **kwargs):
+        Page.__init__(self, *args, **kwargs, bg="black")
+
+        self.scatter_plot = scatter_plot()
+        self.button3 = Button(self, text="Generate Trend Analysis", command=self.plot)
+        self.button3.pack()
+
+        var1 = StringVar()
+        var1.set("Please enter text below: ")
+        label1 = Label(window, textvariable=var1, height=2, width=5)
+        
+        ID1 = StringVar()
+        self.box1 = Entry(self, bd=4, textvariable=ID1, width=50)
+        self.box1.pack()
+
+        self.fig = Figure(figsize=(8, 5))
+
+        self.a = self.fig.add_subplot(111)
+
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self)
+        self.canvas.get_tk_widget().pack()
+
+    def read_inputs(self):
+        
+        user_input = self.box1.get()
+
+        self.savetoFile(self.date, get_polarity(user_input), get_triggers_for_trend_analysis(user_input))
+        self.grabFromFile()
+
+
+        x_arr = scatter_plot.dates
+        x_arr.pop()
+        y_arr = scatter_plot.polarity_arr
+
+        return x_arr,y_arr    
+
+    def plot(self):
+        self.a.cla()
+        x,v = self.read_inputs()
+        self.a.scatter(x, v, color='red')
+
+        n = self.scatter_plot.hover_values
+        for i, txt in enumerate(n):
+            new_txt = ",".join(txt)
+            self.a.annotate(new_txt, (x[i], v[i]))
+
+        self.a.set_title ("Trend Analysis", fontsize=12)
+        self.a.set_yticks([-1, -0.5, 0, 0.5, 1])
+        self.a.set_yticklabels([-1, -0.5, 0, 0.5, 1])
+        self.a.set_ylabel("Trend", fontsize=11)
+        self.a.set_xlabel("Dates", fontsize=12)
+
+
+        #CreateToolTip(button, "happy, sad, coffee")
+        self.canvas.draw()
+
+    def savetoFile(self, new_date, new_polarity, new_hover_words):
+        comma = ", "
+        with open("trend_data.txt", "a") as file:
+            file.write(str(new_date)+ ":" + str(new_polarity) + ":" + str(comma.join(new_hover_words)))
+            file.write('\n')
+            file.close()
+
+    def grabFromFile(self):
+        with open("trend_data.txt") as file:
+            i = 0
+            while (True):
+                line = file.readline()
+                plot_data = line.split(":") #[date, float, list of words]
+                num = 0
+                for x in range(len(plot_data)):
+                    if num == 0:
+                        self.scatter_plot.dates.append(str(plot_data[x]))
+                    if num == 1:
+
+                        self.scatter_plot.polarity_arr.append(float(plot_data[x]))
+                    if num == 2:
+                        self.scatter_plot.hover_values.append(plot_data[x].split(","))
+                    num+=1
+            
+                if not line:
+                    break  
+
+ #exit page
+
+ class Page8(Page):
+
+    def __init__(self, *args, **kwargs):
+        Page.__init__(self, *args, **kwargs, bg="black")
+        
+        graph_lab = Label(self, text="Thank You For Using HackerTracker!", font=("Comic Sans MS", 40, 'bold'), bg="black",
+                          fg='SpringGreen2')
+        graph_lab.grid(row=0, column=1, columnspan=3)
+    
 
 
 class MainView(tk.Frame):
@@ -801,10 +909,12 @@ class MainView(tk.Frame):
         choices = Page4(self)
         plots = Page5(self)
         nlp = Page6(self)
+        trend_analysis = Page7(self)
+        exit_page = Page8(self)
 
         # global variables
         global screens
-        screens = [home, date, options, choices, plots, nlp]
+        screens = [home, date, options, choices, plots, nlp, trend_analysis, exit_page]
         global num
         num = 0
 
@@ -835,6 +945,8 @@ class MainView(tk.Frame):
         choices.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         plots.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         nlp.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+        trend_analysis.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+        exit_page.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
 
         screens[0].show()
 
