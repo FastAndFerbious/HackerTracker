@@ -25,10 +25,10 @@ import re
 from wordcloud import STOPWORDS, WordCloud
 
 nltk.download('wordnet')
-
 nlp = spacy.load("en_core_web_sm")
 nlp.add_pipe("spacytextblob")
 
+window = Tk()
 
 def word_cloud(text):
     words = ""
@@ -62,14 +62,6 @@ def get_triggers_for_trend_analysis(text):
     nouns = [word for (word, pos) in nltk.pos_tag(tokenized) if is_noun(pos)]
 
     return nouns
-
-
-nltk.download('wordnet')
-
-nlp = spacy.load("en_core_web_sm")
-nlp.add_pipe("spacytextblob")
-
-window = Tk()
 
 
 def main():
@@ -485,7 +477,6 @@ class Page4(Page):
                         self.moodMenuVar.get(), self.conMenuVar.get(),
                         self.screenMenuVar.get(), self.socialMenuVar.get(), self.prodMenuVar.get(),
                         self.hyMenuVar.get()]
-
 
 # Page 5 with plots
 class Page5(Page):
@@ -963,7 +954,6 @@ class Page8(Page):
             self.window.destroy()
             exit()
 
-
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
@@ -982,7 +972,7 @@ class MainView(tk.Frame):
         screens = [home, date, options, choices, plots, nlp, trend_analysis, exit_page]
         global num
         num = 0
-
+       
         # create menu
         menu = Menu(window)
         new_item = Menu(menu)
