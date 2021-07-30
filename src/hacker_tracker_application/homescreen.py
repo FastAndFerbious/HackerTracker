@@ -56,7 +56,6 @@ def get_polarity(text):  # returns a number, if negative, then mood is sad, if p
 
 
 def get_triggers_for_trend_analysis(text):
-    
     doc = list(nlp.pipe([text]))
     emotional_words = []
 
@@ -70,8 +69,7 @@ def get_triggers_for_trend_analysis(text):
                 for emotional_word in tmp:
                     emotional_words.append(emotional_word)
     print(emotional_words)
-    
-    
+
     is_noun = lambda pos: pos[:2] == 'NN'
     # do the nlp stuff
     tokenized = nltk.word_tokenize(text)
@@ -80,14 +78,14 @@ def get_triggers_for_trend_analysis(text):
 
     no_duplicates = []
 
-    nouns+=emotional_words
+    nouns += emotional_words
 
     for word in nouns:
         if word not in no_duplicates:
             no_duplicates.append(word)
-    
 
     return no_duplicates
+
 
 window = Tk()
 
@@ -235,7 +233,7 @@ def nlp_msg(text):  # sentence
             # word_cloud(NLP_Words)
             # abc = NLP_Words
             # print("global " + str(abc))
-            msg = ["Please exit the Word Cloud to continue!"]
+            msg = ["Please make sure the Word Cloud pop up is closed to continue!"]
             return msg
 
     else:
@@ -258,11 +256,15 @@ class HomePage(Page):
         lbl = Label(self, text="Welcome to HackerTracker!", font=("Comic Sans MS", 50, 'bold'), bg="black",
                     fg="SpringGreen2")
         lbl.place(relx=0.5, rely=0.5, anchor="c")
+        lbl = Label(self, text="Use the 'Next' and 'Back' buttons in the top corner to navigate the application"
+                    , font=("Comic Sans MS", 12), bg="black",
+                    fg="SpringGreen2")
+        lbl.place(relx=0.5, rely=0.6, anchor="c")
         clear_btn = Button(self, text="Clear all data", bg="black", fg="white", command=lambda x=None: self.clear())
         clear_btn.place(relx=0.5, rely=0.85, anchor="c")
 
     def reset_clear(self):
-        lbl = Label(self, text="                          ", font=("Comic Sans MS", 15, 'bold'), bg="black",
+        lbl = Label(self, text="                          ", font=("Comic Sans MS", 12, 'bold'), bg="black",
                     fg="SpringGreen2")
         lbl.place(relx=0.5, rely=0.9, anchor="c")
 
@@ -273,8 +275,8 @@ class HomePage(Page):
         with open("trend_data.txt", "w") as file:
             file.truncate()
             file.close()
-        lbl = Label(self, text="Data cleared", font=("Comic Sans MS", 10, 'bold'), bg="black",
-                    fg="SpringGreen2")
+        lbl = Label(self, text="Data cleared", font=("Comic Sans MS", 10), bg="black",
+                    fg="red")
         lbl.place(relx=0.5, rely=0.9, anchor="c")
 
 
@@ -407,8 +409,7 @@ class Page4(Page):
                                bg="black", fg='white')
         # exercise_label.grid(row=1, column=0)
         self.exerciseMenuVar = StringVar()
-        exerciseMenu = OptionMenu(self, self.exerciseMenuVar, "0-3 hours", "3-5 hours", "6-8 hours", "9-11 hours",
-                                  "11+ hours")
+        exerciseMenu = OptionMenu(self, self.exerciseMenuVar, '~10 min', '~30 min', '1 hour', '2 hours', '2+ hours')
         # exerciseMenu.grid(row=1, column=1)
 
         # caffeine
@@ -483,7 +484,6 @@ class Page4(Page):
                           font=("Comic Sans MS", 30, 'bold'), bg="black", fg='SpringGreen2')
             title.grid(row=0, column=0)
 
-
             if i == 1:
                 self.labelList[iterr].grid(row=counter + 1, column=0)
                 self.menuList[iterr].grid(row=counter + 1, column=1)
@@ -526,11 +526,11 @@ class Page5(Page):
                 }
         df = DataFrame(data, columns=[x_axis, y_axis])
 
-        figure = plt.Figure(figsize=(5, 5), dpi=100)
+        figure = plt.Figure(figsize=(8, 5))
         ax = figure.add_subplot(111)
         line = FigureCanvasTkAgg(figure, self)
         # line2.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
-        line.get_tk_widget().place(relx=0.3, rely=0.15)
+        line.get_tk_widget().place(relx=0.1, rely=0.15)
         df = df[[x_axis, y_axis]].groupby(x_axis).sum()
         df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
         ax.set_yticks([1, 2, 3, 4, 5])
@@ -545,11 +545,12 @@ class Page5(Page):
         if self.cats.get() == 'Sleep':
             if self.categories[0] == 1:
                 black_screen = Label(self, text="",
-                                    font=("Comic Sans MS", 18, 'bold'), bg="black", fg='red', width=70, height=19)
+                                     font=("Comic Sans MS", 18, 'bold'), bg="black", fg='red', width=70, height=19)
                 black_screen.place(relx=.5, rely=.55, anchor='c')
                 self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 0, 'Sleep')
             else:
-                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='red',width=60, height=18)
+                error_label = Label(self, text="Please select a category you recorded information for!",
+                                    font=("Comic Sans MS", 18, 'bold'), bg="black", fg='red', width=60, height=18)
                 error_label.place(relx=.5, rely=.55, anchor='c')
 
         if self.cats.get() == 'Exercise':
@@ -557,9 +558,10 @@ class Page5(Page):
                 black_screen = Label(self, text="",
                                      font=("Comic Sans MS", 18, 'bold'), bg="black", fg='red', width=70, height=19)
                 black_screen.place(relx=.5, rely=.55, anchor='c')
-                self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 1, 'Exercise')
+                self.genGraph('Date', 'Hours', '~10 min', '~30 min', '1 hour', '2 hours', '2+ hours', 1, 'Exercise')
             else:
-                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='brown', width=60, height=18)
+                error_label = Label(self, text="Please select a category you recorded information for!",
+                                    font=("Comic Sans MS", 18, 'bold'), bg="black", fg='brown', width=60, height=18)
                 error_label.place(relx=.5, rely=.55, anchor='c')
         if self.cats.get() == 'Caffeine':
             if self.categories[2] == 1:
@@ -567,9 +569,10 @@ class Page5(Page):
                                      font=("Comic Sans MS", 18, 'bold'), bg="black", fg='red', width=70, height=19)
                 black_screen.place(relx=.5, rely=.55, anchor='c')
                 self.genGraph('Date', 'Milligrams', "0-100 mg", "101-200 mg", "201-300 mg", "301-400 mg",
-                                  "400+ mg", 2, 'Caffeine')
+                              "400+ mg", 2, 'Caffeine')
             else:
-                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='grey', width=60, height=18)
+                error_label = Label(self, text="Please select a category you recorded information for!",
+                                    font=("Comic Sans MS", 18, 'bold'), bg="black", fg='grey', width=60, height=18)
                 error_label.place(relx=.5, rely=.55, anchor='c')
         if self.cats.get() == 'Mood':
             if self.categories[3] == 1:
@@ -578,7 +581,8 @@ class Page5(Page):
                 black_screen.place(relx=.5, rely=.55, anchor='c')
                 self.genGraph('Date', 'Emotion', 'Sad/Mad', 'Tired', 'Neutral', 'Content', 'Happy', 3, 'Mood')
             else:
-                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='pink', width=60, height=18)
+                error_label = Label(self, text="Please select a category you recorded information for!",
+                                    font=("Comic Sans MS", 18, 'bold'), bg="black", fg='pink', width=60, height=18)
                 error_label.place(relx=.5, rely=.55, anchor='c')
         if self.cats.get() == 'Confidence':
             if self.categories[4] == 1:
@@ -587,7 +591,8 @@ class Page5(Page):
                 black_screen.place(relx=.5, rely=.55, anchor='c')
                 self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 4, 'Confidence')
             else:
-                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='purple', width=60, height=18)
+                error_label = Label(self, text="Please select a category you recorded information for!",
+                                    font=("Comic Sans MS", 18, 'bold'), bg="black", fg='purple', width=60, height=18)
                 error_label.place(relx=.5, rely=.55, anchor='c')
         if self.cats.get() == 'Screen Time':
             if self.categories[5] == 1:
@@ -595,9 +600,9 @@ class Page5(Page):
                                      font=("Comic Sans MS", 18, 'bold'), bg="black", fg='red', width=70, height=19)
                 black_screen.place(relx=.5, rely=.55, anchor='c')
                 self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 5, 'Screen Time')
-                self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 6, 'Screen Time')
             else:
-                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='blue', width=60, height=18)
+                error_label = Label(self, text="Please select a category you recorded information for!",
+                                    font=("Comic Sans MS", 18, 'bold'), bg="black", fg='blue', width=60, height=18)
                 error_label.place(relx=.5, rely=.55, anchor='c')
         if self.cats.get() == 'Socializing Time':
             if self.categories[6] == 1:
@@ -606,7 +611,8 @@ class Page5(Page):
                 black_screen.place(relx=.5, rely=.55, anchor='c')
                 self.genGraph('Date', 'Hours', '0-3', '3-6', '6-9', '9-11', '11+', 6, 'Socializing Time')
             else:
-                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='yellow', width=60, height=18)
+                error_label = Label(self, text="Please select a category you recorded information for!",
+                                    font=("Comic Sans MS", 18, 'bold'), bg="black", fg='yellow', width=60, height=18)
                 error_label.place(relx=.5, rely=.55, anchor='c')
         if self.cats.get() == 'Productivity':
             if self.categories[7] == 1:
@@ -615,7 +621,8 @@ class Page5(Page):
                 black_screen.place(relx=.5, rely=.55, anchor='c')
                 self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 7, 'Productivity')
             else:
-                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='red', width=60, height=18)
+                error_label = Label(self, text="Please select a category you recorded information for!",
+                                    font=("Comic Sans MS", 18, 'bold'), bg="black", fg='red', width=60, height=18)
                 error_label.place(relx=.5, rely=.55, anchor='c')
         if self.cats.get() == 'Hygeine':
             if self.categories[8] == 1:
@@ -624,7 +631,8 @@ class Page5(Page):
                 black_screen.place(relx=.5, rely=.55, anchor='c')
                 self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 8, 'Hygeine')
             else:
-                error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='orange', width=60, height=18)
+                error_label = Label(self, text="Please select a category you recorded information for!",
+                                    font=("Comic Sans MS", 18, 'bold'), bg="black", fg='orange', width=60, height=18)
                 error_label.place(relx=.5, rely=.55, anchor='c')
 
     def __init__(self, *args, **kwargs):
@@ -640,9 +648,14 @@ class Page5(Page):
         graph_lab = Label(self, text="Plots", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         graph_lab.place(relx=.5, rely=.05, anchor="c")
         self.cats = StringVar()
-        self.catsMenu = OptionMenu(self, self.cats, 'Sleep', 'Exercise', 'Caffeine', 'Mood', 'Confidence', 'Screen Time',
-                                   'Socializing Time', 'Productivity', 'Hygeine', command=lambda x=None: self.graph())
+        self.catsMenu = OptionMenu(self, self.cats, 'Sleep', 'Exercise', 'Caffeine', 'Mood', 'Confidence',
+                                   'Screen Time',
+                                   'Socializing Time', 'Productivity', 'Hygeine',command=lambda x=None: self.graph())
         self.catsMenu.grid(row=0, column=0)
+
+        graph_lab = Label(self, text="Click the button in the top left to select plots",
+                          font=("Comic Sans MS", 12), bg="black", fg='SpringGreen2')
+        graph_lab.place(relx=.5, rely=.5, anchor="c")
 
     def destroyGrid(self):
         for label in self.grid_slaves():
@@ -680,15 +693,15 @@ class Page5(Page):
         elif self.outputs[0] == "11+ hours":
             self.inputs[0] = 5
 
-        if self.outputs[1] == "0-3 hours":
+        if self.outputs[1] == "~10 min":
             self.inputs[1] = 1
-        elif self.outputs[1] == "3-5 hours":
+        elif self.outputs[1] == "~30 min":
             self.inputs[1] = 2
-        elif self.outputs[1] == "6-8 hours":
+        elif self.outputs[1] == "1 hour":
             self.inputs[1] = 3
-        elif self.outputs[1] == "9-11 hours":
+        elif self.outputs[1] == "2 hours":
             self.inputs[1] = 4
-        elif self.outputs[1] == "11+ hours":
+        elif self.outputs[1] == "2+ hours":
             self.inputs[1] = 5
 
         if self.outputs[2] == "0-100 mg":
@@ -868,17 +881,20 @@ class Page6(Page):
         self.nlpList = [[]]
         texts = ""
         Page.__init__(self, *args, **kwargs, bg="black")
-        graph_lab = Label(self, text="Write a sentence or two about your day: ", font=("Comic Sans MS", 40, 'bold'),
+        graph_lab = Label(self, text="Write a sentence or two about your day: ", font=("Comic Sans MS", 30, 'bold'),
                           bg="black",
                           fg='SpringGreen2')
         graph_lab.grid(row=0, column=1, columnspan=3)
-        E1 = Entry(self, textvariable=texts, bd=2, width=50)
+        E1 = Entry(self, textvariable=texts, bd=2, width=100)
         E1.grid(row=2, column=1)
         blueButton = Button(self, text="Submit", fg="blue", command=lambda: self.getNLPWords(str(E1.get())))
         blueButton.grid(row=4, column=1)
+        spacer = Label(self, text="Word Cloud may take a few seconds to generate... please be patient!", justify='center',
+                       font=("Comic Sans MS", 10), bg="black", fg='SpringGreen2')
+        spacer.grid(row=5, column=1)
         spacer = Label(self, text="The natural language processor could not generate any words.", justify='center',
                        font=("Comic Sans MS", 20, 'bold'), bg="black", fg='black')
-        spacer.grid(row=5, column=1)
+        spacer.grid(row=6, column=1)
         self.output = []
         self.msg = [[]]
 
@@ -899,10 +915,10 @@ class Page6(Page):
 
         # for nlp_list in self.msg:  # self.nlpList = [pos[], neg[]] #self.nlpList[0]
         graph_this = Label(self, text=self.msg[0], justify='center',
-                           font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
-        graph_this.grid(row=6, column=1)
+                           font=("Comic Sans MS", 20), bg="black", fg='red')
+        graph_this.grid(row=7, column=1)
 
-        if self.msg == ["Please exit the Word Cloud to continue!"]:
+        if self.msg == ["Please make sure the Word Cloud pop up is closed to continue!"]:
             word_cloud(nlp_func(word))
 
     def savetoFile(self, new_date, new_polarity, new_hover_words):
@@ -978,30 +994,29 @@ class Page7(Page):
         self.scatter_plot = scatter_plot()
 
         self.button = Button(self, text="Click here to Generate My Analysis", command=self.plot)
-        self.button.pack()
+        self.button.place(relx=0.5, rely=.05, anchor="c")
 
         # self.canvas.get_tk_widget().pack()
+
     def read_inputs(self):
 
         self.grabFromFile()
         neg_arr = []
         pos_arr = []
-        
+
         scatter_plot.dates.pop()
         x_neg = []
         x_pos = []
 
         index = 0
         for data_point in self.scatter_plot.polarity_arr:
-            if data_point<0:
+            if data_point < 0:
                 neg_arr.append(data_point)
                 x_neg.append(scatter_plot.dates[index])
             else:
                 pos_arr.append(data_point)
                 x_pos.append(scatter_plot.dates[index])
-            index+=1
-
-            
+            index += 1
 
         return x_pos, x_neg, neg_arr, pos_arr
 
@@ -1011,7 +1026,7 @@ class Page7(Page):
 
         self.a.scatter(x_pos, pos, color='green')
         self.a.scatter(x_neg, neg, color='red')
-
+        self.a.set_title("Happiness Index", fontsize=16)
 
         n = self.scatter_plot.hover_values
         for i, txt in enumerate(n):
@@ -1019,13 +1034,25 @@ class Page7(Page):
             self.a.annotate(new_txt, (self.scatter_plot.dates[i], self.scatter_plot.polarity_arr[i]))
 
         self.a.set_yticks([-1.6, -1.4, -1.2, -1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6])
-        self.a.set_yticklabels([-1.6, -1.4, -1.2,-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6])
+        self.a.set_yticklabels([-1.6, -1.4, -1.2, -1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6])
         self.a.set_ylabel("Trend", fontsize=10)
         self.a.set_xlabel("Dates", fontsize=10)
 
-        self.canvas.draw()
-        self.canvas.get_tk_widget().pack()
+        graph_this = Label(self,
+                           text="No text entered on last page.  Please go back and submit text to see your analysis!",
+                           justify='center',
+                           font=("Comic Sans MS", 15), bg="black", fg='SpringGreen2')
 
+        if len(self.scatter_plot.dates) != 0:
+            cover = Label(self,
+                               text="No text entered on last page.  Please go back and submit text to see your analysis!",
+                               justify='center',
+                               font=("Comic Sans MS", 15), bg="black", fg='black')
+            cover.place(relx=0.5, rely=0.14, anchor="c")
+            self.canvas.draw()
+            self.canvas.get_tk_widget().place(relx=0.5, rely=0.58, anchor="c")
+        else:
+            graph_this.place(relx=0.5, rely=0.14, anchor="c")
 
     def grabFromFile(self):
         self.scatter_plot.dates.clear()
