@@ -957,13 +957,20 @@ class Page7(Page):
 
 class Page8(Page):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, window, *args, **kwargs):
         Page.__init__(self, *args, **kwargs, bg="black")
-
+        self.window = window
         graph_lab = Label(self, text="Thank You For Using HackerTracker!", font=("Comic Sans MS", 40, 'bold'),
                           bg="black",
                           fg='SpringGreen2')
-        graph_lab.grid(row=0, column=1, columnspan=3)
+        graph_lab.place(relx=0.5, rely= 0.5, anchor="c")
+        next_btn = Button(self, text="Exit", bg="SpringGreen2", command=lambda: close())
+        next_btn.place(relx=0.5, rely= 0.6, anchor="c")
+
+        # exits GUI
+        def close():
+            self.window.destroy()
+            exit()
 
 
 class MainView(tk.Frame):
@@ -977,7 +984,7 @@ class MainView(tk.Frame):
         plots = Page5(self)
         nlp = Page6(self)
         trend_analysis = Page7(self)
-        exit_page = Page8(self)
+        exit_page = Page8(window, self)
 
         # global variables
         global screens
