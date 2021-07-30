@@ -488,8 +488,17 @@ class Page4(Page):
 class Page5(Page):
 
     def genGraph(self, x_axis, y_axis, fir, sec, thi, four, fif, num, cat):
-        data = {x_axis: self.dates,
-                y_axis: self.everything[num]
+        self.display_vals.clear()
+        self.display_dates.clear()
+        count = 0
+        for val in self.everything[num]:
+            if val != 0:
+                self.display_dates.append(self.dates[count])
+                self.display_vals.append(val)
+            count += 1
+
+        data = {x_axis: self.display_dates,
+                y_axis: self.display_vals
                 }
         df = DataFrame(data, columns=[x_axis, y_axis])
 
@@ -502,8 +511,8 @@ class Page5(Page):
         df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
         ax.set_yticks([1, 2, 3, 4, 5])
         ax.set_yticklabels([fir, sec, thi, four, fif])
-        ax.set_xticks(range(len(self.dates)))
-        ax.set_xticklabels(self.dates)
+        ax.set_xticks(range(len(self.display_dates)))
+        ax.set_xticklabels(self.display_dates)
         ax.set_title(cat)
         ax.set_ylabel(y_axis)
 
@@ -535,6 +544,8 @@ class Page5(Page):
         self.inputs = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.dates = []
         self.everything = [[], [], [], [], [], [], [], [], []]
+        self.display_dates = []
+        self.display_vals = []
         graph_lab = Label(self, text="Plots", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
         graph_lab.place(relx=.5, rely=.05, anchor="c")
         self.cats = StringVar()
