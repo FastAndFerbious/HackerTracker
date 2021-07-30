@@ -472,6 +472,9 @@ class Page4(Page):
             error_label = Label(self, text="Please go back and select at least one category!",
                                 font=("Comic Sans MS", 30, 'bold'), bg="black", fg='red')
             error_label.grid(row=0, column=0)
+            error_label2 = Label(self, text="Next button is disabled until a category is selected",
+                                font=("Comic Sans MS", 15, 'bold'), bg="black", fg='red')
+            error_label2.grid(row=1, column=0)
 
     def destroyGrid(self):
         for label in self.grid_slaves():
@@ -1048,8 +1051,16 @@ class MainView(tk.Frame):
                 screens[num + 1].date = screens[num].date
                 screens[num + 1].categories = screens[num].categories
 
-            num += 1
-            screens[index + 1].show()
+            empty = True
+            for x in screens[3].categories:
+                if x != 0:
+                    empty = False
+                    break
+
+            if num != 3 or not empty:
+                num += 1
+                screens[index + 1].show()
+
 
     # move to prev screen
     def goBack(self, index):
