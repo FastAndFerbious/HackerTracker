@@ -9,6 +9,7 @@ import numpy as npy
 from PIL import Image
 from tkcalendar import Calendar
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 import pandas as pd
 # [1] https://towardsdatascience.com/synonyms-and-antonyms-in-python-a865a5e14ce8
 # [2] https://spacytextblob.netlify.app/docs/example
