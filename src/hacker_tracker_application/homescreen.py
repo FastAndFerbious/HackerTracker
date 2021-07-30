@@ -530,7 +530,7 @@ class Page5(Page):
         ax = figure.add_subplot(111)
         line = FigureCanvasTkAgg(figure, self)
         # line2.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
-        line.get_tk_widget().place(relx=0.1, rely=0.15)
+        line.get_tk_widget().place(relx=0.19, rely=0.15)
         df = df[[x_axis, y_axis]].groupby(x_axis).sum()
         df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
         ax.set_yticks([1, 2, 3, 4, 5])
