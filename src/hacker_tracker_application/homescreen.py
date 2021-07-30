@@ -68,13 +68,11 @@ def get_triggers_for_trend_analysis(text):
                 polarity = assessment[1]
                 for emotional_word in tmp:
                     emotional_words.append(emotional_word)
-    print(emotional_words)
 
     is_noun = lambda pos: pos[:2] == 'NN'
     # do the nlp stuff
     tokenized = nltk.word_tokenize(text)
     nouns = [word for (word, pos) in nltk.pos_tag(tokenized) if is_noun(pos)]
-    print(nouns)
 
     no_duplicates = []
 
@@ -100,9 +98,6 @@ def main():
 
 def nlp_func(text):  # sentence
 
-    # nlp = en_core_web_sm.load()
-    # nlp.add_pipe("spacytextblob")
-
     pos_synonyms = []
     neu_synonyms = []
     neg_synonyms = []
@@ -123,7 +118,6 @@ def nlp_func(text):  # sentence
                 for emotional_word in tmp:
                     emotional_words[str(emotional_word)] = float(polarity)
 
-        # [(word, polarity)]
 
         for x in emotional_words:
             if (emotional_words[x] > 0):
@@ -170,9 +164,6 @@ def nlp_func(text):  # sentence
 
 def nlp_msg(text):  # sentence
 
-    # nlp = en_core_web_sm.load()
-    # nlp.add_pipe("spacytextblob")
-
     pos_synonyms = []
     neu_synonyms = []
     neg_synonyms = []
@@ -230,9 +221,6 @@ def nlp_msg(text):  # sentence
             msg = ["The natural language processor could not generate any words."]
             return msg
         else:
-            # word_cloud(NLP_Words)
-            # abc = NLP_Words
-            # print("global " + str(abc))
             msg = ["Please make sure the Word Cloud pop up is closed to continue!"]
             return msg
 
@@ -294,22 +282,6 @@ class Page2(Page):
                        normalforeground='white', headersforeground='white', font=("Comic Sans MS", 20))
         cal.place(relx=.5, rely=.5, anchor="c")
         self.calendar = cal
-
-        # create spins to add date
-        # month = Label(self, text="Month")
-        # month.grid(column=0, row=1, sticky="")
-        # spin = Spinbox(self, from_=1, to=12, width=5, format="%02.0f")
-        # spin.grid(column=0, row=2, sticky="")
-
-        # day = Label(self, text="Day")
-        # day.grid(column=1, row=1, sticky="")
-        # spin2 = Spinbox(self, from_=1, to=30, width=5, format="%02.0f")
-        # spin2.grid(column=1, row=2, sticky="")
-
-        # year = Label(self, text="Year")
-        # year.grid(column=2, row=1, sticky="")
-        # spin3 = Spinbox(self, from_=0000, to=9999, width=5, format="%04.0f")
-        # spin3.grid(column=2, row=2, sticky="")        # spin3.grid(column=2, row=2, sticky="")
 
 
 # Third page asking to select options
@@ -392,9 +364,6 @@ class Page4(Page):
         self.date = ""
         self.categories = []
 
-        # choice_lbl = Label(self, text="Select Best Option", font=("Comic Sans MS", 40, 'bold'), bg="black", fg='SpringGreen2')
-        # choice_lbl.place(relx=.5, rely=.05, anchor="c")
-
         # sleep
         sleep_label = Label(self, text="How many hours did you sleep last night?", font=("Comic Sans MS", 20, 'bold'),
                             bg="black", fg='white')
@@ -402,7 +371,6 @@ class Page4(Page):
         self.sleepMenuVar = StringVar()
         sleepMenu = OptionMenu(self, self.sleepMenuVar, "0-3 hours", "3-5 hours", "6-8 hours", "9-11 hours",
                                "11+ hours")
-        # sleepMenu.grid(row=0, column=1)
 
         # exercise
         exercise_label = Label(self, text="How many hours did you exercise today?", font=("Comic Sans MS", 20, 'bold'),
@@ -410,64 +378,49 @@ class Page4(Page):
         # exercise_label.grid(row=1, column=0)
         self.exerciseMenuVar = StringVar()
         exerciseMenu = OptionMenu(self, self.exerciseMenuVar, '~10 min', '~30 min', '1 hour', '2 hours', '2+ hours')
-        # exerciseMenu.grid(row=1, column=1)
 
         # caffeine
         caffeine_label = Label(self, text="How much caffeine did you have today?", font=("Comic Sans MS", 20, 'bold'),
                                bg="black", fg='white')
-        # caffeine_label.grid(row=2, column=0)
         self.caffineMenuVar = StringVar()
         caffeineMenu = OptionMenu(self, self.caffineMenuVar, "0-100 mg", "101-200 mg", "201-300 mg", "301-400 mg",
                                   "400+ mg")
-        # caffeineMenu.grid(row=2, column=1)
 
         # mood
         mood_label = Label(self, text="How would you describe your mood today?", font=("Comic Sans MS", 20, 'bold'),
                            bg="black", fg='white')
-        # mood_label.grid(row=3, column=0)
         self.moodMenuVar = StringVar()
         moodMenu = OptionMenu(self, self.moodMenuVar, "Sad/Mad", "Tired", "Neutral", "Content", "Happy")
-        # moodMenu.grid(row=3, column=1)
 
         # Confidence
         con_label = Label(self, text="How would you describe your confidence today, 5 being most confident?",
                           font=("Comic Sans MS", 20, 'bold'), bg="black", fg='white')
-        # con_label.grid(row=4, column=0)
         self.conMenuVar = StringVar()
         conMenu = OptionMenu(self, self.conMenuVar, "1", "2", "3", "4", "5")
-        # conMenu.grid(row=4, column=1)
 
         # screen time
         screen_label = Label(self, text="How many hours of screen time did you have today?",
                              font=("Comic Sans MS", 20, 'bold'), bg="black", fg='white')
-        # screen_label.grid(row=5, column=0)
         self.screenMenuVar = StringVar()
         screenMenu = OptionMenu(self, self.screenMenuVar, "0-3", "3-6", "6-9", "9-11", "11+")
-        # screenMenu.grid(row=5, column=1)
 
         # socializing
         social_label = Label(self, text="How many hours did you spend socializing today?",
                              font=("Comic Sans MS", 20, 'bold'), bg="black", fg='white')
-        # social_label.grid(row=6, column=0)
         self.socialMenuVar = StringVar()
         socialMenu = OptionMenu(self, self.socialMenuVar, "0-3", "3-6", "6-9", "9-11", "11+")
-        # socialMenu.grid(row=6, column=1)
 
         # productivity
         prod_label = Label(self, text="How would you describe your productivity today, 5 being most productive?",
                            font=("Comic Sans MS", 20, 'bold'), bg="black", fg='white')
-        # prod_label.grid(row=7, column=0)
         self.prodMenuVar = StringVar()
         prodMenu = OptionMenu(self, self.prodMenuVar, "1", "2", "3", "4", "5")
-        # prodMenu.grid(row=7, column=1)
 
         # hygiene
         hy_label = Label(self, text="How would you rate your hygeine today, 5 being best?",
                          font=("Comic Sans MS", 20, 'bold'), bg="black", fg='white')
-        # hy_label.grid(row=8, column=0)
         self.hyMenuVar = StringVar()
         hyMenu = OptionMenu(self, self.hyMenuVar, "1", "2", "3", "4", "5")
-        # hyMenu.grid(row=8, column=1)
 
         self.labelList = [sleep_label, exercise_label, caffeine_label, mood_label, con_label, screen_label,
                           social_label, prod_label, hy_label]
@@ -529,7 +482,6 @@ class Page5(Page):
         figure = plt.Figure(figsize=(8, 5))
         ax = figure.add_subplot(111)
         line = FigureCanvasTkAgg(figure, self)
-        # line2.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
         line.get_tk_widget().place(relx=0.19, rely=0.15)
         df = df[[x_axis, y_axis]].groupby(x_axis).sum()
         df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
@@ -661,25 +613,6 @@ class Page5(Page):
         for label in self.grid_slaves():
             label.grid_forget()
 
-    # def graph(self):
-    #     data = {'Date': self.dates,
-    #              'Hours of Sleep': self.everything[0]
-    #              }
-    #     df = DataFrame(data, columns=['Date', 'Hours of Sleep'])
-    #
-    #     figure = plt.Figure(figsize=(5, 5), dpi=100)
-    #     ax = figure.add_subplot(111)
-    #     line = FigureCanvasTkAgg(figure, self)
-    #     # line2.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
-    #     line.get_tk_widget().place(relx=0.3, rely=0.15)
-    #     df = df[['Date', 'Hours of Sleep']].groupby('Date').sum()
-    #     df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
-    #     ax.set_yticks([1, 2, 3, 4, 5])
-    #     ax.set_yticklabels(['0-3', '3-5', '6-8', '9-11', '11+'])
-    #     ax.set_xticks(range(len(self.dates)))
-    #     ax.set_xticklabels(self.dates)
-    #     ax.set_title('Sleep')
-    #     ax.set_ylabel('Hours')
 
     def assignIndicies(self):
         if self.outputs[0] == "0-3 hours":
@@ -868,8 +801,6 @@ class Page5(Page):
                     temporary.pop()
                     for x in range(9):
                         self.everything[x].append(int(temporary[x]))
-                    # self.everything[i] = line.split(" ")
-                    # self.everything[i].pop()
                     i += 1
 
 
@@ -913,7 +844,6 @@ class Page6(Page):
 
         self.msg = nlp_msg(word)
 
-        # for nlp_list in self.msg:  # self.nlpList = [pos[], neg[]] #self.nlpList[0]
         graph_this = Label(self, text=self.msg[0], justify='center',
                            font=("Comic Sans MS", 20), bg="black", fg='red')
         graph_this.grid(row=7, column=1)
@@ -996,7 +926,6 @@ class Page7(Page):
         self.button = Button(self, text="Click here to Generate My Analysis", command=self.plot)
         self.button.place(relx=0.5, rely=.05, anchor="c")
 
-        # self.canvas.get_tk_widget().pack()
 
     def read_inputs(self):
 
@@ -1033,9 +962,11 @@ class Page7(Page):
             new_txt = "\n".join(txt)
             self.a.annotate(new_txt, (self.scatter_plot.dates[i], self.scatter_plot.polarity_arr[i]))
 
+        self.a.yaxis.tick_left()
+        self.a.xaxis.tick_bottom()
         self.a.set_yticks([-1.6, -1.4, -1.2, -1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6])
         self.a.set_yticklabels([-1.6, -1.4, -1.2, -1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6])
-        self.a.set_ylabel("Trend", fontsize=10)
+        self.a.set_ylabel("Trend (From least happy to most happy)", fontsize=10)
         self.a.set_xlabel("Dates", fontsize=10)
 
         graph_this = Label(self,
