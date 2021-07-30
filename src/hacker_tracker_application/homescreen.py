@@ -520,8 +520,7 @@ class Page5(Page):
         ax.set_xticklabels(self.display_dates)
         ax.set_title(cat)
         ax.set_ylabel(y_axis)
-        plt.setp(ax.get_xticklabels(), rotation=90, horizontalalignment='right')
-
+        figure.autofmt_xdate()
 
     def graph(self):
         if self.cats.get() == 'Sleep':
