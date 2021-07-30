@@ -771,18 +771,18 @@ class Page5(Page):
                     # self.everything[i].pop()
                     i += 1
 
-
 # NLP prompting user for input
+
 class Page6(Page):
 
     def __init__(self, *args, **kwargs):
         self.nlpList = [[]]
         texts = ""
         Page.__init__(self, *args, **kwargs, bg="black")
-        graph_lab = Label(self, text="How are you feeling today?", font=("Comic Sans MS", 40, 'bold'), bg="black",
+        graph_lab = Label(self, text="Write a sentence or two about your day: ", font=("Comic Sans MS", 40, 'bold'), bg="black",
                           fg='SpringGreen2')
         graph_lab.grid(row=0, column=1, columnspan=3)
-        E1 = Entry(self, textvariable=texts)
+        E1 = Entry(self, textvariable=texts, bd=2, width=50)
         E1.grid(row=2, column=1)
         blueButton = Button(self, text="Submit", fg="blue", command=lambda: self.getNLPWords(str(E1.get())))
         blueButton.grid(row=4, column=1)
@@ -796,7 +796,8 @@ class Page6(Page):
         regex = re.compile('[^a-zA-Z]')
         # First parameter is the replacement, second parameter is your input strin
         word = regex.sub(' ', word)
-        # print(word)
+
+        self.savetoFile(self.date, get_polarity(word), get_triggers_for_trend_analysis(word))
 
         for label in self.grid_slaves():
             if len(self.grid_slaves()) < 6:
@@ -814,73 +815,9 @@ class Page6(Page):
         graph_this.grid(row=6, column=1)
 
         if self.msg == ["Please exit the Word Cloud to continue!"]:
-            # print("asdfaf " + str(abc))
-            word_cloud(nlp_func(word))
-
-
-class scatter_plot():
-    dates = []
-    polarity_arr = []
-    hover_values = []
-
-
-class Page7(Page):
-
-    def __init__(self, *args, **kwargs):
-        Page.__init__(self, *args, **kwargs, bg="black")
-
-        self.scatter_plot = scatter_plot()
-        self.button3 = Button(self, text="Generate Trend Analysis", command=self.plot)
-        self.button3.pack()
-
-        var1 = StringVar()
-        var1.set("Please enter text below: ")
-        label1 = Label(window, textvariable=var1, height=2, width=5)
-
-        ID1 = StringVar()
-        self.box1 = Entry(self, bd=4, textvariable=ID1, width=50)
-        self.box1.pack()
-
-        self.fig = Figure(figsize=(8, 5))
-
-        self.a = self.fig.add_subplot(111)
-
-        self.canvas = FigureCanvasTkAgg(self.fig, master=self)
-        self.canvas.get_tk_widget().pack()
-
-    def read_inputs(self):
-
-        user_input = self.box1.get()
-
-        self.savetoFile(self.date, get_polarity(user_input), get_triggers_for_trend_analysis(user_input))
-        self.grabFromFile()
-
-        x_arr = scatter_plot.dates
-        x_arr.pop()
-        y_arr = scatter_plot.polarity_arr
-
-        return x_arr, y_arr
-
-    def plot(self):
-        self.a.cla()
-        x, v = self.read_inputs()
-
-        self.a.scatter(x, v, color='red')
-
-        n = self.scatter_plot.hover_values
-        for i, txt in enumerate(n):
-            new_txt = ",".join(txt)
-            self.a.annotate(new_txt, (x[i], v[i]))
-
-        self.a.set_title("Trend Analysis", fontsize=12)
-        self.a.set_yticks([-1, -0.5, 0, 0.5, 1])
-        self.a.set_yticklabels([-1, -0.5, 0, 0.5, 1])
-        self.a.set_ylabel("Trend", fontsize=11)
-        self.a.set_xlabel("Dates", fontsize=12)
-
-        # CreateToolTip(button, "happy, sad, coffee")
-        self.canvas.draw()
-
+            print("asdfaf " + str("abc"))
+            #word_cloud(nlp_func(word))
+    
     def savetoFile(self, new_date, new_polarity, new_hover_words):
         comma = ","
         i = 0
@@ -936,6 +873,56 @@ class Page7(Page):
                 file.write('\n')
             file.close()
 
+class scatter_plot():
+    dates = []
+    polarity_arr = []
+    hover_values = []
+
+class Page7(Page):
+
+    def __init__(self, *args, **kwargs):
+        Page.__init__(self, *args, **kwargs, bg="black")
+       
+        self.fig = Figure(figsize=(8, 5))
+        self.a = self.fig.add_subplot(111)
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self)
+        self.scatter_plot = scatter_plot()
+
+        self.button = Button(self, text="Generate My Analysis", command=self.plot)
+        self.button.pack()
+
+        self.canvas.get_tk_widget().pack()
+
+    def read_inputs(self):
+
+        self.grabFromFile()
+
+        x_arr = scatter_plot.dates
+        x_arr.pop()
+        y_arr = scatter_plot.polarity_arr
+
+        return x_arr, y_arr
+
+    def plot(self):
+        self.a.cla()
+        x, v = self.read_inputs()
+
+        self.a.scatter(x, v, color='red')
+
+        n = self.scatter_plot.hover_values
+        for i, txt in enumerate(n):
+            new_txt = ",".join(txt)
+            self.a.annotate(new_txt, (x[i], v[i]))
+
+        self.a.set_title("Happiness Index", fontsize=11)
+        self.a.set_yticks([-1, -0.5, 0, 0.5, 1])
+        self.a.set_yticklabels([-1, -0.5, 0, 0.5, 1])
+        self.a.set_ylabel("Trend", fontsize=10)
+        self.a.set_xlabel("Dates", fontsize=10)
+
+        # CreateToolTip(button, "happy, sad, coffee")
+        self.canvas.draw()
+
     def grabFromFile(self):
         self.scatter_plot.dates.clear()
         self.scatter_plot.hover_values.clear()
@@ -957,6 +944,7 @@ class Page7(Page):
 
                 if not line:
                     break
+
 
 class Page8(Page):
 
