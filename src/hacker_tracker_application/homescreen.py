@@ -1,41 +1,39 @@
 from tkinter import *
-from datetime import date
 import tkinter as tk
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_agg import FigureCanvasAgg
+import time
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from pandas import DataFrame
 import matplotlib.pyplot as plt
-import numpy as np; np.random.seed(1)
-import matplotlib.pyplot as plt
 import matplotlib.pyplot as pPlot
-import numpy as npy, np
+from matplotlib.figure import Figure
+import numpy as npy
 from PIL import Image
 from tkcalendar import Calendar
 import matplotlib.pyplot as plt
-import numpy as np; 
+import pandas as pd
+# [1] https://towardsdatascience.com/synonyms-and-antonyms-in-python-a865a5e14ce8
+# [2] https://spacytextblob.netlify.app/docs/example
 import nltk
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
 import spacy
 from nltk.corpus import wordnet
-from textblob import TextBlob
 from spacytextblob.spacytextblob import SpacyTextBlob
+import en_core_web_sm
 import re
-#from wordcloud import STOPWORDS, WordCloud
+
+from wordcloud import STOPWORDS, WordCloud
+
 nltk.download('wordnet')
+
 nlp = spacy.load("en_core_web_sm")
 nlp.add_pipe("spacytextblob")
 
-window = Tk()
-nlp_words_for_trend_analysis = ""
-nlp_subjectivity_for_trend_analysis = 0
-
 
 def word_cloud(text):
-
     words = ""
 
     for word in text:
-
         words = words + str(word).replace("'", "")
 
     wordcloud = WordCloud(height=400, background_color='white', stopwords=STOPWORDS).generate(words)
@@ -43,20 +41,46 @@ def word_cloud(text):
     plt.figure()
     plt.imshow(wordcloud)
     plt.axis("off")
+    plt.annotate("Please close this window before continuing with the program", xy=(0.5, 0.9), xytext=(0, 10),
+                 xycoords=('axes fraction', 'figure fraction'),
+                 textcoords='offset points',
+                 size=14, ha='center', va='bottom')
     plt.show()
 
-def get_triggers_for_trend_analysis(text):  
 
+def get_polarity(text):  # returns a number, if negative, then mood is sad, if positive it's happy
+
+    doc = nlp(text)
+
+    return doc._.polarity
+
+
+def get_triggers_for_trend_analysis(text):
     is_noun = lambda pos: pos[:2] == 'NN'
     # do the nlp stuff
     tokenized = nltk.word_tokenize(text)
-    nouns = [word for (word, pos) in nltk.pos_tag(tokenized) if is_noun(pos)] 
+    nouns = [word for (word, pos) in nltk.pos_tag(tokenized) if is_noun(pos)]
 
     return nouns
 
+
+nltk.download('wordnet')
+
+nlp = spacy.load("en_core_web_sm")
+nlp.add_pipe("spacytextblob")
+
+window = Tk()
+
+
+def main():
+    main = MainView(window)
+    main.pack(side="top", fill="both", expand=True)
+    window.title("HackerTracker")
+    window.geometry('1200x600')
+    window.mainloop()
+
+
 def nlp_func(text):  # sentence
-    # [1] https://towardsdatascience.com/synonyms-and-antonyms-in-python-a865a5e14ce8
-    # [2] https://spacytextblob.netlify.app/docs/example
 
     # nlp = en_core_web_sm.load()
     # nlp.add_pipe("spacytextblob")
@@ -117,29 +141,87 @@ def nlp_func(text):  # sentence
         if not len(pos_synonyms) and not len(neg_synonyms):
             msg = ["The natural language processor could not generate any words."]
             return msg
+        else:
 
-        return NLP_Words
+            return NLP_Words
 
     else:
         msg = ["No text was detected"]
         return msg
 
-def get_polarity(text):  # returms a number, if negative, then mood is sad, if positive it's happy
-    
-    doc = nlp(text)
 
-    # blob = TextBlob(text)
-    # print("nouns: ")
-    # print(blob.noun_phrases)
+def nlp_msg(text):  # sentence
 
-    return doc._.polarity       
+    # nlp = en_core_web_sm.load()
+    # nlp.add_pipe("spacytextblob")
 
-def main():
-    main = MainView(window)
-    main.pack(side="top", fill="both", expand=True)
-    window.title("HackerTracker")
-    window.geometry('1200x600')
-    window.mainloop()
+    pos_synonyms = []
+    neu_synonyms = []
+    neg_synonyms = []
+
+    NLP_Words = []
+
+    # NLP analysis of single-line text
+    doc = list(nlp.pipe([text]))
+    emotional_words = dict()
+
+    if len(text) != 0:
+
+        for word in doc:  # i am happy and sad
+            # captures the emotional words
+            for assessment in word._.assessments:
+                tmp = assessment[0]
+                polarity = assessment[1]
+                for emotional_word in tmp:
+                    emotional_words[str(emotional_word)] = float(polarity)
+
+        # [(word, polarity)]
+
+        for x in emotional_words:
+            if (emotional_words[x] > 0):
+                pos_synonyms.append(str(x))
+                for syn in wordnet.synsets(str(x)):
+                    for lm in syn.lemmas():
+                        # if lm.name()in pos_synonyms :
+                        # adds the snonym(s) to the synonyms list
+                        if lm.name() not in pos_synonyms:
+                            pos_synonyms.append(lm.name())
+            elif (emotional_words[x] < 0):
+                neg_synonyms.append(str(x))
+                for syn in wordnet.synsets(str(x)):
+                    for lm in syn.lemmas():
+                        # if lm.name()in pos_synonyms :
+                        # adds the snonym(s) to the synonyms list
+                        if lm.name() not in neg_synonyms:
+                            neg_synonyms.append(lm.name())
+            # returns the synonyms of the emotional word(s)
+            elif (emotional_words[x] == 0):
+                neu_synonyms.append(str(x))
+                for syn in wordnet.synsets(str(x)):
+                    for lm in syn.lemmas():
+                        # if lm.name()in pos_synonyms :
+                        # adds the snonym(s) to the synonyms list
+                        if lm.name() not in neu_synonyms:
+                            neu_synonyms.append(lm.name())
+
+        NLP_Words.append(pos_synonyms)  # list of lists [pos words[], neg words[]
+        NLP_Words.append(neg_synonyms)
+        NLP_Words.append(neu_synonyms)
+
+        if not len(pos_synonyms) and not len(neg_synonyms):
+            msg = ["The natural language processor could not generate any words."]
+            return msg
+        else:
+            # word_cloud(NLP_Words)
+            # abc = NLP_Words
+            # print("global " + str(abc))
+            msg = ["Please exit the Word Cloud to continue!"]
+            return msg
+
+    else:
+        msg = ["No text was detected"]
+        return msg
+
 
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -147,6 +229,7 @@ class Page(tk.Frame):
 
     def show(self):
         self.lift()
+
 
 # home page
 class HomePage(Page):
@@ -158,6 +241,11 @@ class HomePage(Page):
         clear_btn = Button(self, text="Clear all data", bg="black", fg="white", command=lambda x=None: self.clear())
         clear_btn.place(relx=0.5, rely=0.85, anchor="c")
 
+    def reset_clear(self):
+        lbl = Label(self, text="                          ", font=("Comic Sans MS", 15, 'bold'), bg="black",
+                    fg="SpringGreen2")
+        lbl.place(relx=0.5, rely=0.9, anchor="c")
+
     def clear(self):
         with open("saveData.txt", "w") as file:
             file.truncate()
@@ -165,6 +253,10 @@ class HomePage(Page):
         with open("trend_data.txt", "w") as file:
             file.truncate()
             file.close()
+        lbl = Label(self, text="Data cleared", font=("Comic Sans MS", 10, 'bold'), bg="black",
+                    fg="SpringGreen2")
+        lbl.place(relx=0.5, rely=0.9, anchor="c")
+
 
 # Second page asking for date
 class Page2(Page):
@@ -196,6 +288,7 @@ class Page2(Page):
         # year.grid(column=2, row=1, sticky="")
         # spin3 = Spinbox(self, from_=0000, to=9999, width=5, format="%04.0f")
         # spin3.grid(column=2, row=2, sticky="")        # spin3.grid(column=2, row=2, sticky="")
+
 
 # Third page asking to select options
 class Page3(Page):
@@ -268,6 +361,7 @@ class Page3(Page):
                            self.hygiene_state.get()]
 
     # https://likegeeks.com/python-gui-examples-tkinter-tutorial/
+
 
 # Fourth Page prompting journaling input
 class Page4(Page):
@@ -365,11 +459,19 @@ class Page4(Page):
         iterr = 0
         counter = 0
         for i in self.categories:
+            title = Label(self, text="Please answer the following questions",
+                          font=("Comic Sans MS", 30, 'bold'), bg="black", fg='SpringGreen2')
+            title.grid(row=0, column=0)
+
             if i == 1:
-                self.labelList[iterr].grid(row=counter, column=0)
-                self.menuList[iterr].grid(row=counter, column=1)
+                self.labelList[iterr].grid(row=counter + 1, column=0)
+                self.menuList[iterr].grid(row=counter + 1, column=1)
                 counter += 1
             iterr += 1
+        if counter == 0:
+            error_label = Label(self, text="Please go back and select at least one category!",
+                                font=("Comic Sans MS", 30, 'bold'), bg="black", fg='red')
+            error_label.grid(row=0, column=0)
 
     def destroyGrid(self):
         for label in self.grid_slaves():
@@ -380,6 +482,7 @@ class Page4(Page):
                         self.moodMenuVar.get(), self.conMenuVar.get(),
                         self.screenMenuVar.get(), self.socialMenuVar.get(), self.prodMenuVar.get(),
                         self.hyMenuVar.get()]
+
 
 # Page 5 with plots
 class Page5(Page):
@@ -397,8 +500,6 @@ class Page5(Page):
         line.get_tk_widget().place(relx=0.3, rely=0.15)
         df = df[[x_axis, y_axis]].groupby(x_axis).sum()
         df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
-        print(len(self.dates))
-        print(len(self.everything[num]))
         ax.set_yticks([1, 2, 3, 4, 5])
         ax.set_yticklabels([fir, sec, thi, four, fif])
         ax.set_xticks(range(len(self.dates)))
@@ -407,7 +508,6 @@ class Page5(Page):
         ax.set_ylabel(y_axis)
 
     def graph(self):
-        print(self.cats.get())
         if self.cats.get() == 'Sleep':
             self.genGraph('Date', 'Hours', '0-3', '3-5', '6-8', '9-11', '11+', 0, 'Sleep')
         if self.cats.get() == 'Exercise':
@@ -415,7 +515,7 @@ class Page5(Page):
         if self.cats.get() == 'Caffeine':
             self.genGraph('Date', 'Milligrams', '0-3', '3-5', '6-8', '9-11', '11+', 2, 'Caffeine')
         if self.cats.get() == 'Mood':
-            self.genGraph('Date', 'Sad/Mad', 'Tired', 'Neutral', 'Content', 'Happy', 3, 'Mood')
+            self.genGraph('Date', 'Emotion', 'Sad/Mad', 'Tired', 'Neutral', 'Content', 'Happy', 3, 'Mood')
         if self.cats.get() == 'Confidence':
             self.genGraph('Date', 'Rating', '1', '2', '3', '4', '5', 4, 'Confidence')
         if self.cats.get() == 'Screen Time':
@@ -445,6 +545,26 @@ class Page5(Page):
     def destroyGrid(self):
         for label in self.grid_slaves():
             label.grid_forget()
+
+    # def graph(self):
+    #     data = {'Date': self.dates,
+    #              'Hours of Sleep': self.everything[0]
+    #              }
+    #     df = DataFrame(data, columns=['Date', 'Hours of Sleep'])
+    #
+    #     figure = plt.Figure(figsize=(5, 5), dpi=100)
+    #     ax = figure.add_subplot(111)
+    #     line = FigureCanvasTkAgg(figure, self)
+    #     # line2.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
+    #     line.get_tk_widget().place(relx=0.3, rely=0.15)
+    #     df = df[['Date', 'Hours of Sleep']].groupby('Date').sum()
+    #     df.plot(kind='line', legend=True, ax=ax, color='r', marker='o', fontsize=10)
+    #     ax.set_yticks([1, 2, 3, 4, 5])
+    #     ax.set_yticklabels(['0-3', '3-5', '6-8', '9-11', '11+'])
+    #     ax.set_xticks(range(len(self.dates)))
+    #     ax.set_xticklabels(self.dates)
+    #     ax.set_title('Sleep')
+    #     ax.set_ylabel('Hours')
 
     def assignIndicies(self):
         if self.outputs[0] == "0-3 hours":
@@ -547,16 +667,71 @@ class Page5(Page):
             self.inputs[8] = 5
 
     def savetoFile(self):
-        with open("saveData.txt", "a") as file:
-            file.write(str(self.date))
-            file.write(" ")
-            for i in self.inputs:
-                file.write(str(i))
+        i = 0
+        first = -1
+        second = -1
+        for char in self.date:
+            if char == "/":
+                if first != -1:
+                    second = i
+                    break
+                else:
+                    first = i
+            i += 1
+        lines = ""
+        with open("saveData.txt", "r") as file:
+            lines = file.readlines()
+            file.close()
+        with open("saveData.txt", "w") as file:
+            repeat = False
+            for line in lines:
+                j = 0
+                temp = ""
+                first_occurrence = -1
+                second_occurrence = -1
+                for char in line:
+                    if char == " ":
+                        break
+                    elif char == "/":
+                        if first_occurrence != -1:
+                            second_occurrence = j
+                        else:
+                            first_occurrence = j
+                        temp += char
+                    else:
+                        temp += char
+                    j += 1
+                if not repeat and (
+                        self.date == temp or int(self.date[second + 1:]) < int(temp[second_occurrence + 1:]) or \
+                        (int(self.date[second + 1:]) == int(temp[second_occurrence + 1:]) and
+                         int(self.date[0:first]) < int(temp[0:first_occurrence])) or \
+                        (int(self.date[second + 1:]) == int(temp[second_occurrence + 1:]) and
+                         int(self.date[0:first]) == int(temp[0:first_occurrence]) and
+                         int(self.date[first + 1:second]) < int(temp[first_occurrence + 1:second_occurrence]))):
+                    repeat = True
+                    file.write(str(self.date))
+                    file.write(" ")
+                    for i in self.inputs:
+                        file.write(str(i))
+                        file.write(" ")
+                    file.write("\n")
+                    if self.date != temp:
+                        file.write(line)
+                else:
+                    file.write(line)
+            if not repeat:
+                file.write(str(self.date))
                 file.write(" ")
-            file.write("\n")
+                for i in self.inputs:
+                    file.write(str(i))
+                    file.write(" ")
+                file.write("\n")
             file.close()
 
     def grabFromFile(self):
+        self.dates.clear()
+        for x in range(9):
+            self.everything[x].clear()
         with open("saveData.txt") as file:
             i = 0
             while (True):
@@ -582,6 +757,7 @@ class Page5(Page):
                     # self.everything[i].pop()
                     i += 1
 
+
 # NLP prompting user for input
 class Page6(Page):
 
@@ -591,46 +767,48 @@ class Page6(Page):
         Page.__init__(self, *args, **kwargs, bg="black")
         graph_lab = Label(self, text="How are you feeling today?", font=("Comic Sans MS", 40, 'bold'), bg="black",
                           fg='SpringGreen2')
-        graph_lab.grid(row=0, column=0)
+        graph_lab.grid(row=0, column=1, columnspan=3)
         E1 = Entry(self, textvariable=texts)
-        E1.grid(row=0, column=1)
+        E1.grid(row=2, column=1)
         blueButton = Button(self, text="Submit", fg="blue", command=lambda: self.getNLPWords(str(E1.get())))
-        blueButton.grid(row=0, column=2)
+        blueButton.grid(row=4, column=1)
+        spacer = Label(self, text="The natural language processor could not generate any words.", justify='center',
+                       font=("Comic Sans MS", 20, 'bold'), bg="black", fg='black')
+        spacer.grid(row=5, column=1)
         self.output = []
+        self.msg = [[]]
 
     def getNLPWords(self, word):
         regex = re.compile('[^a-zA-Z]')
         # First parameter is the replacement, second parameter is your input strin
         word = regex.sub(' ', word)
+        # print(word)
 
         for label in self.grid_slaves():
-            if len(self.grid_slaves()) < 4:
+            if len(self.grid_slaves()) < 6:
                 break
             else:
                 label.grid_forget()
-        self.nlpList = nlp_func(word)
-        # word_cloud(self.nlpList)
-        nlp_words_for_trend_analysis = word
 
-        counter = 0
-        for nlp_list in self.nlpList:  # self.nlpList = [pos[], neg[]] #self.nlpList[0]
+        self.msg = nlp_msg(word)
+        print("nlp shit " + str(self.msg))
 
-            if (counter == 0):
-                graph_this = Label(self, text=self.nlpList[counter], justify='center',
-                                   font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
-            if (counter == 1):
-                graph_this = Label(self, text=self.nlpList[counter], justify='center',
-                                   font=("Comic Sans MS", 20, 'bold'), bg="black", fg='red')
-            graph_this.grid(row=counter, column=3)
-            print(counter)
-            counter += 1
+        # for nlp_list in self.msg:  # self.nlpList = [pos[], neg[]] #self.nlpList[0]
+        print(self.msg[0])
+        graph_this = Label(self, text=self.msg[0], justify='center',
+                           font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
+        graph_this.grid(row=6, column=1)
 
-        #word_cloud(self.nlpList)
+        if self.msg == ["Please exit the Word Cloud to continue!"]:
+            # print("asdfaf " + str(abc))
+            word_cloud(nlp_func(word))
+
 
 class scatter_plot():
     dates = []
     polarity_arr = []
     hover_values = []
+
 
 class Page7(Page):
 
@@ -644,7 +822,7 @@ class Page7(Page):
         var1 = StringVar()
         var1.set("Please enter text below: ")
         label1 = Label(window, textvariable=var1, height=2, width=5)
-        
+
         ID1 = StringVar()
         self.box1 = Entry(self, bd=4, textvariable=ID1, width=50)
         self.box1.pack()
@@ -656,25 +834,23 @@ class Page7(Page):
         self.canvas = FigureCanvasTkAgg(self.fig, master=self)
         self.canvas.get_tk_widget().pack()
 
-
-
     def read_inputs(self):
-        
+
         user_input = self.box1.get()
 
         self.savetoFile(self.date, get_polarity(user_input), get_triggers_for_trend_analysis(user_input))
         self.grabFromFile()
 
-
         x_arr = scatter_plot.dates
         x_arr.pop()
         y_arr = scatter_plot.polarity_arr
 
-        return x_arr,y_arr    
+        return x_arr, y_arr
 
     def plot(self):
         self.a.cla()
-        x,v = self.read_inputs()
+        x, v = self.read_inputs()
+
         self.a.scatter(x, v, color='red')
 
         n = self.scatter_plot.hover_values
@@ -682,43 +858,103 @@ class Page7(Page):
             new_txt = ",".join(txt)
             self.a.annotate(new_txt, (x[i], v[i]))
 
-        self.a.set_title ("Trend Analysis", fontsize=12)
+        self.a.set_title("Trend Analysis", fontsize=12)
+        self.a.set_yticks([-1, -0.5, 0, 0.5, 1])
+        self.a.set_yticklabels([-1, -0.5, 0, 0.5, 1])
         self.a.set_ylabel("Trend", fontsize=11)
         self.a.set_xlabel("Dates", fontsize=12)
 
-
-        #CreateToolTip(button, "happy, sad, coffee")
+        # CreateToolTip(button, "happy, sad, coffee")
         self.canvas.draw()
 
     def savetoFile(self, new_date, new_polarity, new_hover_words):
-        comma = ", "
-        with open("trend_data.txt", "a") as file:
-            file.write(str(new_date)+ ":" + str(new_polarity) + ":" + str(comma.join(new_hover_words)))
-            file.write('\n')
+        comma = ","
+        i = 0
+        first = -1
+        second = -1
+        for char in self.date:
+            if char == "/":
+                if first != -1:
+                    second = i
+                    break
+                else:
+                    first = i
+            i += 1
+        lines = ""
+        with open("trend_data.txt", "r") as file:
+            lines = file.readlines()
+            file.close()
+        with open("trend_data.txt", "w") as file:
+            repeat = False
+            for line in lines:
+                j = 0
+                temp = ""
+                first_occurrence = -1
+                second_occurrence = -1
+                for char in line:
+                    if char == ":":
+                        break
+                    elif char == "/":
+                        if first_occurrence != -1:
+                            second_occurrence = j
+                        else:
+                            first_occurrence = j
+                        temp += char
+                    else:
+                        temp += char
+                    j += 1
+                if not repeat and (
+                        self.date == temp or int(self.date[second + 1:]) < int(temp[second_occurrence + 1:]) or \
+                        (int(self.date[second + 1:]) == int(temp[second_occurrence + 1:]) and
+                         int(self.date[0:first]) < int(temp[0:first_occurrence])) or \
+                        (int(self.date[second + 1:]) == int(temp[second_occurrence + 1:]) and
+                         int(self.date[0:first]) == int(temp[0:first_occurrence]) and
+                         int(self.date[first + 1:second]) < int(temp[first_occurrence + 1:second_occurrence]))):
+                    repeat = True
+                    file.write(str(new_date) + ":" + str(new_polarity) + ":" + str(comma.join(new_hover_words)))
+                    file.write('\n')
+                    if self.date != temp:
+                        file.write(line)
+                else:
+                    file.write(line)
+            if not repeat:
+                file.write(str(new_date) + ":" + str(new_polarity) + ":" + str(comma.join(new_hover_words)))
+                file.write('\n')
             file.close()
 
     def grabFromFile(self):
+        self.scatter_plot.dates.clear()
+        self.scatter_plot.hover_values.clear()
+        self.scatter_plot.polarity_arr.clear()
         with open("trend_data.txt") as file:
             i = 0
             while (True):
                 line = file.readline()
-                plot_data = line.split(":") #[date, float, list of words]
+                plot_data = line.split(":")  # [date, float, list of words]
                 num = 0
                 for x in range(len(plot_data)):
                     if num == 0:
                         self.scatter_plot.dates.append(str(plot_data[x]))
                     if num == 1:
-
                         self.scatter_plot.polarity_arr.append(float(plot_data[x]))
                     if num == 2:
                         self.scatter_plot.hover_values.append(plot_data[x].split(","))
-                    num+=1
-            
+                    num += 1
+
                 if not line:
                     break
-    
-                
-         
+
+class Page8(Page):
+
+    def __init__(self, *args, **kwargs):
+        Page.__init__(self, *args, **kwargs, bg="black")
+
+        graph_lab = Label(self, text="Thank You For Using HackerTracker!", font=("Comic Sans MS", 40, 'bold'),
+                          bg="black",
+                          fg='SpringGreen2')
+        graph_lab.grid(row=0, column=1, columnspan=3)
+
+
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
@@ -730,11 +966,11 @@ class MainView(tk.Frame):
         plots = Page5(self)
         nlp = Page6(self)
         trend_analysis = Page7(self)
-
+        exit_page = Page8(self)
 
         # global variables
         global screens
-        screens = [home, date, options, choices, plots, nlp, trend_analysis]
+        screens = [home, date, options, choices, plots, nlp, trend_analysis, exit_page]
         global num
         num = 0
 
@@ -766,7 +1002,7 @@ class MainView(tk.Frame):
         plots.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         nlp.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         trend_analysis.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
-
+        exit_page.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
 
         screens[0].show()
 
@@ -781,7 +1017,7 @@ class MainView(tk.Frame):
                 screens[num].newCategories()
                 screens[num + 1].categories = screens[num].categories
                 screens[num + 1].updatedCategories()
-            elif num == 3: #q's answered here
+            elif num == 3:
                 screens[num + 1].date = screens[num].date
                 screens[num + 1].categories = screens[num].categories
                 screens[num].transition()
@@ -792,11 +1028,7 @@ class MainView(tk.Frame):
                 # screens[num + 1].graph()
             elif num >= 4:
                 screens[num + 1].date = screens[num].date
-
                 screens[num + 1].categories = screens[num].categories
-
-           
-
 
             num += 1
             screens[index + 1].show()
@@ -805,6 +1037,8 @@ class MainView(tk.Frame):
     def goBack(self, index):
         if index > 0:
             global num
+            if num == 1:
+                screens[num - 1].reset_clear()
             if num == 3:
                 screens[num].destroyGrid()
             num -= 1
@@ -817,4 +1051,4 @@ class MainView(tk.Frame):
 
 
 if __name__ == "__main__":
-    main() 
+    main()
