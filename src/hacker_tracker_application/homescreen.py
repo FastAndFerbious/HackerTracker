@@ -5,15 +5,17 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from pandas import DataFrame
 import matplotlib.pyplot as plt
 import matplotlib.pyplot as pPlot
+from matplotlib.figure import Figure
 import numpy as npy
 from PIL import Image
 from tkcalendar import Calendar
 import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
 import pandas as pd
 # [1] https://towardsdatascience.com/synonyms-and-antonyms-in-python-a865a5e14ce8
 # [2] https://spacytextblob.netlify.app/docs/example
 import nltk
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
 import spacy
 from nltk.corpus import wordnet
 from spacytextblob.spacytextblob import SpacyTextBlob
@@ -40,27 +42,27 @@ def word_cloud(text):
     plt.imshow(wordcloud)
     plt.axis("off")
     plt.annotate("Please close this window before continuing with the program", xy=(0.5, 0.9), xytext=(0, 10),
-            xycoords=('axes fraction', 'figure fraction'),
-            textcoords='offset points',
-            size=14, ha='center', va='bottom')
+                 xycoords=('axes fraction', 'figure fraction'),
+                 textcoords='offset points',
+                 size=14, ha='center', va='bottom')
     plt.show()
 
 
-
-def get_polarity(text):  # returms a number, if negative, then mood is sad, if positive it's happy
+def get_polarity(text):  # returns a number, if negative, then mood is sad, if positive it's happy
 
     doc = nlp(text)
 
     return doc._.polarity
 
-def get_triggers_for_trend_analysis(text):  
 
+def get_triggers_for_trend_analysis(text):
     is_noun = lambda pos: pos[:2] == 'NN'
     # do the nlp stuff
     tokenized = nltk.word_tokenize(text)
-    nouns = [word for (word, pos) in nltk.pos_tag(tokenized) if is_noun(pos)] 
+    nouns = [word for (word, pos) in nltk.pos_tag(tokenized) if is_noun(pos)]
 
     return nouns
+
 
 nltk.download('wordnet')
 
@@ -76,6 +78,7 @@ def main():
     window.title("HackerTracker")
     window.geometry('1200x600')
     window.mainloop()
+
 
 def nlp_func(text):  # sentence
 
@@ -146,6 +149,7 @@ def nlp_func(text):  # sentence
         msg = ["No text was detected"]
         return msg
 
+
 def nlp_msg(text):  # sentence
 
     # nlp = en_core_web_sm.load()
@@ -208,9 +212,9 @@ def nlp_msg(text):  # sentence
             msg = ["The natural language processor could not generate any words."]
             return msg
         else:
-            #word_cloud(NLP_Words)
-            #abc = NLP_Words
-            #print("global " + str(abc))
+            # word_cloud(NLP_Words)
+            # abc = NLP_Words
+            # print("global " + str(abc))
             msg = ["Please exit the Word Cloud to continue!"]
             return msg
 
@@ -244,6 +248,9 @@ class HomePage(Page):
 
     def clear(self):
         with open("saveData.txt", "w") as file:
+            file.truncate()
+            file.close()
+        with open("trend_data.txt", "w") as file:
             file.truncate()
             file.close()
         lbl = Label(self, text="Data cleared", font=("Comic Sans MS", 10, 'bold'), bg="black",
@@ -766,7 +773,7 @@ class Page6(Page):
         blueButton = Button(self, text="Submit", fg="blue", command=lambda: self.getNLPWords(str(E1.get())))
         blueButton.grid(row=4, column=1)
         spacer = Label(self, text="The natural language processor could not generate any words.", justify='center',
-                           font=("Comic Sans MS", 20, 'bold'), bg="black", fg='black')
+                       font=("Comic Sans MS", 20, 'bold'), bg="black", fg='black')
         spacer.grid(row=5, column=1)
         self.output = []
         self.msg = [[]]
@@ -786,20 +793,22 @@ class Page6(Page):
         self.msg = nlp_msg(word)
         print("nlp shit " + str(self.msg))
 
-
-        #for nlp_list in self.msg:  # self.nlpList = [pos[], neg[]] #self.nlpList[0]
+        # for nlp_list in self.msg:  # self.nlpList = [pos[], neg[]] #self.nlpList[0]
         print(self.msg[0])
         graph_this = Label(self, text=self.msg[0], justify='center',
-                                font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
+                           font=("Comic Sans MS", 20, 'bold'), bg="black", fg='SpringGreen2')
         graph_this.grid(row=6, column=1)
 
-        if self.msg ==["Please exit the Word Cloud to continue!"]:
-            #print("asdfaf " + str(abc))
+        if self.msg == ["Please exit the Word Cloud to continue!"]:
+            # print("asdfaf " + str(abc))
             word_cloud(nlp_func(word))
+
+
 class scatter_plot():
     dates = []
     polarity_arr = []
     hover_values = []
+
 
 class Page7(Page):
 
@@ -813,7 +822,7 @@ class Page7(Page):
         var1 = StringVar()
         var1.set("Please enter text below: ")
         label1 = Label(window, textvariable=var1, height=2, width=5)
-        
+
         ID1 = StringVar()
         self.box1 = Entry(self, bd=4, textvariable=ID1, width=50)
         self.box1.pack()
@@ -826,22 +835,21 @@ class Page7(Page):
         self.canvas.get_tk_widget().pack()
 
     def read_inputs(self):
-        
+
         user_input = self.box1.get()
 
         self.savetoFile(self.date, get_polarity(user_input), get_triggers_for_trend_analysis(user_input))
         self.grabFromFile()
 
-
         x_arr = scatter_plot.dates
         x_arr.pop()
         y_arr = scatter_plot.polarity_arr
 
-        return x_arr,y_arr    
+        return x_arr, y_arr
 
     def plot(self):
         self.a.cla()
-        x,v = self.read_inputs()
+        x, v = self.read_inputs()
         self.a.scatter(x, v, color='red')
 
         n = self.scatter_plot.hover_values
@@ -849,20 +857,19 @@ class Page7(Page):
             new_txt = ",".join(txt)
             self.a.annotate(new_txt, (x[i], v[i]))
 
-        self.a.set_title ("Trend Analysis", fontsize=12)
+        self.a.set_title("Trend Analysis", fontsize=12)
         self.a.set_yticks([-1, -0.5, 0, 0.5, 1])
         self.a.set_yticklabels([-1, -0.5, 0, 0.5, 1])
         self.a.set_ylabel("Trend", fontsize=11)
         self.a.set_xlabel("Dates", fontsize=12)
 
-
-        #CreateToolTip(button, "happy, sad, coffee")
+        # CreateToolTip(button, "happy, sad, coffee")
         self.canvas.draw()
 
     def savetoFile(self, new_date, new_polarity, new_hover_words):
         comma = ", "
         with open("trend_data.txt", "a") as file:
-            file.write(str(new_date)+ ":" + str(new_polarity) + ":" + str(comma.join(new_hover_words)))
+            file.write(str(new_date) + ":" + str(new_polarity) + ":" + str(comma.join(new_hover_words)))
             file.write('\n')
             file.close()
 
@@ -871,33 +878,32 @@ class Page7(Page):
             i = 0
             while (True):
                 line = file.readline()
-                plot_data = line.split(":") #[date, float, list of words]
+                plot_data = line.split(":")  # [date, float, list of words]
                 num = 0
                 for x in range(len(plot_data)):
                     if num == 0:
                         self.scatter_plot.dates.append(str(plot_data[x]))
                     if num == 1:
-
                         self.scatter_plot.polarity_arr.append(float(plot_data[x]))
                     if num == 2:
                         self.scatter_plot.hover_values.append(plot_data[x].split(","))
-                    num+=1
-            
+                    num += 1
+
                 if not line:
-                    break  
+                    break
 
- #exit page
+                    # exit page
 
 
- class Page8(Page):
+class Page8(Page):
 
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs, bg="black")
-        
-        graph_lab = Label(self, text="Thank You For Using HackerTracker!", font=("Comic Sans MS", 40, 'bold'), bg="black",
+
+        graph_lab = Label(self, text="Thank You For Using HackerTracker!", font=("Comic Sans MS", 40, 'bold'),
+                          bg="black",
                           fg='SpringGreen2')
         graph_lab.grid(row=0, column=1, columnspan=3)
-    
 
 
 class MainView(tk.Frame):
