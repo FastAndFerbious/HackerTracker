@@ -547,7 +547,8 @@ class Page5(Page):
                 black_screen = Label(self, text="",
                                      font=("Comic Sans MS", 18, 'bold'), bg="black", fg='red', width=70, height=19)
                 black_screen.place(relx=.5, rely=.55, anchor='c')
-                self.genGraph('Date', 'Milligrams', '0-3', '3-5', '6-8', '9-11', '11+', 2, 'Caffeine')
+                self.genGraph('Date', 'Milligrams', "0-100 mg", "101-200 mg", "201-300 mg", "301-400 mg",
+                                  "400+ mg", 2, 'Caffeine')
             else:
                 error_label = Label(self, text="Please select a category you recorded information for!", font=("Comic Sans MS", 18, 'bold'), bg="black", fg='grey', width=60, height=18)
                 error_label.place(relx=.5, rely=.55, anchor='c')
