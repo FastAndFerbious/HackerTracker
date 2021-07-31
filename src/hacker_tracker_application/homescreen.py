@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter as tk
+import os
 import time
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from pandas import DataFrame
@@ -8,6 +9,8 @@ import matplotlib.pyplot as pPlot
 from matplotlib.figure import Figure
 import numpy as npy
 from PIL import Image
+import os.path
+from os import path
 from tkcalendar import Calendar
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -15,6 +18,7 @@ import pandas as pd
 # [2] https://spacytextblob.netlify.app/docs/example
 import nltk
 
+os.system("python3 -m spacy download en_core_web_sm")
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 import spacy
@@ -47,13 +51,11 @@ def word_cloud(text):
                  size=14, ha='center', va='bottom')
     plt.show()
 
-
 def get_polarity(text):  # returns a number, if negative, then mood is sad, if positive it's happy
 
     doc = nlp(text)
 
     return doc._.polarity
-
 
 def get_triggers_for_trend_analysis(text):
     doc = list(nlp.pipe([text]))
@@ -84,9 +86,7 @@ def get_triggers_for_trend_analysis(text):
 
     return no_duplicates
 
-
 window = Tk()
-
 
 def main():
     main = MainView(window)
@@ -94,7 +94,6 @@ def main():
     window.title("HackerTracker")
     window.geometry('1200x600')
     window.mainloop()
-
 
 def nlp_func(text):  # sentence
 
@@ -160,7 +159,6 @@ def nlp_func(text):  # sentence
     else:
         msg = ["No text was detected"]
         return msg
-
 
 def nlp_msg(text):  # sentence
 
@@ -228,14 +226,12 @@ def nlp_msg(text):  # sentence
         msg = ["No text was detected"]
         return msg
 
-
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
 
     def show(self):
         self.lift()
-
 
 # home page
 class HomePage(Page):
@@ -267,7 +263,6 @@ class HomePage(Page):
                     fg="red")
         lbl.place(relx=0.5, rely=0.9, anchor="c")
 
-
 # Second page asking for date
 class Page2(Page):
     def __init__(self, *args, **kwargs):
@@ -282,7 +277,6 @@ class Page2(Page):
                        normalforeground='white', headersforeground='white', font=("Comic Sans MS", 20))
         cal.place(relx=.5, rely=.5, anchor="c")
         self.calendar = cal
-
 
 # Third page asking to select options
 class Page3(Page):
@@ -355,7 +349,6 @@ class Page3(Page):
                            self.hygiene_state.get()]
 
     # https://likegeeks.com/python-gui-examples-tkinter-tutorial/
-
 
 # Fourth Page prompting journaling input
 class Page4(Page):
@@ -850,6 +843,7 @@ class Page6(Page):
 
         if self.msg == ["Please make sure the Word Cloud pop up is closed to continue!"]:
             word_cloud(nlp_func(word))
+            
 
     def savetoFile(self, new_date, new_polarity, new_hover_words):
         comma = ","
@@ -1074,6 +1068,15 @@ class MainView(tk.Frame):
         nlp.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         trend_analysis.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         exit_page.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+
+        #delete text from files
+        if not path.exists("saveData.txt"):
+            file = open("saveData.txt", "w") 
+            file.close() 
+        
+        if not path.exists("trend_data.txt"):
+            file = open("trend_data.txt", "w") 
+            file.close() 
 
         screens[0].show()
 
