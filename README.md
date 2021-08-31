@@ -7,13 +7,6 @@ Intended to track habits of the user and promote a healthier lifestyle. It inclu
 motivate the user. 
 
 
-Package Name: hacker-tracker-reeyagup
-Link to repo: https://github.com/FastAndFerbious/HackerTracker.git
-
-
-
-git clone https://github.com/FastAndFerbious/HackerTracker.git
-
 
 everything below this line should be ran upon using the application for the first time
 ---------------------------------------------------------------------------------------
